@@ -35,6 +35,7 @@ public class TwoMotorTester extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
             motor.setPower(power);
+            motor2.setPower(power);
         }
     }
 
