@@ -18,9 +18,10 @@ public class ManualShooterTester extends LinearOpMode {
     CRServo dropdown;
 
     public static MotorDirections direction = MotorDirections.SAME;
-    public static ManualMode manualMode = ManualMode.OFF;
-    public static ShiftMode shiftMode = ShiftMode.NECTAR;
-    public static double targetRPM = 3200;
+//    public static ManualMode manualMode = ManualMode.OFF;
+//    public static ShiftMode shiftMode = ShiftMode.NECTAR;
+    public static boolean pollenMode = true, manualMode = false;
+    public static double targetRPM = 0;
     public static double power = 0.0;
     public static double hoodPos = 0.75;
 
@@ -34,9 +35,7 @@ public class ManualShooterTester extends LinearOpMode {
         motor2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
         hood = hardwareMap.get(Servo.class, HardwareConstants.hoodName);
-//        shift = hardwareMap.get(Servo.class, HardwareConstants.shiftName);
-
-//        dropdown = hardwareMap.get(CRServo.class, HardwareConstants.dropdownName);
+        shift = hardwareMap.get(Servo.class, HardwareConstants.shiftName);
 
         switch(direction) {
             case SAME:
@@ -52,7 +51,7 @@ public class ManualShooterTester extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            if (manualMode == ManualMode.OFF) {
+            if (!manualMode) {
                 power = (Math.abs(targetRPM) - Math.abs(getRPM()) > 0) ? 1 : 0;
             }
 
@@ -62,14 +61,11 @@ public class ManualShooterTester extends LinearOpMode {
 
         hood.setPosition(Math.min(ShooterConstants.hoodMax, Math.max(ShooterConstants.hoodMin, hoodPos)));
 
-//            switch (shiftMode) {
-//                case POLLEN:
-//                    shift.setPosition(ShooterConstants.pollenPos);
-//                    break;
-//                case NECTAR:
-//                    shift.setPosition(ShooterConstants.nectarPos);
-//                    break;
-//            }
+        if (pollenMode) {
+            shift.setPosition(ShooterConstants.pollenPos);
+        } else {
+            shift.setPosition(ShooterConstants.nectarPos);
+        }
 
         MyTelem.addData("power", motor1.getPower());
         MyTelem.addData("target rpm", targetRPM);

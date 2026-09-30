@@ -13,6 +13,6 @@ public class ShooterConstants {
 //    public static String shiftName = HardwareConstants.shiftName;
     public static double hoodMin = 0.35, hoodMax = 0.8;
 
-    public static double pollenPos = 0.7, nectarPos = 0.3;
+    public static double pollenPos = 0.23, nectarPos = 0.5;
 
 }
