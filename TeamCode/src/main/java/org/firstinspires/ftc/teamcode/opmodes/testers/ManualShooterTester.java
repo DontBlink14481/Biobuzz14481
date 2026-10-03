@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
@@ -20,10 +22,10 @@ public class ManualShooterTester extends LinearOpMode {
     public static MotorDirections direction = MotorDirections.SAME;
 //    public static ManualMode manualMode = ManualMode.OFF;
 //    public static ShiftMode shiftMode = ShiftMode.NECTAR;
-    public static boolean pollenMode = true, manualMode = false;
+    public static boolean pollenMode = true, manualPower = false;
     public static double targetRPM = 0;
     public static double power = 0.0;
-    public static double hoodPos = 0.75;
+    public static double hoodPos = 0.6;
 
     public void runOpMode(){
         MyTelem.init(telemetry);
@@ -51,7 +53,7 @@ public class ManualShooterTester extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            if (!manualMode) {
+            if (!manualPower) {
                 power = (Math.abs(targetRPM) - Math.abs(getRPM()) > 0) ? 1 : 0;
             }
 
@@ -59,7 +61,9 @@ public class ManualShooterTester extends LinearOpMode {
         motor1.setPower(power);
         motor2.setPower(power);
 
-        hood.setPosition(Math.min(ShooterConstants.hoodMax, Math.max(ShooterConstants.hoodMin, hoodPos)));
+        hoodPos = Math.min(ShooterConstants.hoodMax, Math.max(ShooterConstants.hoodMin, hoodPos));
+
+        hood.setPosition(hoodPos);
 
         if (pollenMode) {
             shift.setPosition(ShooterConstants.pollenPos);
@@ -72,6 +76,9 @@ public class ManualShooterTester extends LinearOpMode {
         MyTelem.addData("rpm", getRPM());
         MyTelem.addData("hood pos", hood.getPosition());
         MyTelem.addData("hood insert pos", hoodPos);
+//        MyTelem.addData("current draw 1", motor1.getCurrent(CurrentUnit.MILLIAMPS));
+//        MyTelem.addData("current draw 2", motor2.getCurrent(CurrentUnit.MILLIAMPS));
+//        MyTelem.addData("total current draw", motor1.getCurrent(CurrentUnit.MILLIAMPS) + motor2.getCurrent(CurrentUnit.MILLIAMPS));
         MyTelem.update();
         }
     }
