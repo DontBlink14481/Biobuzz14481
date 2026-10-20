@@ -2,14 +2,17 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import android.sax.StartElementListener;
 
+import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ public class Robot {
     CRServo turret1, turret2, transferWheel;
     Servo hood, shift, blocker;
     List<LynxModule> hubs;
+    Follower f;
 
     public Robot(HardwareMap hw, boolean auto){
         this.initHardware(hw);
@@ -28,7 +32,15 @@ public class Robot {
         this(hw, false);
     }
 
+    public void stop(){
+        CommandScheduler.getInstance().reset();
+        for(LynxModule x : hubs){
+            x.clearBulkCache();
+        }
+    }
     public void initHardware(HardwareMap hw){
+        f = Constants.create(hw);
+
         intake = hw.get(DcMotorEx.class, HardwareConstants.intake);
         shooter = hw.get(DcMotorEx.class, HardwareConstants.flywheel1Name);
         shooter2 = hw.get(DcMotorEx.class, HardwareConstants.flywheel1Name);
@@ -54,6 +66,10 @@ public class Robot {
 
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        hubs = hw.getAll(LynxModule.class);
+
+        for(LynxModule x : hubs)x.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
     }
 
 }

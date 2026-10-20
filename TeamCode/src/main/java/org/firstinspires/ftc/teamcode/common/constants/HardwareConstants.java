@@ -29,4 +29,6 @@ public class HardwareConstants {
 
 //    public static String dropdownName = "dropdown";
 
+//    public static String octoquad = "octoquad";
+
 }
