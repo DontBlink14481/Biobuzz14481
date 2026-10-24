@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import android.sax.StartElementListener;
-
 import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -17,11 +15,12 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import java.util.List;
 
 public class Robot {
-    DcMotorEx intake, shooter, shooter2, transfer;
-    CRServo turret1, turret2, transferWheel;
-    Servo hood, shift, blocker;
-    List<LynxModule> hubs;
+
     Follower f;
+    DcMotorEx intake, transfer, shooter, shooter2;
+    CRServo turret1, turret2, dropdown;
+    Servo hood, shift, blocker, pinch;
+    List<LynxModule> hubs;
 
     public Robot(HardwareMap hw, boolean auto){
         this.initHardware(hw);
@@ -32,26 +31,27 @@ public class Robot {
         this(hw, false);
     }
 
-    public void stop(){
+    public void stop() {
         CommandScheduler.getInstance().reset();
         for(LynxModule x : hubs){
             x.clearBulkCache();
         }
     }
-    public void initHardware(HardwareMap hw){
+
+    public void initHardware(HardwareMap hw) {
         f = Constants.create(hw);
 
         intake = hw.get(DcMotorEx.class, HardwareConstants.intake);
-        shooter = hw.get(DcMotorEx.class, HardwareConstants.flywheel1Name);
-        shooter2 = hw.get(DcMotorEx.class, HardwareConstants.flywheel1Name);
         transfer = hw.get(DcMotorEx.class, HardwareConstants.transfer);
+        shooter = hw.get(DcMotorEx.class, HardwareConstants.shooter1);
+        shooter2 = hw.get(DcMotorEx.class, HardwareConstants.shooter1);
 
         turret1 = hw.get(CRServo.class, HardwareConstants.turret1);
         turret2 = hw.get(CRServo.class, HardwareConstants.turret2);
-        transferWheel = hw.get(CRServo.class, HardwareConstants.transferWheel);
+        dropdown = hw.get(CRServo.class, HardwareConstants.dropdown);
 
-        hood = hw.get(Servo.class, HardwareConstants.hoodName);
-        shift = hw.get(Servo.class, HardwareConstants.shiftName);
+        hood = hw.get(Servo.class, HardwareConstants.hood);
+        shift = hw.get(Servo.class, HardwareConstants.shift);
         blocker = hw.get(Servo.class, HardwareConstants.blocker);
 
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
