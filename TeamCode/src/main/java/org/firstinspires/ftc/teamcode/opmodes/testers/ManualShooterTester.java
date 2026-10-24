@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
 
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
@@ -13,15 +12,12 @@ import org.firstinspires.ftc.teamcode.utils.MyTelem;
 @Config
 @TeleOp(name = "Manual Shooter Tester")
 public class ManualShooterTester extends LinearOpMode {
-    DcMotorEx motor1;
-    DcMotorEx motor2;
+    DcMotorEx shooter1;
+    DcMotorEx shooter2;
     Servo hood;
     Servo shift;
     CRServo dropdown;
 
-    public static MotorDirections direction = MotorDirections.SAME;
-//    public static ManualMode manualMode = ManualMode.OFF;
-//    public static ShiftMode shiftMode = ShiftMode.NECTAR;
     public static boolean pollenMode = true, manualPower = false;
     public static double targetRPM = 0;
     public static double power = 0.0;
@@ -30,25 +26,17 @@ public class ManualShooterTester extends LinearOpMode {
     public void runOpMode(){
         MyTelem.init(telemetry);
 
-        motor1 = hardwareMap.get(DcMotorEx.class, HardwareConstants.flywheel1Name);
-        motor2 = hardwareMap.get(DcMotorEx.class, HardwareConstants.flywheel2Name);
+        shooter1 = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooter1);
+        shooter2 = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooter2);
 
-        motor1.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-        motor2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooter1.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooter2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
-        hood = hardwareMap.get(Servo.class, HardwareConstants.hoodName);
-        shift = hardwareMap.get(Servo.class, HardwareConstants.shiftName);
+        hood = hardwareMap.get(Servo.class, HardwareConstants.hood);
+        shift = hardwareMap.get(Servo.class, HardwareConstants.shift);
 
-        switch(direction) {
-            case SAME:
-                motor1.setDirection(DcMotorEx.Direction.REVERSE);
-                motor2.setDirection(DcMotorEx.Direction.REVERSE);
-                break;
-            case OPPOSITE:
-                motor1.setDirection(DcMotorEx.Direction.REVERSE);
-                motor2.setDirection(DcMotorEx.Direction.FORWARD);
-                break;
-        }
+        shooter1.setDirection(DcMotorEx.Direction.REVERSE);
+        shooter2.setDirection(DcMotorEx.Direction.REVERSE);
 
         waitForStart();
 
@@ -58,45 +46,33 @@ public class ManualShooterTester extends LinearOpMode {
             }
 
 
-        motor1.setPower(power);
-        motor2.setPower(power);
+            shooter1.setPower(power);
+            shooter2.setPower(power);
 
-        hoodPos = Math.min(ShooterConstants.hoodMax, Math.max(ShooterConstants.hoodMin, hoodPos));
+            hoodPos = Math.min(ShooterConstants.hoodMax, Math.max(ShooterConstants.hoodMin, hoodPos));
 
-        hood.setPosition(hoodPos);
+            hood.setPosition(hoodPos);
 
-        if (pollenMode) {
-            shift.setPosition(ShooterConstants.pollenPos);
-        } else {
-            shift.setPosition(ShooterConstants.nectarPos);
-        }
+            if (pollenMode) {
+                shift.setPosition(ShooterConstants.pollenPos);
+            } else {
+                shift.setPosition(ShooterConstants.nectarPos);
+            }
 
-        MyTelem.addData("power", motor1.getPower());
-        MyTelem.addData("target rpm", targetRPM);
-        MyTelem.addData("rpm", getRPM());
-        MyTelem.addData("hood pos", hood.getPosition());
-        MyTelem.addData("hood insert pos", hoodPos);
-//        MyTelem.addData("current draw 1", motor1.getCurrent(CurrentUnit.MILLIAMPS));
-//        MyTelem.addData("current draw 2", motor2.getCurrent(CurrentUnit.MILLIAMPS));
-//        MyTelem.addData("total current draw", motor1.getCurrent(CurrentUnit.MILLIAMPS) + motor2.getCurrent(CurrentUnit.MILLIAMPS));
-        MyTelem.update();
+            MyTelem.addData("power", shooter1.getPower());
+            MyTelem.addData("target rpm", targetRPM);
+            MyTelem.addData("rpm", getRPM());
+            MyTelem.addData("hood pos", hood.getPosition());
+            MyTelem.addData("hood insert pos", hoodPos);
+    //        MyTelem.addData("current draw 1", motor1.getCurrent(CurrentUnit.MILLIAMPS));
+    //        MyTelem.addData("current draw 2", motor2.getCurrent(CurrentUnit.MILLIAMPS));
+    //        MyTelem.addData("total current draw", motor1.getCurrent(CurrentUnit.MILLIAMPS) + motor2.getCurrent(CurrentUnit.MILLIAMPS));
+            MyTelem.update();
         }
     }
-
 
     public double getRPM() {
-        return (motor1.getVelocity() * 60) / 28;
+        return (shooter1.getVelocity() * 60) / 28;
     }
 
-    public enum MotorDirections{
-        OPPOSITE, SAME
-    }
-    public enum ManualMode{
-        ON, OFF
-    }
-
-    public enum ShiftMode {
-        POLLEN,
-        NECTAR
-    }
 }
