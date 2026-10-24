@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
-import org.firstinspires.ftc.teamcode.common.constants.IntakeConstants;
+import org.firstinspires.ftc.teamcode.common.constants.TransferConstants;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 
 @Config
@@ -53,9 +53,9 @@ public class IntakeTester extends LinearOpMode {
 
 
             if (pollenMode) {
-                pinch.setPosition(IntakeConstants.pollenPos);
+                pinch.setPosition(TransferConstants.pollenPos);
             } else {
-                pinch.setPosition(IntakeConstants.nectarPos);
+                pinch.setPosition(TransferConstants.nectarPos);
             }
 
             boolean leftTriggered = left.getState();
