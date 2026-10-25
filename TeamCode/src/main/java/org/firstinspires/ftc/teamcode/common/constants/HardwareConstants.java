@@ -17,8 +17,8 @@ public class HardwareConstants {
     public static String transfer = "transfer";
 
     public static String pinch = "pinch";
-    public static String breakbeam1 = "left";
-    public static String breakbeam2 = "right";
+    public static String beambreak1 = "left";
+    public static String beambreak2 = "right";
 
     // shooter
     public static String shooter1 = "shooter1";

@@ -69,8 +69,8 @@ public class IntakeShooterTester extends LinearOpMode {
 
         pinch = hardwareMap.get(Servo.class, HardwareConstants.pinch);
 
-        breakbeam1 = hardwareMap.get(DigitalChannel.class, HardwareConstants.breakbeam1);
-        breakbeam2 = hardwareMap.get(DigitalChannel.class, HardwareConstants.breakbeam2);
+        breakbeam1 = hardwareMap.get(DigitalChannel.class, HardwareConstants.beambreak1);
+        breakbeam2 = hardwareMap.get(DigitalChannel.class, HardwareConstants.beambreak2);
 
         waitForStart();
 

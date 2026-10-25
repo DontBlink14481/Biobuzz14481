@@ -20,10 +20,12 @@ public class Intake implements Subsystem {
         intake.setDirection(DcMotorEx.Direction.FORWARD);
         intake.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        state = IntakeState.OFF;
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         set(state);
     }
 

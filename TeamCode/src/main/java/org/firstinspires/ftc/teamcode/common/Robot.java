@@ -11,6 +11,7 @@ import com.seattlesolvers.solverslib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.common.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.List;
@@ -20,9 +21,10 @@ public class Robot {
     Follower f;
 
     Intake intake;
-    DcMotorEx transfer, shooter, shooter2;
+    Transfer transfer;
+    DcMotorEx shooter, shooter2;
     CRServo turret1, turret2, dropdown;
-    Servo hood, shift, blocker, pinch;
+    Servo hood, shift, blocker;
     List<LynxModule> hubs;
 
     public Robot(HardwareMap map) {
@@ -37,8 +39,8 @@ public class Robot {
         f = Constants.create(map);
 
         intake = new Intake(map);
+        transfer = new Transfer(map);
 
-        transfer = map.get(DcMotorEx.class, HardwareConstants.transfer);
         shooter = map.get(DcMotorEx.class, HardwareConstants.shooter1);
         shooter2 = map.get(DcMotorEx.class, HardwareConstants.shooter1);
 
@@ -49,15 +51,12 @@ public class Robot {
         hood = map.get(Servo.class, HardwareConstants.hood);
         shift = map.get(Servo.class, HardwareConstants.shift);
         blocker = map.get(Servo.class, HardwareConstants.blocker);
-        pinch = map.get(Servo.class, HardwareConstants.pinch);
 
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooter2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
