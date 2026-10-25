@@ -67,17 +67,16 @@ public class Shooter implements Subsystem {
                 hoodPos = Range.clip(ShooterConstants.hoodPos, ShooterConstants.hoodMin, ShooterConstants.hoodMax);
                 hood.setPosition(hoodPos);
 
-                shift.setPosition(RobotConstants.inNectarMode ? ShooterConstants.nectarPos : ShooterConstants.pollenPos);
-                dropdown.setPower(ShooterConstants.dropdownPower);
-
                 break;
 //            case AUTO:
+//                targetRPM = something
 //                break;
         }
 
         setPower(targetRPM);
 
-
+        shift.setPosition(RobotConstants.inNectarMode ? ShooterConstants.nectarPos : ShooterConstants.pollenPos);
+        dropdown.setPower(ShooterConstants.dropdownPower);
     }
 
     public void setPower(double targetRPM) {
