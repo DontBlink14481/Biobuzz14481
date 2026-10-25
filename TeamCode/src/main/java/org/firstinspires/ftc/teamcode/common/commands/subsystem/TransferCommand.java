@@ -11,6 +11,6 @@ public class TransferCommand extends InstantCommand {
     }
 
     public TransferCommand(Robot robot, Transfer.TransferState state) {
-        super(() -> robot.transfer.set(state));
+        this(robot.transfer, state);
     }
 }

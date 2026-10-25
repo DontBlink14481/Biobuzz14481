@@ -11,6 +11,6 @@ public class IntakeCommand extends InstantCommand {
     }
 
     public IntakeCommand(Robot robot, Intake.IntakeState state) {
-        super(() -> robot.intake.set(state));
+        this(robot.intake, state);
     }
 }
