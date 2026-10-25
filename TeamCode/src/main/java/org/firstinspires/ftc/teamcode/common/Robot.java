@@ -12,18 +12,21 @@ import com.seattlesolvers.solverslib.command.CommandScheduler;
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.common.subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.common.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.List;
 
 public class Robot {
 
-    Follower f;
+    public Follower f;
 
-    Intake intake;
-    Transfer transfer;
+    public Intake intake;
+    public Transfer transfer;
+    public Turret turret;
+
     DcMotorEx shooter, shooter2;
-    CRServo turret1, turret2, dropdown;
+    CRServo dropdown;
     Servo hood, shift, blocker;
     List<LynxModule> hubs;
 
@@ -40,12 +43,11 @@ public class Robot {
 
         intake = new Intake(map);
         transfer = new Transfer(map);
+        turret = new Turret(map);
 
         shooter = map.get(DcMotorEx.class, HardwareConstants.shooter1);
         shooter2 = map.get(DcMotorEx.class, HardwareConstants.shooter1);
 
-        turret1 = map.get(CRServo.class, HardwareConstants.turret1);
-        turret2 = map.get(CRServo.class, HardwareConstants.turret2);
         dropdown = map.get(CRServo.class, HardwareConstants.dropdown);
 
         hood = map.get(Servo.class, HardwareConstants.hood);

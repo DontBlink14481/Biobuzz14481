@@ -40,12 +40,12 @@ public class Transfer implements Subsystem {
 
     @Override
     public void periodic() {
-        set(state, RobotConstants.inNectarMode);
+        set(state);
 
         setNectarMode();
     }
 
-    public void set(TransferState state, boolean inNectarMode) {
+    public void set(TransferState state) {
         if (state == null) return;
         this.state = state;
 
@@ -61,7 +61,7 @@ public class Transfer implements Subsystem {
                 break;
         }
 
-        pinch.setPosition(inNectarMode ? TransferConstants.nectarPos : TransferConstants.pollenPos);
+        pinch.setPosition(RobotConstants.inNectarMode ? TransferConstants.nectarPos : TransferConstants.pollenPos);
     }
 
     public void setNectarMode() {
