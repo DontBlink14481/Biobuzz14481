@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.common.constants.IntakeConstants;
 
 public class Intake implements Subsystem {
 
-    DcMotorEx intake;
+    public DcMotorEx intake;
 
-    IntakeState state;
+    public IntakeState state;
 
     public Intake(HardwareMap map) {
         intake = map.get(DcMotorEx.class, HardwareConstants.intake);

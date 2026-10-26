@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 
 public class Blocker implements Subsystem {
 
-    Servo blocker;
+    public Servo blocker;
 
-    BlockerState state;
+    public BlockerState state;
 
     public Blocker(HardwareMap map) {
         blocker = map.get(Servo.class, HardwareConstants.blocker);

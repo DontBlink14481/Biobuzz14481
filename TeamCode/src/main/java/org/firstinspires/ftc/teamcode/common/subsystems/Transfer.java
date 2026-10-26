@@ -13,15 +13,18 @@ import org.firstinspires.ftc.teamcode.common.constants.TransferConstants;
 
 public class Transfer implements Subsystem {
 
-    DcMotorEx transfer;
-    Servo pinch;
+    public DcMotorEx transfer;
+    public Servo pinch;
 
-    DigitalChannel beambreak1;
-    DigitalChannel beambreak2;
+    public DigitalChannel beambreak1;
+    public DigitalChannel beambreak2;
 
-    TransferState state;
+    public TransferState state;
 
-    double start = TransferConstants.nectarDelayMs;
+    public boolean leftTriggered;
+    public boolean rightTriggered;
+
+    public static double start = TransferConstants.nectarDelayMs;
 
     public Transfer(HardwareMap map) {
         transfer = map.get(DcMotorEx.class, HardwareConstants.transfer);
@@ -36,6 +39,7 @@ public class Transfer implements Subsystem {
         beambreak2 = map.get(DigitalChannel.class, HardwareConstants.beambreak2);
 
         state = TransferState.OFF;
+        RobotConstants.manualNectar = false;
     }
 
     @Override
@@ -65,10 +69,12 @@ public class Transfer implements Subsystem {
     }
 
     public void setNectarMode() {
-        boolean leftTriggered = beambreak1.getState();
-        boolean rightTriggered = beambreak2.getState();
+        if (RobotConstants.manualNectar) return;
 
-        boolean triggered = leftTriggered || rightTriggered;
+        leftTriggered = beambreak1.getState();
+        rightTriggered = beambreak2.getState();
+
+        boolean triggered = leftTriggered /*|| rightTriggered*/;
 
         if (triggered) start = System.nanoTime();
 

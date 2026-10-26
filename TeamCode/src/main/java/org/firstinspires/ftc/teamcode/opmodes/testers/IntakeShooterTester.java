@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.constants.TransferConstants;
 import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
@@ -37,7 +38,8 @@ public class IntakeShooterTester extends LinearOpMode {
     public static boolean manualPollen = false;
     public static double transferPower = 0.0;
 
-    public static double nectarDelayMs = 200;
+    public static double nectarDelayMs = 25;
+    public static double nectarHoodOffset = 0.1;
     double start = nectarDelayMs;
 
     public void runOpMode() {
@@ -83,14 +85,16 @@ public class IntakeShooterTester extends LinearOpMode {
             shooter1.setPower(shooterPower);
             shooter2.setPower(shooterPower);
 
-            hoodPos = Math.min(ShooterConstants.hoodMax, Math.max(ShooterConstants.hoodMin, hoodPos));
+            double hoodNectarPos = hoodPos + nectarHoodOffset;
+            double adjHoodPos = pollenMode ? hoodPos : hoodNectarPos;
+            adjHoodPos = Math.min(ShooterConstants.hoodMax, Math.max(ShooterConstants.hoodMin, adjHoodPos));
 
-            hood.setPosition(hoodPos);
+            hood.setPosition(adjHoodPos);
 
             boolean leftTriggered = breakbeam1.getState();
             boolean rightTriggered = breakbeam2.getState();
 
-            boolean triggered = leftTriggered || rightTriggered;
+            boolean triggered = leftTriggered /*|| rightTriggered*/;
 
             if (triggered) {
                 start = System.nanoTime();
@@ -129,6 +133,7 @@ public class IntakeShooterTester extends LinearOpMode {
 
 
             MyTelem.addData("transfer power", transfer.getPower());
+            MyTelem.addData("transfer amps", transfer.getCurrent(CurrentUnit.AMPS));
             MyTelem.addData("pinch pos", pinch.getPosition());
             MyTelem.addData("left", leftTriggered);
             MyTelem.addData("right", rightTriggered);

@@ -7,8 +7,8 @@ import com.seattlesolvers.solverslib.command.Subsystem;
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 
 public class Turret implements Subsystem {
-    CRServo turret1;
-    CRServo turret2;
+    public CRServo turret1;
+    public CRServo turret2;
 
     public Turret(HardwareMap map) {
         turret1 = map.get(CRServo.class, HardwareConstants.turret1);

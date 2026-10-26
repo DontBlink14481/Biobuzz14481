@@ -14,19 +14,19 @@ import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
 
 public class Shooter implements Subsystem {
 
-    DcMotorEx shooter1;
-    DcMotorEx shooter2;
+    public DcMotorEx shooter1;
+    public DcMotorEx shooter2;
 
-    Servo hood;
-    Servo shift;
-    CRServo dropdown;
+    public Servo hood;
+    public Servo shift;
+    public CRServo dropdown;
 
-    PIDFController controller;
+    public PIDFController controller;
 
-    double targetRPM = 0;
-    double hoodPos = 0;
+    public static double targetRPM = 0;
+    public static double hoodPos = 0;
 
-    ShooterState state;
+    public ShooterState state;
 
     public Shooter(HardwareMap map) {
         shooter1 = map.get(DcMotorEx.class, HardwareConstants.shooter1);
@@ -64,7 +64,7 @@ public class Shooter implements Subsystem {
         switch (state) {
             case MANUAL:
 
-                hoodPos = Range.clip(ShooterConstants.hoodPos, ShooterConstants.hoodMin, ShooterConstants.hoodMax);
+                hoodPos = Range.clip(hoodPos, ShooterConstants.hoodMin, ShooterConstants.hoodMax);
                 hood.setPosition(hoodPos);
 
                 break;
@@ -102,10 +102,15 @@ public class Shooter implements Subsystem {
         return targetRPM > 0 && controller.atSetPoint();
     }
 
+    public void setHoodPos(double pos) {
+        hoodPos = pos;
+    }
+
     public void stop() {
         targetRPM = 0;
         controller.reset();
-        setPower(0);
+        shooter1.setPower(0);
+        shooter2.setPower(0);
     }
 
     public enum ShooterState {
