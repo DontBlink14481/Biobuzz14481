@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.common;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
-import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.subsystems.Blocker;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.common.subsystems.Shooter;
@@ -21,8 +17,7 @@ import java.util.List;
 
 public class Robot {
 
-    public Follower f;
-
+    public Follower follower;
     public Intake intake;
     public Transfer transfer;
     public Turret turret;
@@ -31,16 +26,20 @@ public class Robot {
 
     List<LynxModule> hubs;
 
+    public static Pose pose = new Pose(0, 0 ,0);
+    public static boolean auto = false;
+
     public Robot(HardwareMap map) {
         this(map, false);
     }
 
     public Robot(HardwareMap map, boolean auto) {
+        Robot.auto = auto;
         this.initHardware(map);
     }
 
     public void initHardware(HardwareMap map) {
-        f = Constants.create(map);
+        follower = Constants.create(map);
 
         intake = new Intake(map);
         transfer = new Transfer(map);
@@ -51,6 +50,15 @@ public class Robot {
         hubs = map.getAll(LynxModule.class);
 
         for (LynxModule x : hubs) x.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+
+        CommandScheduler.getInstance().registerSubsystem(intake, transfer, turret, shooter, blocker);
+    }
+
+    public void periodic() {
+        CommandScheduler.getInstance().run();
+
+        follower.update();
+        pose = follower.pose();
     }
 
     public void stop() {

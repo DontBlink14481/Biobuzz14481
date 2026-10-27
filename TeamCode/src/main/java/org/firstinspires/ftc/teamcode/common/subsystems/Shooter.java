@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -19,7 +18,6 @@ public class Shooter implements Subsystem {
 
     public Servo hood;
     public Servo shift;
-    public CRServo dropdown;
 
     public PIDFController controller;
 
@@ -41,8 +39,6 @@ public class Shooter implements Subsystem {
 
         hood = map.get(Servo.class, HardwareConstants.hood);
         shift = map.get(Servo.class, HardwareConstants.shift);
-
-        dropdown = map.get(CRServo.class, HardwareConstants.dropdown);
 
         controller = new PIDFController(ShooterConstants.coefficients);
 
@@ -73,13 +69,23 @@ public class Shooter implements Subsystem {
 //                break;
         }
 
-        setPower(targetRPM);
+        setPowerBang(targetRPM);
 
         shift.setPosition(RobotConstants.inNectarMode ? ShooterConstants.nectarPos : ShooterConstants.pollenPos);
-        dropdown.setPower(ShooterConstants.dropdownPower);
     }
 
-    public void setPower(double targetRPM) {
+    public void setPowerBang(double targetRPM) {
+        if (targetRPM <= 0) {
+            stop();
+            return;
+        }
+
+        double power = (Math.abs(targetRPM) - Math.abs(getRPM()) > 0) ? 1 : 0;
+        shooter1.setPower(power);
+        shooter2.setPower(power);
+    }
+
+    public void setPowerPID(double targetRPM) {
         if (targetRPM <= 0) {
             stop();
             return;
@@ -90,8 +96,8 @@ public class Shooter implements Subsystem {
         shooter2.setPower(power);
     }
 
-    public void setTargetRPM(double rpm) {
-        targetRPM = rpm;
+    public void setTargetRPM(double targetRPM) {
+        Shooter.targetRPM = targetRPM;
     }
 
     public double getRPM() {

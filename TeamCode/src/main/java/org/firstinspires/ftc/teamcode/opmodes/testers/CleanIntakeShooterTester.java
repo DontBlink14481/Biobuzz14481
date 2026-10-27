@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.common.constants.RobotConstants;
-import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.common.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.common.subsystems.Transfer;
@@ -31,6 +30,7 @@ public class CleanIntakeShooterTester extends OpMode {
 
     @Override
     public void init() {
+        MyTelem.init(telemetry);
 //        intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
         shooter = new Shooter(hardwareMap);
@@ -65,5 +65,6 @@ public class CleanIntakeShooterTester extends OpMode {
         MyTelem.addData("right", transfer.rightTriggered);
         MyTelem.addData("manual nectar", manualNectar);
         MyTelem.addData("in nectar mode", RobotConstants.inNectarMode);
+        MyTelem.update();
     }
 }

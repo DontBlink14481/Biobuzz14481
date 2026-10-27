@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class TransferConstants {
 
     public static double inPower = 1.0, outPower = -1.0, offPower = 0.0;
+    public static double dropdownInPower = 1.0, dropdownOutPower = -1.0, dropdownOffPower = 0.0;
 
     public static double pollenPos = 0.57, nectarPos = 0.53;
 
