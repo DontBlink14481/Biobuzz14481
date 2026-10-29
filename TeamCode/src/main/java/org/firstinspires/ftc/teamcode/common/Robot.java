@@ -55,10 +55,14 @@ public class Robot {
     }
 
     public void periodic() {
-        CommandScheduler.getInstance().run();
+        for (LynxModule hub : hubs) {
+            hub.clearBulkCache();
+        }
 
         follower.update();
         pose = follower.pose();
+
+        CommandScheduler.getInstance().run();
     }
 
     public void stop() {

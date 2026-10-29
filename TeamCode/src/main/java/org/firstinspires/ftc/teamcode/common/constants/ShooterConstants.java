@@ -17,4 +17,8 @@ public class ShooterConstants {
 
     public static double rpmTolerance = 10;
 
+    public static double goalHeightInches = 59.55;
+    //TODO: measure flywheel height or ask karthik
+    public static double shooterHeightInches = 8;
+
 }

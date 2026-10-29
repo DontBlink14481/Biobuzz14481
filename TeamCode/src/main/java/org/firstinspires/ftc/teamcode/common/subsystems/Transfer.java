@@ -10,7 +10,6 @@ import com.seattlesolvers.solverslib.command.Subsystem;
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.constants.IntakeConstants;
 import org.firstinspires.ftc.teamcode.common.constants.RobotConstants;
-import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.common.constants.TransferConstants;
 
 public class Transfer implements Subsystem {
@@ -27,7 +26,7 @@ public class Transfer implements Subsystem {
     public boolean leftTriggered;
     public boolean rightTriggered;
 
-    public static double start = TransferConstants.nectarDelayMs;
+    public static double start = 0;
 
     public Transfer(HardwareMap map) {
         transfer = map.get(DcMotorEx.class, HardwareConstants.transfer);
@@ -60,11 +59,11 @@ public class Transfer implements Subsystem {
 
         switch (state) {
             case IN:
-                transfer.setPower(IntakeConstants.inPower);
+                transfer.setPower(TransferConstants.inPower);
                 dropdown.setPower(TransferConstants.dropdownInPower);
                 break;
             case OUT:
-                transfer.setPower(IntakeConstants.outPower);
+                transfer.setPower(TransferConstants.outPower);
                 dropdown.setPower(TransferConstants.dropdownOutPower);
                 break;
             case OFF:

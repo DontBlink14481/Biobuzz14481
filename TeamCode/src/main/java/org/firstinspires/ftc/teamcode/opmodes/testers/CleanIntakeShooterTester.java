@@ -40,10 +40,6 @@ public class CleanIntakeShooterTester extends OpMode {
 
     @Override
     public void loop() {
-//        intake.periodic();
-        transfer.periodic();
-        shooter.periodic();
-
 //        intake.set(intakeOn ? Intake.IntakeState.IN : Intake.IntakeState.OFF);
         transfer.set(transferOn ? Transfer.TransferState.IN : Transfer.TransferState.OFF);
 
@@ -52,6 +48,10 @@ public class CleanIntakeShooterTester extends OpMode {
         shooter.setHoodPos(hoodPos + (RobotConstants.inNectarMode ? nectarHoodOffset : 0));
 
         RobotConstants.manualNectar = manualNectar;
+
+        //        intake.periodic();
+        transfer.periodic();
+        shooter.periodic();
 
         MyTelem.addData("target rpm", targetRPM);
         MyTelem.addData("rpm", shooter.getRPM());

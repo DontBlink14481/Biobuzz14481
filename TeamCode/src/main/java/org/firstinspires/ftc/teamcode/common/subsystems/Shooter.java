@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.Subsystem;
@@ -40,7 +41,7 @@ public class Shooter implements Subsystem {
         hood = map.get(Servo.class, HardwareConstants.hood);
         shift = map.get(Servo.class, HardwareConstants.shift);
 
-        controller = new PIDFController(ShooterConstants.coefficients);
+        controller = new PIDFController(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD, ShooterConstants.kF);
 
         state = ShooterState.AUTO;
     }
@@ -49,7 +50,7 @@ public class Shooter implements Subsystem {
     public void periodic() {
         set(state);
 
-        controller.setCoefficients(ShooterConstants.coefficients);
+        controller.setPIDF(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD, ShooterConstants.kF);
         controller.setTolerance(ShooterConstants.rpmTolerance);
     }
 
@@ -67,6 +68,9 @@ public class Shooter implements Subsystem {
 //            case AUTO:
 //                targetRPM = something
 //                break;
+            case OFF:
+
+                break;
         }
 
         setPowerBang(targetRPM);
@@ -105,7 +109,8 @@ public class Shooter implements Subsystem {
     }
 
     public boolean atRPM() {
-        return targetRPM > 0 && controller.atSetPoint();
+//        return targetRPM > 0 && controller.atSetPoint();
+        return targetRPM > 0 && (Math.abs(targetRPM) - Math.abs(getRPM()) < ShooterConstants.rpmTolerance);
     }
 
     public void setHoodPos(double pos) {
@@ -120,6 +125,6 @@ public class Shooter implements Subsystem {
     }
 
     public enum ShooterState {
-        MANUAL, AUTO
+        MANUAL, AUTO, OFF
     }
 }
