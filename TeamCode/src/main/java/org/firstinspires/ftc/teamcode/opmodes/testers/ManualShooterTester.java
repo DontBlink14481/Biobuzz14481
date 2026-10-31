@@ -33,6 +33,7 @@ public class ManualShooterTester extends LinearOpMode {
         shooter2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
         hood = hardwareMap.get(Servo.class, HardwareConstants.hood);
+        hood.setDirection(Servo.Direction.REVERSE);
         shift = hardwareMap.get(Servo.class, HardwareConstants.shift);
 
         shooter1.setDirection(DcMotorEx.Direction.REVERSE);

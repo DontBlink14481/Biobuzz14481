@@ -48,9 +48,8 @@ public class Transfer implements Subsystem {
 
     @Override
     public void periodic() {
-        set(state);
-
         setNectarMode();
+        set(state);
     }
 
     public void set(TransferState state) {
