@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -15,7 +17,8 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.List;
 
-public class Robot {
+public class Robot
+{
 
     public Follower follower;
     public Intake intake;
@@ -61,8 +64,16 @@ public class Robot {
 
         follower.update();
         pose = follower.pose();
+        sendPose();
 
         CommandScheduler.getInstance().run();
+        //for advantagescope
+    }public static void sendPose() {
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("Pose x", pose.x());
+        packet.put("Pose y", pose.y());
+        packet.put("Pose heading", pose.heading());
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
     }
 
     public void stop() {
