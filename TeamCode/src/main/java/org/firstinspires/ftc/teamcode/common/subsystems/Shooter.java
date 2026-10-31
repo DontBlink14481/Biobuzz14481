@@ -2,28 +2,32 @@ package org.firstinspires.ftc.teamcode.common.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.Subsystem;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.common.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
+import org.firstinspires.ftc.teamcode.common.shooting.ShooterResult;
+import org.firstinspires.ftc.teamcode.utils.BlinkServo;
 
 public class Shooter implements Subsystem {
 
     public DcMotorEx shooter1;
     public DcMotorEx shooter2;
 
-    public Servo hood;
+    public BlinkServo hood;
     public Servo shift;
 
     public PIDFController controller;
 
     public static double targetRPM = 0;
     public static double hoodPos = 0;
+
+    public ShooterResult lastResult = ShooterResult.invalid();
 
     public ShooterState state;
 
@@ -38,7 +42,8 @@ public class Shooter implements Subsystem {
         shooter1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         shooter2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        hood = map.get(Servo.class, HardwareConstants.hood);
+        hood = new BlinkServo(map, HardwareConstants.hood, ShooterConstants.hoodMinDeg, ShooterConstants.hoodMaxDeg, ShooterConstants.hoodMin, ShooterConstants.hoodMax)
+                .setInverted(true);
         shift = map.get(Servo.class, HardwareConstants.shift);
 
         controller = new PIDFController(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD, ShooterConstants.kF);
@@ -65,15 +70,17 @@ public class Shooter implements Subsystem {
                 hood.setPosition(hoodPos);
 
                 break;
-//            case AUTO:
-//                targetRPM = something
-//                break;
+            case AUTO:
+                if (lastResult.valid) {
+                    hood.turnToAngle(lastResult.hoodAngleRad, AngleUnit.RADIANS);
+                }
+                break;
             case OFF:
-
+                stop();
                 break;
         }
 
-        setPowerBang(targetRPM);
+        setPowerPID(targetRPM);
 
         shift.setPosition(RobotConstants.inNectarMode ? ShooterConstants.nectarPos : ShooterConstants.pollenPos);
     }
@@ -110,7 +117,7 @@ public class Shooter implements Subsystem {
 
     public boolean atRPM() {
 //        return targetRPM > 0 && controller.atSetPoint();
-        return targetRPM > 0 && (Math.abs(targetRPM) - Math.abs(getRPM()) < ShooterConstants.rpmTolerance);
+        return targetRPM > 0 && Math.abs(Math.abs(targetRPM) - Math.abs(getRPM())) < ShooterConstants.rpmTolerance;
     }
 
     public void setHoodPos(double pos) {

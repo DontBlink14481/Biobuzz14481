@@ -19,13 +19,13 @@ public class ShooterCalculator {
 
     public static double minShotDistMeters = 0.5;
 
-    public static double pollenCoeff = 1.0; // TODO: tune the coeffs
-    public static double nectarCoeff = 1.0;
+    public static double pollenCoeff = 0.88; // TODO: tune the coeffs properly these are guesses
+    public static double nectarCoeff = 0.82;
 
     public static double minEntryDeg = 30.0;
-    public static double maxEntryDeg = 60.0;
+    public static double maxEntryDeg = 89.0;
 
-    public ShooterResult calculate(Pose robotPose, Pose goalPose, double rpm, Element element) {
+    public static ShooterResult calculate(Pose robotPose, Pose goalPose, double rpm, Element element) {
         if (rpm <= 0) return ShooterResult.invalid();
 
         double dx = goalPose.x() - robotPose.x();
@@ -58,12 +58,12 @@ public class ShooterCalculator {
         return lowShot.valid ? lowShot : highShot;
     }
 
-    public double getLaunchVelocity(double rpm, Element element) {
+    public static double getLaunchVelocity(double rpm, Element element) {
         double factor = element == Element.POLLEN ? pollenCoeff : nectarCoeff;
-        return rpm * Math.PI * ShooterConstants.flywheelRadiusMeters * factor / 60.0;
+        return rpm * 2 * Math.PI * ShooterConstants.flywheelRadiusMeters * factor / 60.0;
     }
 
-    public ShooterResult evaluateShot(double turretAngle, double hoodAngle, double dist, double speed, double rpm) {
+    public static ShooterResult evaluateShot(double turretAngle, double hoodAngle, double dist, double speed, double rpm) {
         if (!inAngleRange(hoodAngle, ShooterConstants.hoodMinDeg, ShooterConstants.hoodMaxDeg)) return ShooterResult.invalid();
 
         double vx = speed * Math.cos(hoodAngle);
@@ -77,7 +77,18 @@ public class ShooterCalculator {
         return new ShooterResult(turretAngle, hoodAngle, rpm, flightTime, true);
     }
 
-    public boolean inAngleRange(double rad, double minDeg, double maxDeg) {
+    public static boolean inAngleRange(double rad, double minDeg, double maxDeg) {
         return rad >= Math.toRadians(minDeg) - EPS && rad <= Math.toRadians(maxDeg) + EPS;
+    }
+
+    public static double selectRPM(double distanceMeters, double previousRPM) {
+        double closeThreshold =
+                previousRPM == ShooterConstants.CLOSE_RPM ? 0.85 : 0.75;
+        double farThreshold =
+                previousRPM == ShooterConstants.FAR_RPM ? 1.45 : 1.55;
+
+        if (distanceMeters < closeThreshold) return ShooterConstants.CLOSE_RPM;
+        if (distanceMeters > farThreshold) return ShooterConstants.FAR_RPM;
+        return ShooterConstants.MID_RPM;
     }
 }

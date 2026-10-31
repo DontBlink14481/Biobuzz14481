@@ -8,6 +8,9 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 
+import org.firstinspires.ftc.teamcode.common.constants.RobotConstants;
+import org.firstinspires.ftc.teamcode.common.shooting.ShooterCalculator;
+import org.firstinspires.ftc.teamcode.common.shooting.ShooterResult;
 import org.firstinspires.ftc.teamcode.common.subsystems.Blocker;
 import org.firstinspires.ftc.teamcode.common.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.common.subsystems.Shooter;
@@ -30,7 +33,14 @@ public class Robot
     List<LynxModule> hubs;
 
     public static Pose pose = new Pose(0, 0 ,0);
+
+    public enum Goal {
+        FRONT, BACK
+    }
+    public static Goal goal = Goal.FRONT;
     public static boolean auto = false;
+
+    double selectedRPM = 0;
 
     public Robot(HardwareMap map) {
         this(map, false);
@@ -65,6 +75,17 @@ public class Robot
         follower.update();
         pose = follower.pose();
         sendPose();
+
+        Pose goalPose = goal == Goal.FRONT ? RobotConstants.FRONT : RobotConstants.BACK;
+
+        double distanceMeters = Math.hypot(goalPose.x() - pose.x(), goalPose.y() - pose.y()) * 0.0254;
+        selectedRPM = ShooterCalculator.selectRPM(distanceMeters, selectedRPM);
+        shooter.setTargetRPM(selectedRPM);
+
+        ShooterCalculator.Element element = RobotConstants.inNectarMode ? ShooterCalculator.Element.NECTAR : ShooterCalculator.Element.POLLEN;
+        ShooterResult result = ShooterCalculator.calculate(pose, goalPose, shooter.getRPM(), element);
+
+        shooter.lastResult = result;
 
         CommandScheduler.getInstance().run();
         //for advantagescope
