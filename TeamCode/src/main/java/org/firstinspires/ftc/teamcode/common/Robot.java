@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.common;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.List;
 
+@Config
 public class Robot
 {
 
@@ -86,6 +88,7 @@ public class Robot
         ShooterResult result = ShooterCalculator.calculate(pose, goalPose, shooter.getRPM(), element);
 
         shooter.lastResult = result;
+        turret.setTargetAngle(result.turretAngleRad);
 
         CommandScheduler.getInstance().run();
         //for advantagescope

@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 public class Turret implements Subsystem {
     public CRServo turret1;
     public CRServo turret2;
+    public double targetAngleRad = 0;
 
     public Turret(HardwareMap map) {
         turret1 = map.get(CRServo.class, HardwareConstants.turret1);
@@ -18,6 +19,10 @@ public class Turret implements Subsystem {
     @Override
     public void periodic() {
 
+    }
+
+    public void setTargetAngle(double angleRad) {
+        targetAngleRad = angleRad;
     }
 
     public void setPower(double power) {

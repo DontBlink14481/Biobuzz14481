@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.common.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.Subsystem;
+import com.seattlesolvers.solverslib.controller.PIDController;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -14,6 +16,7 @@ import org.firstinspires.ftc.teamcode.common.constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.common.shooting.ShooterResult;
 import org.firstinspires.ftc.teamcode.utils.BlinkServo;
 
+@Config
 public class Shooter implements Subsystem {
 
     public DcMotorEx shooter1;
@@ -22,7 +25,7 @@ public class Shooter implements Subsystem {
     public BlinkServo hood;
     public Servo shift;
 
-    public PIDFController controller;
+    public PIDController controller;
 
     public static double targetRPM = 0;
     public static double hoodPos = 0;
@@ -46,7 +49,7 @@ public class Shooter implements Subsystem {
                 .setInverted(true);
         shift = map.get(Servo.class, HardwareConstants.shift);
 
-        controller = new PIDFController(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD, ShooterConstants.kF);
+        controller = new PIDController(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD);
 
         state = ShooterState.AUTO;
     }
@@ -55,7 +58,7 @@ public class Shooter implements Subsystem {
     public void periodic() {
         set(state);
 
-        controller.setPIDF(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD, ShooterConstants.kF);
+        controller.setPID(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD);
         controller.setTolerance(ShooterConstants.rpmTolerance);
     }
 
@@ -65,7 +68,6 @@ public class Shooter implements Subsystem {
 
         switch (state) {
             case MANUAL:
-
                 hoodPos = Range.clip(hoodPos, ShooterConstants.hoodMin, ShooterConstants.hoodMax);
                 hood.setPosition(hoodPos);
 
@@ -103,12 +105,13 @@ public class Shooter implements Subsystem {
         }
 
         double power = Range.clip(controller.calculate(getRPM(), targetRPM), 0, 1);
+        power += targetRPM >= 0 ? ShooterConstants.kF * (targetRPM / 6000) : 0.0;
         shooter1.setPower(power);
         shooter2.setPower(power);
     }
 
     public void setTargetRPM(double targetRPM) {
-        Shooter.targetRPM = targetRPM;
+        Shooter.targetRPM = Math.min(targetRPM, ShooterConstants.maxRPM);
     }
 
     public double getRPM() {

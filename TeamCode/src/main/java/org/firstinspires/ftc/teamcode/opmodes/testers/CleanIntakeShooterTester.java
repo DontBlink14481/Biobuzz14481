@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.utils.MyTelem;
 @TeleOp(name = "Clean Intake Shooter Tester")
 public class CleanIntakeShooterTester extends OpMode {
 
-//    Intake intake;
+    Intake intake;
     Transfer transfer;
     Shooter shooter;
 
@@ -38,15 +38,13 @@ public class CleanIntakeShooterTester extends OpMode {
 
     public static Robot.Goal goal = Robot.Goal.BACK;
     public static Shooter.ShooterState shooterState = Shooter.ShooterState.AUTO;
-
-    public static boolean autoRPM = true;
     double selectedRPM = 0;
 
 
     @Override
     public void init() {
         MyTelem.init(telemetry);
-//        intake = new Intake(hardwareMap);
+        intake = new Intake(hardwareMap);
         transfer = new Transfer(hardwareMap);
         shooter = new Shooter(hardwareMap);
 
@@ -56,10 +54,10 @@ public class CleanIntakeShooterTester extends OpMode {
     public void loop() {
         RobotConstants.manualNectar = manualNectar;
 
-//        intake.set(intakeOn ? Intake.IntakeState.IN : Intake.IntakeState.OFF);
+        intake.set(intakeOn ? Intake.IntakeState.IN : Intake.IntakeState.OFF);
         transfer.set(transferOn ? Transfer.TransferState.IN : Transfer.TransferState.OFF);
 
-        //        intake.periodic();
+        intake.periodic();
         transfer.periodic();
 
         shooter.state = shooterState;
@@ -70,7 +68,7 @@ public class CleanIntakeShooterTester extends OpMode {
 
         double distanceMeters = Math.hypot(goalPose.x() - pose.x(), goalPose.y() - pose.y()) * 0.0254;
         selectedRPM = ShooterCalculator.selectRPM(distanceMeters, selectedRPM);
-        shooter.setTargetRPM(selectedRPM);
+        shooter.setTargetRPM(shooterState == Shooter.ShooterState.MANUAL ? targetRPM : selectedRPM);
 
         ShooterCalculator.Element element = RobotConstants.inNectarMode ? ShooterCalculator.Element.NECTAR : ShooterCalculator.Element.POLLEN;
         ShooterResult result = ShooterCalculator.calculate(pose, goalPose, shooter.getRPM(), element);

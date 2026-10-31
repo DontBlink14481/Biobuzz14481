@@ -17,6 +17,10 @@ public class ShooterResult {
     }
 
     public static ShooterResult invalid() {
-        return new ShooterResult(Double.NaN, Double.NaN, Double.NaN, Double.NaN, false);
+        return invalid(Double.NaN);
+    }
+
+    public static ShooterResult invalid(double turretAngleRad) {
+        return new ShooterResult(turretAngleRad, Double.NaN, Double.NaN, Double.NaN, false);
     }
 }
