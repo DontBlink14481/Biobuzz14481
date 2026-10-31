@@ -1,0 +1,147 @@
+{
+  "$schema": "https://libraries.horizon36596.org/zenith/schema/v1/robot.json",
+  "formatVersion": 1,
+  "name": "Don't Blink 14481",
+  "frame": {
+    "forward": "+x",
+    "left": "+y",
+    "headingZero": "+x",
+    "headingPositive": "ccw"
+  },
+  "footprint": {
+    "startIn": {
+      "lengthIn": 18,
+      "widthIn": 18,
+      "provenance": "PLACEHOLDER: measure on the robot"
+    },
+    "expandedIn": {
+      "lengthIn": 18,
+      "widthIn": 18,
+      "provenance": "PLACEHOLDER: measure on the robot"
+    },
+    "centreOfRotationIn": {
+      "xIn": 0,
+      "yIn": 0,
+      "provenance": "PLACEHOLDER: measure on the robot"
+    }
+  },
+  "heightIn": {
+    "value": 16,
+    "provenance": "PLACEHOLDER: measure on the robot"
+  },
+  "kinematics": {
+    "maxForwardVelInPerS": {
+      "value": 82.3,
+      "provenance": "CARRIED OVER: pedro/Constants.java maxAchievableForwardVelocity"
+    },
+    "maxStrafeVelInPerS": {
+      "value": 65.83,
+      "provenance": "CARRIED OVER: pedro/Constants.java maxAchievableStrafeVelocity"
+    },
+    "forwardDecelInPerS2": {
+      "value": 51.91,
+      "provenance": "CARRIED OVER: pedro/Constants.java naturalForwardDeceleration"
+    },
+    "strafeDecelInPerS2": {
+      "value": 82.56,
+      "provenance": "CARRIED OVER: pedro/Constants.java naturalStrafeDeceleration"
+    },
+    "accelInPerS2": {
+      "value": 51.91,
+      "provenance": "PLACEHOLDER: same as forward deceleration"
+    },
+    "maxAngularVelRadPerS": {
+      "value": 6,
+      "provenance": "PLACEHOLDER: measure on the robot"
+    },
+    "defaultPathSpeedFraction": {
+      "value": 0.8,
+      "provenance": "SET BY HAND: DontBlinkRobot.DEFAULT_SPEED"
+    },
+    "settleS": {
+      "value": 0.15,
+      "provenance": "PLACEHOLDER: measure on the robot"
+    },
+    "follower": {
+      "library": "pedro",
+      "version": "3.0.1",
+      "holdEnd": true
+    }
+  },
+  "mouths": [
+    {
+      "id": "front",
+      "side": "FRONT",
+      "offsetIn": {
+        "xIn": 7,
+        "yIn": 0
+      },
+      "widthIn": 16,
+      "depthIn": 4,
+      "provenance": "PLACEHOLDER: measure on the robot"
+    }
+  ],
+  "capacity": {
+    "elementKind": "pollen",
+    "max": 4,
+    "provenance": "SPEC (G407)"
+  },
+  "shooter": {
+    "kind": "fixed",
+    "settleS": {
+      "value": 0.25,
+      "provenance": "PLACEHOLDER: measure on the robot"
+    }
+  },
+  "commands": [
+    {
+      "name": "setIntake",
+      "summary": "IN runs the intake and transfer with the blocker closed; OUT reverses both; OFF stops both.",
+      "params": {
+        "state": {
+          "type": "enum",
+          "values": [
+            "IN",
+            "OUT",
+            "OFF"
+          ],
+          "default": "OFF"
+        }
+      },
+      "estimateS": "0",
+      "requires": [
+        "intake"
+      ],
+      "stationary": false
+    },
+    {
+      "name": "score",
+      "summary": "ShootCommand: opens the blocker and feeds count pieces once the shooter is up to speed. The shooter stays spinning between volleys.",
+      "params": {
+        "count": {
+          "type": "integer",
+          "min": 1,
+          "max": 4,
+          "default": 4
+        }
+      },
+      "estimateS": "0.2 + count * 0.3",
+      "requires": [
+        "launcher",
+        "hopper"
+      ],
+      "stationary": true,
+      "ledger": {
+        "launches": "count"
+      },
+      "provenance": "PLACEHOLDER: AutoConstants.feedSecondsPerPiece is 0.3; time a real volley"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "hopperFull",
+      "summary": "4 pieces aboard. Always false on the robot until it can count pieces.",
+      "ledger": "full"
+    }
+  ]
+}

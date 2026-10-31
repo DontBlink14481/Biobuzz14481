@@ -1,0 +1,72 @@
+{
+  "$schema": "https://libraries.horizon36596.org/zenith/schema/v1/waypoints.json",
+  "formatVersion": 1,
+  "waypoints": {
+    "start": {
+      "xIn": -34,
+      "yIn": -63,
+      "headingRad": 1.5708,
+      "provenance": "SET BY HAND: square on the south wall, facing north"
+    },
+    "shootSouth": {
+      "xIn": -34.0,
+      "yIn": -40.0,
+      "headingRad": 0.7894,
+      "provenance": "SET BY HAND: south cell's quarter, outside the legal-approach line, facing the cell mouth"
+    },
+    "scoreNorth": {
+      "xIn": -34.0,
+      "yIn": 40.0,
+      "headingRad": -0.7894,
+      "provenance": "SET BY HAND: shootSouth mirrored north, for when the north cell is up"
+    },
+    "flower0Approach": {
+      "xIn": -51,
+      "yIn": -24,
+      "headingRad": 3.1416,
+      "provenance": "SET BY HAND: east of flower0 on the west wall, intake facing it"
+    },
+    "flower0Pickup": {
+      "xIn": -57,
+      "yIn": -24,
+      "headingRad": 3.1416,
+      "provenance": "PLACEHOLDER: intake against flower0's opening, frame 1 in short of its foot; check the intake reaches"
+    },
+    "flower1Approach": {
+      "xIn": -24,
+      "yIn": 51,
+      "headingRad": 1.5708,
+      "provenance": "SET BY HAND: south of flower1 on the north wall, intake facing it"
+    },
+    "flower1Pickup": {
+      "xIn": -24,
+      "yIn": 57,
+      "headingRad": 1.5708,
+      "provenance": "PLACEHOLDER: intake against flower1's opening, frame 1 in short of its foot; check the intake reaches"
+    },
+    "gardenSweepStart": {
+      "xIn": -46,
+      "yIn": -62,
+      "headingRad": 3.1416,
+      "provenance": "SET BY HAND: east of the RED garden line, intake facing west along the south wall"
+    },
+    "gardenSweepEnd": {
+      "xIn": -62,
+      "yIn": -62,
+      "headingRad": 3.1416,
+      "provenance": "SET BY HAND: west end of the RED garden line, frame 1 in off both walls"
+    },
+    "spillSweepEast": {
+      "xIn": -15,
+      "yIn": -38,
+      "headingRad": 0,
+      "provenance": "PLACEHOLDER: east end of the spill sweep; the spill lands at random, move it after watching a real tip"
+    },
+    "shootSouthWest": {
+      "xIn": -48.0,
+      "yIn": -50.0,
+      "headingRad": 0.728,
+      "provenance": "SET BY HAND: a second spot in the south cell's quarter, close to the garden line, facing the cell mouth (farther shot: check the hood)"
+    }
+  }
+}

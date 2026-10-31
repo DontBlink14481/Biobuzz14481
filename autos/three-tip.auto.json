@@ -1,0 +1,595 @@
+{
+  "$schema": "https://libraries.horizon36596.org/zenith/schema/v1/auto.json",
+  "formatVersion": 4,
+  "name": "three-tip",
+  "title": "Three tip",
+  "description": "Three hive tips. Tip 1: 3 preload pollen on the 3 staged nectar. Tip 2: 8 pollen into the north cell (spare + flower0, then flower1). Tip 3: 8 pieces into the south cell (garden line, then tip 1's spill).",
+  "robot": "autos/robot.json",
+  "field": "autos/field/biobuzz.field.json",
+  "alliance": "RED",
+  "authors": [
+    "Don't Blink 14481"
+  ],
+  "created": "2026-10-27",
+  "start": {
+    "pose": {
+      "ref": "start"
+    },
+    "holds": {
+      "pollen": 4
+    }
+  },
+  "steps": [
+    {
+      "id": "driveOut",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "shootSouth"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "tangent"
+      }
+    },
+    {
+      "id": "aimSouth",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "shootSouth"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "constant",
+        "headingRad": 0.7894
+      }
+    },
+    {
+      "id": "tip1",
+      "kind": "command",
+      "name": "score",
+      "args": {
+        "count": 3
+      },
+      "expect": {
+        "launchesInto": "hiveRedUpCell",
+        "count": 3,
+        "tip": "own"
+      },
+      "notes": "TIP 1. 3 pollen on the 3 staged nectar tips the south cell. The 4th preload stays aboard."
+    },
+    {
+      "id": "toFlower0",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "bezier",
+          "from": "current",
+          "control": [
+            {
+              "xIn": -38,
+              "yIn": -28,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            },
+            {
+              "xIn": -42,
+              "yIn": -24,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            }
+          ],
+          "to": {
+            "ref": "flower0Approach"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "tangent"
+      }
+    },
+    {
+      "id": "intakeFlower0",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "IN"
+      }
+    },
+    {
+      "id": "pullFlower0",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "flower0Pickup"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "tangent"
+      },
+      "speedFraction": 0.4,
+      "endCondition": {
+        "condition": "hopperFull"
+      },
+      "expect": {
+        "collectFrom": "flower0",
+        "count": 3
+      }
+    },
+    {
+      "id": "waitFlower0",
+      "kind": "wait",
+      "until": "hopperFull",
+      "timeoutS": 0.6,
+      "notes": "Pieces come out about every 0.15 s."
+    },
+    {
+      "id": "stopFlower0",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "OFF"
+      }
+    },
+    {
+      "id": "toScoreNorth1",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "xIn": -49.0,
+            "yIn": -24.0,
+            "provenance": "SET BY HAND: back straight off flower0 before turning"
+          }
+        },
+        {
+          "kind": "bezier",
+          "from": "current",
+          "control": [
+            {
+              "xIn": -51,
+              "yIn": -10,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            },
+            {
+              "xIn": -53,
+              "yIn": 30,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            },
+            {
+              "xIn": -43.86,
+              "yIn": 49.9389,
+              "provenance": "SET BY HAND: on the aim line, so the robot arrives facing the north cell"
+            }
+          ],
+          "to": {
+            "ref": "scoreNorth"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "piecewise",
+        "ranges": [
+          {
+            "startT": 0,
+            "endT": 0.0959,
+            "heading": {
+              "mode": "constant",
+              "headingRad": 3.1416
+            }
+          },
+          {
+            "startT": 0.0959,
+            "endT": 1,
+            "heading": {
+              "mode": "tangent"
+            }
+          }
+        ]
+      },
+      "speedFraction": 1.0
+    },
+    {
+      "id": "volley2",
+      "kind": "command",
+      "name": "score",
+      "args": {
+        "count": 4
+      },
+      "expect": {
+        "launchesInto": "hiveRedUpCell",
+        "count": 4
+      },
+      "notes": "Spare + 3 flower0 pollen into the empty north cell: 4 of 8."
+    },
+    {
+      "id": "toFlower1",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "bezier",
+          "from": "current",
+          "control": [
+            {
+              "xIn": -28,
+              "yIn": 38,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            },
+            {
+              "xIn": -24,
+              "yIn": 40,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            }
+          ],
+          "to": {
+            "ref": "flower1Approach"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "tangent"
+      }
+    },
+    {
+      "id": "intakeFlower1",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "IN"
+      }
+    },
+    {
+      "id": "pullFlower1",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "flower1Pickup"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "tangent"
+      },
+      "speedFraction": 0.4,
+      "endCondition": {
+        "condition": "hopperFull"
+      },
+      "expect": {
+        "collectFrom": "flower1",
+        "count": 4
+      }
+    },
+    {
+      "id": "waitFlower1",
+      "kind": "wait",
+      "until": "hopperFull",
+      "timeoutS": 0.6
+    },
+    {
+      "id": "stopFlower1",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "OFF"
+      }
+    },
+    {
+      "id": "toScoreNorth2",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "xIn": -24.0,
+            "yIn": 49.0,
+            "provenance": "SET BY HAND: back straight off flower1 before turning"
+          }
+        },
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "scoreNorth"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "piecewise",
+        "ranges": [
+          {
+            "startT": 0,
+            "endT": 0.3729,
+            "heading": {
+              "mode": "constant",
+              "headingRad": 1.5708
+            }
+          },
+          {
+            "startT": 0.3729,
+            "endT": 1,
+            "heading": {
+              "mode": "constant",
+              "headingRad": -0.7894
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "tip2",
+      "kind": "command",
+      "name": "score",
+      "args": {
+        "count": 4
+      },
+      "expect": {
+        "launchesInto": "hiveRedUpCell",
+        "count": 4,
+        "tip": "own"
+      },
+      "notes": "TIP 2. 8 pollen in the north cell."
+    },
+    {
+      "id": "toGarden",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "bezier",
+          "from": "current",
+          "control": [
+            {
+              "xIn": -56,
+              "yIn": 24,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            },
+            {
+              "xIn": -42,
+              "yIn": -40,
+              "provenance": "SET BY HAND: keeps the robot west of the hive frame and clear of flower0's foot"
+            }
+          ],
+          "to": {
+            "xIn": -28.0,
+            "yIn": -58.0,
+            "provenance": "SET BY HAND: where the robot turns to face west, high enough to clear the south wall"
+          }
+        },
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "gardenSweepStart"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "piecewise",
+        "ranges": [
+          {
+            "startT": 0,
+            "endT": 0.8498,
+            "heading": {
+              "mode": "tangent"
+            }
+          },
+          {
+            "startT": 0.8498,
+            "endT": 1,
+            "heading": {
+              "mode": "constant",
+              "headingRad": 3.1416
+            }
+          }
+        ]
+      },
+      "speedFraction": 1.0
+    },
+    {
+      "id": "intakeGarden",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "IN"
+      }
+    },
+    {
+      "id": "sweepGarden",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "gardenSweepEnd"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "tangent"
+      },
+      "speedFraction": 0.4,
+      "endCondition": {
+        "condition": "hopperFull"
+      },
+      "expect": {
+        "collectFrom": "gardenRed",
+        "count": 4
+      }
+    },
+    {
+      "id": "stopGarden",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "OFF"
+      }
+    },
+    {
+      "id": "toShootSouthWest",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "shootSouthWest"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "piecewise",
+        "ranges": [
+          {
+            "startT": 0,
+            "endT": 0.45,
+            "heading": {
+              "mode": "constant",
+              "headingRad": 3.1416
+            }
+          },
+          {
+            "startT": 0.45,
+            "endT": 1,
+            "heading": {
+              "mode": "constant",
+              "headingRad": 0.728
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "volley4",
+      "kind": "command",
+      "name": "score",
+      "args": {
+        "count": 4
+      },
+      "expect": {
+        "launchesInto": "hiveRedUpCell",
+        "count": 4
+      },
+      "notes": "Garden pollen into the south cell, empty since tip 1: 4 of 8."
+    },
+    {
+      "id": "intakeSpill",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "IN"
+      }
+    },
+    {
+      "id": "sweepSpill",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "spillSweepEast"
+          }
+        },
+        {
+          "kind": "bezier",
+          "from": "current",
+          "control": [
+            {
+              "xIn": -11,
+              "yIn": -40,
+              "provenance": "PLACEHOLDER: spill hook"
+            },
+            {
+              "xIn": -11,
+              "yIn": -53,
+              "provenance": "PLACEHOLDER: spill hook"
+            }
+          ],
+          "to": {
+            "xIn": -20,
+            "yIn": -56,
+            "provenance": "PLACEHOLDER: spill hook"
+          }
+        },
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "xIn": -44,
+            "yIn": -54,
+            "provenance": "PLACEHOLDER: west end of the spill sweep"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "tangent"
+      },
+      "speedFraction": 0.4,
+      "endCondition": {
+        "condition": "hopperFull"
+      },
+      "timeoutS": 5,
+      "expect": {
+        "collectFrom": "floorRedGardenSide",
+        "count": 4
+      },
+      "notes": "Loops through tip 1's spill (3 nectar + 3 pollen, random spots). Any 4 of them plus the 4 garden pollen make 8, which tips the cell whatever the mix. The robot can't count pieces yet, so it runs the whole loop: it must not take a fifth."
+    },
+    {
+      "id": "stopSpill",
+      "kind": "command",
+      "name": "setIntake",
+      "args": {
+        "state": "OFF"
+      }
+    },
+    {
+      "id": "backToShoot",
+      "kind": "path",
+      "segments": [
+        {
+          "kind": "line",
+          "from": "current",
+          "to": {
+            "ref": "shootSouthWest"
+          }
+        }
+      ],
+      "heading": {
+        "mode": "constant",
+        "headingRad": 0.728
+      }
+    },
+    {
+      "id": "tip3",
+      "kind": "command",
+      "name": "score",
+      "args": {
+        "count": 4
+      },
+      "expect": {
+        "launchesInto": "hiveRedUpCell",
+        "count": 4,
+        "tip": "own"
+      },
+      "notes": "TIP 3. 8 pieces in the south cell."
+    }
+  ]
+}
