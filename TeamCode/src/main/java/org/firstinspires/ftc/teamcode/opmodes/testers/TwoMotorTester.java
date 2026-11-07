@@ -27,7 +27,7 @@ public class TwoMotorTester extends LinearOpMode {
                 motor2.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
             case OPPOSITE:
-                motor2.setDirection(DcMotorSimple.Direction.FORWARD);
+                motor.setDirection(DcMotorSimple.Direction.FORWARD);
                 motor2.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.testers;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.follower.ManualDrive;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
@@ -15,8 +14,7 @@ public class MechDrive extends OpMode {
 
     @Override
     public void loop() {
-        ManualDrive.driveOrHold(
-                follower,
+        follower.manual(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
                 -gamepad1.right_stick_x
