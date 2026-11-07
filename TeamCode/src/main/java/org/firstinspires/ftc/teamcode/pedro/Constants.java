@@ -15,17 +15,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.common.constants.HardwareConstants;
 
 public class Constants {
     public static Follower create(HardwareMap h) {
         return new Follower(new OctoQuadLocalizer(h, localizerConfig), new Mecanum(h, drivetrainConfig), new Foresight(foresightConfig));
     }
     public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
-        c.frontLeftName.set(HardwareConstants.lf);
-        c.frontRightName.set(HardwareConstants.rf);
-        c.backLeftName.set(HardwareConstants.lb);
-        c.backRightName.set(HardwareConstants.rb);
+        c.frontLeftName.set("lf");
+        c.frontRightName.set("rf");
+        c.backLeftName.set("lb");
+        c.backRightName.set("rb");
         c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
         c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
         c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
@@ -33,7 +32,7 @@ public class Constants {
     });
 
     public static OctoQuadConfig localizerConfig = new OctoQuadConfig(c -> {
-        c.name.set(HardwareConstants.octoquad);
+        c.name.set("octoquad");
         c.xPodPort.set(1);
         c.yPodPort.set(0);
         c.ticksPerUnit.set(505.316944406);

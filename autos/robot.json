@@ -125,7 +125,7 @@
           "default": 4
         }
       },
-      "estimateS": "0.2 + count * 0.3",
+      "estimateS": "1.5 + count * 0.3",
       "requires": [
         "launcher",
         "hopper"
