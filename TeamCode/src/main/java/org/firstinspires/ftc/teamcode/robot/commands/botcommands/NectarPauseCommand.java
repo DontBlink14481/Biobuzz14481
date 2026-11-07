@@ -25,7 +25,7 @@ public class NectarPauseCommand extends CommandBase {
         paused = false;
     }
 
-    @Override
+    @Override //highkey some verified slop but im testing
     public void execute() {
         boolean nectar = robot.transfer.inNectarMode();
         if (wasNectar && !nectar && !paused) {
