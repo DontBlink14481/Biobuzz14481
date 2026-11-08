@@ -25,6 +25,10 @@ import java.util.List;
 @Config
 public class Robot {
 
+    public enum Alliance {
+        RED, BLUE
+    }
+
     public enum Goal {
         FRONT, BACK
     }
@@ -35,6 +39,8 @@ public class Robot {
 
     public static Goal goal = Goal.FRONT;
     public static Pose pose = new Pose(0, 0, 0);
+
+    public static Alliance alliance = Alliance.RED;
 
     public Follower follower;
 

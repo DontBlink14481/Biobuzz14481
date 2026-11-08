@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeTransferCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 
 @TeleOp(name = "SoloTele")
@@ -41,6 +42,15 @@ public class SoloTele extends LinearOpMode {
                 .whenPressed(new IntakeTransferCommand(robot, Intake.IntakeState.IN))
                 .whenReleased(new IntakeTransferCommand(robot, Intake.IntakeState.OFF));
 
+        AllianceSelection allianceSelection = new AllianceSelection(this);
+
+        while (opModeInInit()) {
+            allianceSelection.update();
+
+            MyTelem.addData("Alliance", Robot.alliance);
+            MyTelem.update();
+        }
+
         waitForStart();
         ElapsedTime timer = new ElapsedTime();
 
@@ -50,10 +60,13 @@ public class SoloTele extends LinearOpMode {
             if (timer.seconds() < 120 - parkTime) ManualDrive.driveOrHold(robot.follower, drivePowers);
             else robot.follower.manual(drivePowers);
 
+            MyTelem.addData("Alliance", Robot.alliance);
             MyTelem.addData("target rpm", robot.shooter.getTargetRPM());
             MyTelem.addData("rpm", robot.shooter.getRPM());
             MyTelem.addData("at rpm", robot.shooter.atRPM());
             MyTelem.addData("nectar mode", robot.transfer.inNectarMode());
+            MyTelem.update();
+
             robot.update();
         }
 

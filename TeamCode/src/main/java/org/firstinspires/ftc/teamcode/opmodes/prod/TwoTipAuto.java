@@ -13,6 +13,7 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.TwoTip;
 
@@ -23,11 +24,15 @@ public class TwoTipAuto extends OpMode {
     private Robot robot;
     private RedAutoPaths paths;
     private SequentialCommandGroup auto;
+
+    private AllianceSelection allianceSelection;
+
     @Override
     public void init() {
         timer = new ElapsedTime();
         MyTelem.init(telemetry);
         robot = new Robot(hardwareMap);
+        allianceSelection = new AllianceSelection(this);
         paths = new RedAutoPaths(robot.follower);
 
         auto = new SequentialCommandGroup(
@@ -42,6 +47,14 @@ public class TwoTipAuto extends OpMode {
     }
 
     @Override
+    public void init_loop() {
+        allianceSelection.update();
+
+        MyTelem.addData("Alliance", Robot.alliance);
+        MyTelem.update();
+    }
+
+    @Override
     public void start() {
         timer.reset();
         CommandScheduler.getInstance().schedule(auto);
@@ -49,7 +62,10 @@ public class TwoTipAuto extends OpMode {
 
     @Override
     public void loop() {
+        MyTelem.addData("Alliance", Robot.alliance);
         MyTelem.addData("TIMER", timer.seconds());
+        MyTelem.update();
+
         robot.update();
     }
 
