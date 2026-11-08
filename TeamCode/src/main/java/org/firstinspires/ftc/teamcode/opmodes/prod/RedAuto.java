@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
@@ -96,26 +97,6 @@ public class RedAuto extends OpMode {
             Path5 = Paths.curve(point4, path5Control1, path5Control2, point5).linear(point4, point5);
             Path6 = Paths.curve(point5, path6Control, point6).linear(point5, point6);
             Path7 = Paths.line(point6, point7).linear(point6, point7);
-        }
-    }
-
-    public static class FollowPathCommand extends CommandBase {
-        private final Follower follower;
-        private final Path path;
-
-        public FollowPathCommand(Follower follower, Path path) {
-            this.follower = follower;
-            this.path = path;
-        }
-
-        @Override
-        public void initialize() {
-            follower.follow(path);
-        }
-
-        @Override
-        public boolean isFinished() {
-            return follower.atParametricEnd();
         }
     }
 }
