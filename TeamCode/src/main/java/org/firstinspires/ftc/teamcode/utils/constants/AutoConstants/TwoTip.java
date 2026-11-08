@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.math.Pose;
 
 @Config
-public class Red2Tip {
+public class TwoTip {
     public static final Pose START_POSE      = new Pose(33.7485, 9.4752, Math.toRadians(180));
     public static final Pose POINT_1         = new Pose(33.9936, 9.3432, Math.toRadians(180));
     public static final Pose POINT_2         = new Pose(9.1115, 9.3514, Math.toRadians(180));
@@ -20,7 +20,4 @@ public class Red2Tip {
     public static final Pose PATH5_CONTROL_2 = new Pose(10.3292, 122.3111);
     public static final Pose PATH6_CONTROL   = new Pose(45.9013, 112.7065);
 
-    public static Pose mirror(Pose p, String color) {
-        return color.equals("BLUE") ? new Pose(141.5 - p.x(), 141.5 - p.y(), p.heading() + Math.PI) : p;
-    }
 }
