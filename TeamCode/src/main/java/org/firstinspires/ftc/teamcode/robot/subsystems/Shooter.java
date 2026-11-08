@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -12,26 +15,37 @@ import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 
+import java.util.Objects;
+import java.util.function.BooleanSupplier;
+
 public class Shooter implements Subsystem {
 
     private static final double TICKS_PER_REV = 28;
 
     private final DcMotorEx shooterMotor1, shooterMotor2;
     private final Servo hoodServo, shiftServo;
-    private final Transfer transfer;
+    private BooleanSupplier nectarModeSupplier = () -> false;
 
     private double targetRPM = 0;
     private double hoodPos = 0;
 
     public CalculationResult lastResult = CalculationResult.invalid(0);
 
-    public Shooter(DcMotorEx shooterMotor1, DcMotorEx shooterMotor2, Servo hoodServo, Servo shiftServo,
-                   Transfer transfer) {
-        this.shooterMotor1 = shooterMotor1;
-        this.shooterMotor2 = shooterMotor2;
-        this.hoodServo = hoodServo;
-        this.shiftServo = shiftServo;
-        this.transfer = transfer;
+    public Shooter(HardwareMap hardwareMap) {
+        shooterMotor1 = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooter1);
+        shooterMotor2 = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooter2);
+        for (DcMotorEx motor : new DcMotorEx[] {shooterMotor1, shooterMotor2}) {
+            motor.setDirection(DcMotorEx.Direction.REVERSE);
+            motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+            motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        }
+        hoodServo = hardwareMap.get(Servo.class, HardwareConstants.hood);
+        hoodServo.setDirection(Servo.Direction.REVERSE);
+        shiftServo = hardwareMap.get(Servo.class, HardwareConstants.shift);
+    }
+
+    public void setNectarModeSupplier(BooleanSupplier nectarModeSupplier) {
+        this.nectarModeSupplier = Objects.requireNonNull(nectarModeSupplier);
     }
 
     @Override
@@ -71,7 +85,7 @@ public class Shooter implements Subsystem {
         shooterMotor2.setPower(power);
 
         if (state != ShooterState.DISABLED) {
-            shiftServo.setPosition(transfer.inNectarMode() ? ShooterConstants.nectarPos : ShooterConstants.pollenPos);
+            shiftServo.setPosition(nectarModeSupplier.getAsBoolean() ? ShooterConstants.nectarPos : ShooterConstants.pollenPos);
         }
     }
 

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
@@ -20,10 +23,14 @@ public class Turret implements Subsystem {
     private double targetAngleRad = 0;
     private double manualPower = 0;
 
-    public Turret(CRServo turretServo1, CRServo turretServo2, DcMotorEx turretEncoder) {
-        this.turretServo1 = turretServo1;
-        this.turretServo2 = turretServo2;
-        this.turretEncoder = turretEncoder;
+    public Turret(HardwareMap hardwareMap) {
+        turretServo1 = hardwareMap.get(CRServo.class, HardwareConstants.turret1);
+        turretServo2 = hardwareMap.get(CRServo.class, HardwareConstants.turret2);
+        turretEncoder = hardwareMap.tryGet(DcMotorEx.class, HardwareConstants.turretEncoder);
+        if (turretEncoder != null) {
+            turretEncoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            turretEncoder.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        }
     }
 
     @Override

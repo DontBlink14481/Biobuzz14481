@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,12 +24,11 @@ public class Transfer implements Subsystem {
     private boolean inNectarMode = false;
     private long lastTriggerNanos = 0;
 
-    public Transfer(CRServo dropdownServo, Servo pinchServo,
-                    DigitalChannel leftBeamBreak, DigitalChannel rightBeamBreak) {
-        this.dropdownServo = dropdownServo;
-        this.pinchServo = pinchServo;
-        this.leftBeamBreak = leftBeamBreak;
-        this.rightBeamBreak = rightBeamBreak;
+    public Transfer(HardwareMap hardwareMap) {
+        dropdownServo = hardwareMap.get(CRServo.class, HardwareConstants.dropdown);
+        pinchServo = hardwareMap.get(Servo.class, HardwareConstants.pinch);
+        leftBeamBreak = hardwareMap.get(DigitalChannel.class, HardwareConstants.beambreak1);
+        rightBeamBreak = hardwareMap.get(DigitalChannel.class, HardwareConstants.beambreak2);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.command.Subsystem;
 
@@ -10,8 +13,8 @@ public class Blocker implements Subsystem {
 
     private final Servo blockerServo;
 
-    public Blocker(Servo blockerServo) {
-        this.blockerServo = blockerServo;
+    public Blocker(HardwareMap hardwareMap) {
+        blockerServo = hardwareMap.get(Servo.class, HardwareConstants.blocker);
     }
 
     @Override

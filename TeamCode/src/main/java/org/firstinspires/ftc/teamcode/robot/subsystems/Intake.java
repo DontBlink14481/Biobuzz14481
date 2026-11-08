@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.Subsystem;
 
@@ -10,9 +13,16 @@ public class Intake implements Subsystem {
 
     private final DcMotorEx intakeMotor, transferMotor;
 
-    public Intake(DcMotorEx intakeMotor, DcMotorEx transferMotor) {
-        this.intakeMotor = intakeMotor;
-        this.transferMotor = transferMotor;
+    public Intake(HardwareMap hardwareMap) {
+        intakeMotor = hardwareMap.get(DcMotorEx.class, HardwareConstants.intake);
+        intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        intakeMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        transferMotor = hardwareMap.get(DcMotorEx.class, HardwareConstants.transfer);
+        transferMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        transferMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        transferMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
