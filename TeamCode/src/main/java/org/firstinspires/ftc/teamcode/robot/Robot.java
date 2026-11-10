@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
-import org.firstinspires.ftc.teamcode.utils.constants.BotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 
@@ -102,7 +101,7 @@ public class Robot {
 
 
     public static Pose getGoalPose() {
-        return goal == Goal.FRONT ? BotConstants.frontGoal : BotConstants.backGoal;
+        return goal == Goal.FRONT ? RobotConstants.frontGoal : RobotConstants.backGoal;
     }
 
     public void clearBulkCache() {
