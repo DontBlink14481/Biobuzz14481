@@ -9,10 +9,10 @@
     "kind": "androidAssets",
     "dir": "TeamCode/src/main/assets/autos",
     "commandLibrary": "solverslib",
-    "robotClass": "org.firstinspires.ftc.teamcode.zenith.DontBlinkRobot"
+    "robotClass": "org.firstinspires.ftc.teamcode.robot.ZenithBot"
   },
   "codegen": {
-    "package": "org.firstinspires.ftc.teamcode.zenith",
+    "package": "org.firstinspires.ftc.teamcode.opmodes",
     "dir": "TeamCode/src/main/java"
   }
 }

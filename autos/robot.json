@@ -56,7 +56,7 @@
     },
     "defaultPathSpeedFraction": {
       "value": 0.8,
-      "provenance": "SET BY HAND: DontBlinkRobot.DEFAULT_SPEED"
+      "provenance": "SET BY HAND: ZenithBot.defaultSpeedFraction"
     },
     "settleS": {
       "value": 0.15,
@@ -64,7 +64,7 @@
     },
     "follower": {
       "library": "pedro",
-      "version": "3.0.1",
+      "version": "3.0.2",
       "holdEnd": true
     }
   },
@@ -96,7 +96,7 @@
   "commands": [
     {
       "name": "setIntake",
-      "summary": "IN runs the intake and transfer with the blocker closed; OUT reverses both; OFF stops both.",
+      "summary": "IntakeTransferCommand: IN runs the intake and transfer, OUT reverses both, OFF stops both.",
       "params": {
         "state": {
           "type": "enum",
@@ -116,7 +116,7 @@
     },
     {
       "name": "score",
-      "summary": "ShootCommand: opens the blocker and feeds count pieces once the shooter is up to speed. The shooter stays spinning between volleys.",
+      "summary": "ShootCommand: waits for the shooter to reach speed (up to spinUpTimeoutS), opens the blocker and feeds count pieces. The shooter stays spinning between volleys.",
       "params": {
         "count": {
           "type": "integer",
@@ -134,7 +134,7 @@
       "ledger": {
         "launches": "count"
       },
-      "provenance": "PLACEHOLDER: AutoConstants.feedSecondsPerPiece is 0.3; time a real volley"
+      "provenance": "PLACEHOLDER: ShooterConstants.spinUpTimeoutS is 1.5 and TransferConstants.feedSecondsPerPiece is 0.3; time a real volley"
     }
   ],
   "conditions": [
