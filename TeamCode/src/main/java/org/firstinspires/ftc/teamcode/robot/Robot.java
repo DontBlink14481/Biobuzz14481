@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
+import com.skeletonarmy.marrow.zones.PolygonZone;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Blocker;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
+import org.firstinspires.ftc.teamcode.utils.zones.ParkZone;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class Robot {
     public static Pose pose = new Pose(0, 0, 0);
 
     public static Alliance alliance = Alliance.RED;
+    public static PolygonZone robotZone = new PolygonZone(RobotConstants.robotWidth, RobotConstants.robotLength);
 
     public Follower follower;
 
@@ -88,6 +91,8 @@ public class Robot {
         if (RobotStates.pedroState == PedroState.ENABLED) {
             follower.update();
             pose = follower.pose();
+            robotZone.setPosition(pose.x(), pose.y());
+            robotZone.setRotation(pose.heading());
             driveStopped = false;
         } else if (!driveStopped) {
             follower.drivetrain.stop();
@@ -102,6 +107,10 @@ public class Robot {
 
     public static Pose getGoalPose() {
         return goal == Goal.FRONT ? RobotConstants.frontGoal : RobotConstants.backGoal;
+    }
+
+    public static boolean parked() {
+        return robotZone.isInside(ParkZone.get());
     }
 
     public void clearBulkCache() {
