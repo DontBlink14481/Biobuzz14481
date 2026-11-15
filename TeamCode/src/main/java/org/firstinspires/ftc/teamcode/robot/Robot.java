@@ -104,6 +104,9 @@ public class Robot {
         if (MyTelem.telemetry != null) MyTelem.update();
     }
 
+    public static void toggleGoal() {
+        goal = (goal == Goal.FRONT) ? Goal.BACK : Goal.FRONT;
+    }
 
     public static Pose getGoalPose() {
         return goal == Goal.FRONT ? RobotConstants.frontGoal : RobotConstants.backGoal;

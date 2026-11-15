@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes.testers;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -45,7 +44,7 @@ public class IntakeShooterTester extends LinearOpMode {
         MyTelem.init(telemetry);
 
         // shooter
-        shooter = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooter1);
+        shooter = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooters);
 
         shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
@@ -105,7 +104,7 @@ public class IntakeShooterTester extends LinearOpMode {
             MyTelem.addData("power", shooter.getPower());
             MyTelem.addData("target rpm", targetRPM);
             MyTelem.addData("rpm", getRPM());
-            MyTelem.addData("hood pos", hood.getPosition());
+//            MyTelem.addData("hood pos", hood.getPosition());
             MyTelem.addData("hood insert pos", hoodPos);
             MyTelem.addData("current draw 1", shooter.getCurrent(CurrentUnit.AMPS));
             intake.setPower(transferPower);

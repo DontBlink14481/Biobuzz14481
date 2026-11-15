@@ -22,7 +22,7 @@ public class Shooter implements Subsystem {
 
     private static final double TICKS_PER_REV = 28;
 
-    private final DcMotorEx shooterMotor;
+    private final DcMotorEx shooterMotors;
     private final Servo hoodServo, shiftServo;
     private BooleanSupplier nectarModeSupplier = () -> false;
 
@@ -32,9 +32,9 @@ public class Shooter implements Subsystem {
     public CalculationResult lastResult = CalculationResult.invalid(0);
 
     public Shooter(HardwareMap hardwareMap) {
-        shooterMotor = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooter1);
-        shooterMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-        shooterMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooterMotors = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooters);
+        shooterMotors.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterMotors.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         hoodServo = hardwareMap.get(Servo.class, HardwareConstants.hood);
         hoodServo.setDirection(Servo.Direction.REVERSE);
@@ -78,7 +78,7 @@ public class Shooter implements Subsystem {
             double hold = ShooterConstants.kF * targetRPM / ShooterConstants.maxRPM;
             power = Range.clip(hold * RobotConstants.nominalVoltage / RobotConstants.voltage, 0, 1);
         }
-        shooterMotor.setPower(power);
+        shooterMotors.setPower(power);
 
         if (state != ShooterState.DISABLED) {
             shiftServo.setPosition(nectarModeSupplier.getAsBoolean() ? ShooterConstants.nectarPos : ShooterConstants.pollenPos);
@@ -106,7 +106,7 @@ public class Shooter implements Subsystem {
     }
 
     public double getRPM() {
-        return Math.abs(shooterMotor.getVelocity()) * 60.0 / TICKS_PER_REV;
+        return Math.abs(shooterMotors.getVelocity()) * 60.0 / TICKS_PER_REV;
     }
 
     public boolean atRPM() {

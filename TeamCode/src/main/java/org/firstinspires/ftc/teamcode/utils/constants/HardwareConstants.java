@@ -23,15 +23,14 @@ public class HardwareConstants {
     public static String beambreak2 = "right";
 
     // Shooter
-    public static String shooter1 = "shooter1";
-    public static String shooter2 = "shooter2";
+    public static String shooters = "shooters";
     public static String hood = "hood";
     public static String shift = "shift";
 
     // Turret
     public static String turret1 = "turret1";
     public static String turret2 = "turret2";
-    public static String turretEncoder = "turretEncoder";
+    public static String turretEncoder = "turretencoder";
 
     // Blocker
     public static String blocker = "blocker";

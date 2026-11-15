@@ -25,7 +25,7 @@ public class ManualShooterTester extends LinearOpMode {
     public void runOpMode(){
         MyTelem.init(telemetry);
 
-        shooter = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooter1);
+        shooter = hardwareMap.get(DcMotorEx.class, HardwareConstants.shooters);
         shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
         hood = hardwareMap.get(Servo.class, HardwareConstants.hood);

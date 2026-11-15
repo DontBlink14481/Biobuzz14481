@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.Subsystem;
 import com.seattlesolvers.solverslib.controller.PIDController;
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.utils.constants.TurretConstants;
 public class Turret implements Subsystem {
 
     private final CRServo turretServo1, turretServo2;
-    private final DcMotorEx turretEncoder;
+    private final AnalogInput turretEncoder;
     private final PIDController pid = new PIDController(0, 0, 0);
 
     private double targetAngleRad = 0;
@@ -26,11 +26,8 @@ public class Turret implements Subsystem {
     public Turret(HardwareMap hardwareMap) {
         turretServo1 = hardwareMap.get(CRServo.class, HardwareConstants.turret1);
         turretServo2 = hardwareMap.get(CRServo.class, HardwareConstants.turret2);
-        turretEncoder = hardwareMap.tryGet(DcMotorEx.class, HardwareConstants.turretEncoder);
-        if (turretEncoder != null) {
-            turretEncoder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            turretEncoder.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        }
+
+        turretEncoder = hardwareMap.tryGet(AnalogInput.class, HardwareConstants.turretEncoder);
     }
 
     @Override
@@ -90,7 +87,7 @@ public class Turret implements Subsystem {
 
     public double getAngle() {
         if (turretEncoder == null) return Double.NaN;
-        return turretEncoder.getCurrentPosition() / TurretConstants.ticksPerRev * 2 * Math.PI;
+        return Range.scale(turretEncoder.getVoltage(), 0, turretEncoder.getMaxVoltage(), 0, 360);
     }
 
     public enum TurretState {
