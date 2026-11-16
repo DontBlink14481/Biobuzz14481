@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.utils.zones;
 
 import com.pedropathing.math.Pose;
+import com.skeletonarmy.marrow.zones.CompositeZone;
 import com.skeletonarmy.marrow.zones.Point;
 import com.skeletonarmy.marrow.zones.PolygonZone;
 
+import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 
 public class ShootingZone {
@@ -30,6 +32,10 @@ public class ShootingZone {
             backZone = create(RobotConstants.backGoal, 141.5);
         }
         return backZone;
+    }
+
+    public static PolygonZone get() {
+        return Robot.goal == Robot.Goal.FRONT ? front() : back();
     }
 
     public static PolygonZone create(Pose goal, double farY) {
