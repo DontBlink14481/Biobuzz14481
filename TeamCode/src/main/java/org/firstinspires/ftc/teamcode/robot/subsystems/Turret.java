@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.seattlesolvers.solverslib.util.MathUtils;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -22,7 +23,7 @@ public class Turret implements Subsystem {
     private final PIDController pid = new PIDController(0, 0, 0);
 
     private double targetAngleRad = 0;
-    private double manualPower = 0;
+    public double manualPower = 0;
     private long aimUpdateCount = 0;
 
     public Turret(HardwareMap hardwareMap) {
@@ -32,8 +33,8 @@ public class Turret implements Subsystem {
         turretServo2 = hardwareMap.get(CRServo.class, HardwareConstants.turret2);
         turretServo2.setDirection(CRServo.Direction.REVERSE);
 
-        turretEncoder1 = hardwareMap.tryGet(AnalogInput.class, HardwareConstants.turretEncoder1);
-        turretEncoder2 = hardwareMap.tryGet(AnalogInput.class, HardwareConstants.turretEncoder2);
+        turretEncoder1 = hardwareMap.get(AnalogInput.class, HardwareConstants.turretEncoder1);
+        turretEncoder2 = hardwareMap.get(AnalogInput.class, HardwareConstants.turretEncoder2);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class Turret implements Subsystem {
             pid.reset();
         }
         RobotStates.turretState = state;
-        aimTurret();
+        calculateTurret();
 
         switch (state) {
             case MANUAL:
@@ -59,8 +60,7 @@ public class Turret implements Subsystem {
                     setPower(0);
                 } else {
                     pid.setPID(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
-                    // Mechanically linked servos share one feedback loop and power command.
-                    double angleError = AngleUnit.normalizeRadians(targetAngleRad - getAngle());
+                    double angleError = MathUtils.normalizeRadians(targetAngleRad - getAngle(), false);
                     setPower(Range.clip(pid.calculate(0, angleError), -1, 1));
                 }
                 break;
@@ -74,7 +74,7 @@ public class Turret implements Subsystem {
         }
     }
 
-    private void aimTurret() {
+    private void calculateTurret() {
         targetAngleRad = ShooterCalculator.calculate(Robot.pose, Robot.getGoalPose()).turretAngleRad;
         aimUpdateCount++;
     }
@@ -115,8 +115,7 @@ public class Turret implements Subsystem {
 
     public double getAngle() {
         if (turretEncoder1 == null) return Double.NaN;
-        double voltageFromZero = getEncoderVoltage() - TurretConstants.encoderZeroVoltage;
-        return AngleUnit.normalizeRadians(-voltageFromZero / turretEncoder1.getMaxVoltage() * 2 * Math.PI);
+        return MathUtils.normalizeRadians((TurretConstants.encoderZeroVoltage - getEncoderVoltage()) / turretEncoder1.getMaxVoltage() * 2 * Math.PI, false);
     }
 
     public double getAngle(AngleUnit unit) {
@@ -127,11 +126,9 @@ public class Turret implements Subsystem {
         return turretEncoder2 == null ? Double.NaN : turretEncoder2.getVoltage();
     }
 
-    // Second encoder angle in radians, with its own zero calibration.
     public double getEncoder2Angle() {
         if (turretEncoder2 == null) return Double.NaN;
-        double voltageFromZero = getEncoder2Voltage() - TurretConstants.encoder2ZeroVoltage;
-        return AngleUnit.normalizeRadians(-voltageFromZero / turretEncoder2.getMaxVoltage() * 2 * Math.PI);
+        return MathUtils.normalizeRadians((TurretConstants.encoder2ZeroVoltage - getEncoder2Voltage()) / turretEncoder2.getMaxVoltage() * 2 * Math.PI, false);
     }
 
     public double getEncoder2Angle(AngleUnit unit) {

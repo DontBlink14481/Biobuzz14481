@@ -5,7 +5,7 @@ import com.pedropathing.math.Pose;
 public class RobotConstants {
 
     public static double robotWidth = 13.5;
-    public static double robotLength = 15; //TODO: ask for robot dimensions
+    public static double robotLength = 13.5;
 
     public static double voltage = 12;
     public static double nominalVoltage = 13;

@@ -16,9 +16,8 @@ import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 @TeleOp(name = "TurretTester")
 public class TurretTester extends LinearOpMode {
 
-    // Field coordinates in inches; heading in degrees.
     public static double x = 0, y = 0, headingDeg = 0;
-    public static boolean enabled = true;
+    public static boolean auto = true;
 
     @Override
     public void runOpMode() {
@@ -38,11 +37,17 @@ public class TurretTester extends LinearOpMode {
             Robot.robotZone.setRotation(Robot.pose.heading());
             Robot.updateGoal();
 
-            RobotStates.turretState = enabled
-                    ? Turret.TurretState.CONTINUOUS : Turret.TurretState.OFF;
+            RobotStates.turretState = auto
+                    ? Turret.TurretState.CONTINUOUS : Turret.TurretState.MANUAL;
+            if (!auto) {
+                turret.setManualPower(gamepad1.right_stick_x);
+            }
             turret.periodic();
 
-            MyTelem.addData("enabled", enabled);
+            MyTelem.addData("enabled", auto);
+            MyTelem.addData("robot turret state", RobotStates.turretState);
+            MyTelem.addData("turret manual power", turret.manualPower);
+            MyTelem.addData("1 right x", gamepad1.right_stick_x);
             MyTelem.addData("turret servo 1 power", turret.getPower());
             MyTelem.addData("turret servo 2 power", turret.getServo2Power());
             MyTelem.addData("pose x in", Robot.pose.x());

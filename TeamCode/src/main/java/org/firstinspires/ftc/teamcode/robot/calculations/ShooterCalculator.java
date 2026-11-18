@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.calculations;
 
 import com.pedropathing.math.Pose;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.seattlesolvers.solverslib.util.MathUtils;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 
 public class ShooterCalculator {
@@ -16,7 +16,7 @@ public class ShooterCalculator {
     public static CalculationResult calculate(Pose robotPose, Pose goalPose) {
         double dx = goalPose.x() - robotPose.x();
         double dy = goalPose.y() - robotPose.y();
-        double turretAngle = AngleUnit.normalizeRadians(Math.atan2(dy, dx) - robotPose.heading());
+        double turretAngle = MathUtils.normalizeRadians(Math.atan2(dy, dx) - robotPose.heading(), false);
 
         double d = Math.hypot(dx, dy);
         double h = ShooterConstants.goalHeightInches - ShooterConstants.shooterHeightInches;
