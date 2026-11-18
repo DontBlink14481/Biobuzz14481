@@ -14,12 +14,12 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Blocker;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 import org.firstinspires.ftc.teamcode.utils.zones.ParkZone;
+import org.firstinspires.ftc.teamcode.utils.zones.ShootingZone;
 
 import java.util.List;
 
@@ -31,14 +31,14 @@ public class Robot {
     }
 
     public enum Goal {
-        FRONT, BACK
+        RIGHT, LEFT
     }
 
     public enum PedroState {
         ENABLED, DISABLED
     }
 
-    public static Goal goal = Goal.FRONT;
+    public static Goal goal = Goal.RIGHT;
     public static Pose pose = new Pose(0, 0, 0);
 
     public static Alliance alliance = Alliance.RED;
@@ -53,7 +53,6 @@ public class Robot {
     private final ElapsedTime voltageTimer = new ElapsedTime();
 
     public Intake intake;
-    public Transfer transfer;
     public Turret turret;
     public Shooter shooter;
     public Blocker blocker;
@@ -65,10 +64,9 @@ public class Robot {
         follower = Constants.create(hardwareMap);
 
         intake = new Intake(hardwareMap);
-        transfer = new Transfer(hardwareMap);
         turret = new Turret(hardwareMap);
         shooter = new Shooter(hardwareMap);
-        shooter.setNectarModeSupplier(transfer::inNectarMode);
+        shooter.setNectarModeSupplier(intake::inNectarMode);
         blocker = new Blocker(hardwareMap);
 
         hubs = hardwareMap.getAll(LynxModule.class);
@@ -77,7 +75,7 @@ public class Robot {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         RobotConstants.voltage = voltageSensor.getVoltage();
 
-        CommandScheduler.getInstance().registerSubsystem(intake, transfer, turret, shooter, blocker);
+        CommandScheduler.getInstance().registerSubsystem(intake, turret, shooter, blocker);
     }
 
     public void update() {
@@ -99,17 +97,19 @@ public class Robot {
             driveStopped = true;
         }
         sendPose();
+        updateGoal();
 
         CommandScheduler.getInstance().run();
         if (MyTelem.telemetry != null) MyTelem.update();
     }
 
-    public static void toggleGoal() {
-        goal = (goal == Goal.FRONT) ? Goal.BACK : Goal.FRONT;
+    public static void updateGoal() {
+        if (ShootingZone.right().contains(robotZone.getPosition())) goal = Goal.RIGHT;
+        if (ShootingZone.left().contains(robotZone.getPosition())) goal = Goal.LEFT;
     }
 
     public static Pose getGoalPose() {
-        return goal == Goal.FRONT ? RobotConstants.frontGoal : RobotConstants.backGoal;
+        return goal == Goal.RIGHT ? RobotConstants.rightGoal : RobotConstants.leftGoal;
     }
 
     public static boolean parked() {

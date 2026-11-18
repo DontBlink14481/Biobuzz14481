@@ -10,12 +10,10 @@ import com.seattlesolvers.solverslib.command.WaitUntilCommand;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.BlockerCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
-import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.TransferCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Blocker;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
-import org.firstinspires.ftc.teamcode.utils.constants.TransferConstants;
+import org.firstinspires.ftc.teamcode.utils.constants.IntakeConstants;
 
 public class ShootCommand extends SequentialCommandGroup {
 
@@ -26,7 +24,7 @@ public class ShootCommand extends SequentialCommandGroup {
     }
 
     public ShootCommand(Robot robot, int count) {
-        this(robot, new WaitCommand(Math.round(count * TransferConstants.feedSecondsPerPiece * 1000)));
+        this(robot, new WaitCommand(Math.round(count * IntakeConstants.feedSecondsPerPiece * 1000)));
     }
 
     private ShootCommand(Robot robot, Command feedDuration) {
@@ -34,8 +32,7 @@ public class ShootCommand extends SequentialCommandGroup {
         addCommands(
                 new ParallelCommandGroup(
                         new BlockerCommand(robot, Blocker.BlockerState.BLOCKED),
-                        new IntakeCommand(robot, Intake.IntakeState.OFF),
-                        new TransferCommand(robot, Transfer.TransferState.OFF)
+                        new IntakeCommand(robot, Intake.IntakeState.OFF)
                 ),
                 new ParallelRaceGroup(
                         new WaitUntilCommand(robot.shooter::atRPM),
@@ -50,14 +47,13 @@ public class ShootCommand extends SequentialCommandGroup {
                         new NectarPauseCommand(robot)
                 )
         );
-        addRequirements(robot.intake, robot.transfer, robot.blocker);
+        addRequirements(robot.intake, robot.blocker);
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
         robot.intake.setState(Intake.IntakeState.OFF);
-        robot.transfer.setState(Transfer.TransferState.OFF);
         robot.blocker.setState(Blocker.BlockerState.BLOCKED);
     }
 }

@@ -8,5 +8,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 public class IntakeCommand extends InstantCommand {
     public IntakeCommand(Robot robot, Intake.IntakeState state) {
         super(() -> robot.intake.setState(state));
+        addRequirements(robot.intake);
     }
 }

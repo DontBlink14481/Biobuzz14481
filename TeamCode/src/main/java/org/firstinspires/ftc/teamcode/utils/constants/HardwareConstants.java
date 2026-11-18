@@ -16,8 +16,6 @@ public class HardwareConstants {
     public static String intake = "intake";
     public static String transfer = "transfer";
 
-    // Transfer
-    public static String dropdown = "dropdown";
     public static String pinch = "pinch";
     public static String beambreak1 = "left";
     public static String beambreak2 = "right";
@@ -30,7 +28,8 @@ public class HardwareConstants {
     // Turret
     public static String turret1 = "turret1";
     public static String turret2 = "turret2";
-    public static String turretEncoder = "turretencoder";
+    public static String turretEncoder1 = "turretencoder1";
+    public static String turretEncoder2 = "turretencoder2";
 
     // Blocker
     public static String blocker = "blocker";

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
-import org.firstinspires.ftc.teamcode.utils.constants.TransferConstants;
+import org.firstinspires.ftc.teamcode.utils.constants.IntakeConstants;
 
 @Config
 @TeleOp(name = "Intake Shooter Tester")
@@ -111,9 +111,9 @@ public class IntakeShooterTester extends LinearOpMode {
             transfer.setPower(transferPower);
 
             if (pollenMode) {
-                pinch.setPosition(TransferConstants.pollenPos);
+                pinch.setPosition(IntakeConstants.pollenPos);
             } else {
-                pinch.setPosition(TransferConstants.nectarPos);
+                pinch.setPosition(IntakeConstants.nectarPos);
             }
 
 

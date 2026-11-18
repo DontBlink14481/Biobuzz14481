@@ -9,7 +9,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import com.skeletonarmy.marrow.TimerEx;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
-import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeTransferCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
@@ -29,18 +29,15 @@ public class SoloTele extends LinearOpMode {
         GamepadEx operator = new GamepadEx(gamepad2);
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new IntakeTransferCommand(robot, Intake.IntakeState.IN))
-                .whenReleased(new IntakeTransferCommand(robot, Intake.IntakeState.OFF));
+                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
+                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
 
         operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new IntakeTransferCommand(robot, Intake.IntakeState.OUT))
-                .whenReleased(new IntakeTransferCommand(robot, Intake.IntakeState.OFF));
+                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.OUT))
+                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
 
         operator.getGamepadButton(GamepadKeys.Button.CROSS)
                 .whenHeld(new ShootCommand(robot));
-
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(Robot::toggleGoal);
 
         AllianceSelection allianceSelection = new AllianceSelection(this);
 
@@ -65,7 +62,7 @@ public class SoloTele extends LinearOpMode {
             MyTelem.addData("target rpm", robot.shooter.getTargetRPM());
             MyTelem.addData("rpm", robot.shooter.getRPM());
             MyTelem.addData("at rpm", robot.shooter.atRPM());
-            MyTelem.addData("nectar mode", robot.transfer.inNectarMode());
+            MyTelem.addData("nectar mode", robot.intake.inNectarMode());
             MyTelem.update();
 
             robot.update();

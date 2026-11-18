@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.zones;
 
 import com.pedropathing.math.Pose;
-import com.skeletonarmy.marrow.zones.CompositeZone;
 import com.skeletonarmy.marrow.zones.Point;
 import com.skeletonarmy.marrow.zones.PolygonZone;
 
@@ -10,8 +9,8 @@ import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 
 public class ShootingZone {
 
-    public static PolygonZone frontZone;
-    public static PolygonZone backZone;
+    public static PolygonZone rightZone;
+    public static PolygonZone leftZone;
 
     public static double ballClearance = 1; // inches on both sides
     public static double distClearance = 10; // inches back from goal TODO: need to math this out
@@ -20,22 +19,22 @@ public class ShootingZone {
         return Math.asin((RobotConstants.nectarDiameter + 2 * ballClearance) / RobotConstants.goalWidth);
     }
 
-    public static PolygonZone front() {
-        if (frontZone == null) {
-            frontZone = create(RobotConstants.frontGoal, 0);
+    public static PolygonZone right() {
+        if (rightZone == null) {
+            rightZone = create(RobotConstants.rightGoal, 0);
         }
-        return frontZone;
+        return rightZone;
     }
 
-    public static PolygonZone back() {
-        if (backZone == null) {
-            backZone = create(RobotConstants.backGoal, 141.5);
+    public static PolygonZone left() {
+        if (leftZone == null) {
+            leftZone = create(RobotConstants.leftGoal, 141.5);
         }
-        return backZone;
+        return leftZone;
     }
 
     public static PolygonZone get() {
-        return Robot.goal == Robot.Goal.FRONT ? front() : back();
+        return Robot.goal == Robot.Goal.RIGHT ? right() : left();
     }
 
     public static PolygonZone create(Pose goal, double farY) {

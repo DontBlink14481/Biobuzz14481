@@ -6,7 +6,7 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
-import org.firstinspires.ftc.teamcode.utils.constants.TransferConstants;
+import org.firstinspires.ftc.teamcode.utils.constants.IntakeConstants;
 
 public class NectarPauseCommand extends CommandBase {
 
@@ -21,13 +21,13 @@ public class NectarPauseCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        wasNectar = robot.transfer.inNectarMode();
+        wasNectar = robot.intake.inNectarMode();
         paused = false;
     }
 
     @Override //highkey some verified slop but im testing
     public void execute() {
-        boolean nectar = robot.transfer.inNectarMode();
+        boolean nectar = robot.intake.inNectarMode();
         if (wasNectar && !nectar && !paused) {
             paused = true;
             resumeState = RobotStates.intakeState;
@@ -36,7 +36,7 @@ public class NectarPauseCommand extends CommandBase {
         }
         wasNectar = nectar;
 
-        if (paused && pauseTimer.seconds() >= TransferConstants.nectarPauseS) {
+        if (paused && pauseTimer.seconds() >= IntakeConstants.nectarPauseS) {
             paused = false;
             robot.intake.setState(resumeState);
         }

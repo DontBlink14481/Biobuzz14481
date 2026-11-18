@@ -9,7 +9,7 @@ import com.seattlesolvers.solverslib.geometry.Pose2d;
 import com.seattlesolvers.solverslib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
-import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeTransferCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
@@ -37,7 +37,7 @@ public class ZenithBot implements ZenithRobot {
     @Override
     public void registerCommands(AutoFromFile opMode)
     {
-        NamedCommands.register("setIntake", (args, ctx) -> new IntakeTransferCommand(robot,
+        NamedCommands.register("setIntake", (args, ctx) -> new IntakeCommand(robot,
                 NamedCommands.argEnum(args, "setIntake", "state", Intake.IntakeState.class, Intake.IntakeState.OFF)));
 
         NamedCommands.register("score", (args, ctx) ->
