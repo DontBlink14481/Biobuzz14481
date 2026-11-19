@@ -25,7 +25,7 @@ public class TestTele extends LinearOpMode {
 
     public static double rpm = 0;
     public static double hood = 0.6;
-    public static double turretPower = 0;
+    public static double turretPosition = 0.5;
     public static Intake.ElementMode element = Intake.ElementMode.DETECT;
     public static double x = 0, y = 0, headingDeg = 0;
 
@@ -34,7 +34,7 @@ public class TestTele extends LinearOpMode {
         MyTelem.init(telemetry);
         Robot robot = new Robot(hardwareMap);
         RobotStates.shooterState = Shooter.ShooterState.MANUAL;
-        RobotStates.turretState = Turret.TurretState.CONTINUOUS;
+        RobotStates.turretState = Turret.TurretState.SET;
         GamepadEx driver = new GamepadEx(gamepad1);
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -59,7 +59,7 @@ public class TestTele extends LinearOpMode {
                 robot.shooter.setHoodPos(hood);
             }
 
-            robot.turret.setManualPower(turretPower);
+            robot.turret.setManualPosition(turretPosition);
             robot.intake.setElementMode(element);
 
             robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
@@ -71,8 +71,8 @@ public class TestTele extends LinearOpMode {
             MyTelem.addData("pose heading deg", Math.toDegrees(Robot.pose.heading()));
             MyTelem.addData("turret state", RobotStates.turretState);
             MyTelem.addData("goal", Robot.goal);
-            MyTelem.addData("turret power", robot.turret.getPower());
-            MyTelem.addData("turret servo 2 power", robot.turret.getServo2Power());
+            MyTelem.addData("turret position", robot.turret.getPosition());
+            MyTelem.addData("turret servo 2 position", robot.turret.getServo2Position());
             MyTelem.addData("turret error deg", AngleUnit.normalizeDegrees(
                     Math.toDegrees(robot.turret.getTargetAngle() - robot.turret.getAngle())));
             MyTelem.addData("distance in", ShooterCalculator.distance(Robot.pose, Robot.getGoalPose()));

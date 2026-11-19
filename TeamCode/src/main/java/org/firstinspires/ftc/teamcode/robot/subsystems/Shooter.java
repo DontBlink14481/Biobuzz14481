@@ -25,8 +25,6 @@ public class Shooter implements Subsystem {
     private final DcMotorEx shooterMotors;
     private final Servo hoodServo, shiftServo;
     private BooleanSupplier nectarModeSupplier = () -> false;
-
-    private double targetRPM = 0;
     private double hoodPos = 0;
 
     public CalculationResult lastResult = CalculationResult.invalid(0);
@@ -63,19 +61,20 @@ public class Shooter implements Subsystem {
                 aimShooter();
                 break;
             case OFF:
+                break;
             case DISABLED:
-                targetRPM = 0;
+                ShooterConstants.targetRPM = 0;
                 break;
         }
 
         //bang bang
         double power;
-        if (targetRPM <= 0) {
+        if (ShooterConstants.targetRPM <= 0) {
             power = 0;
-        } else if (getRPM() < targetRPM) {
+        } else if (getRPM() < ShooterConstants.targetRPM) {
             power = 1;
         } else {
-            double hold = ShooterConstants.kF * targetRPM / ShooterConstants.maxRPM;
+            double hold = ShooterConstants.kF * ShooterConstants.targetRPM / ShooterConstants.maxRPM;
             power = Range.clip(hold * RobotConstants.nominalVoltage / RobotConstants.voltage, 0, 1);
         }
         shooterMotors.setPower(power);
@@ -98,11 +97,11 @@ public class Shooter implements Subsystem {
     }
 
     public void setTargetRPM(double targetRPM) {
-        this.targetRPM = Math.min(targetRPM, ShooterConstants.maxRPM);
+        ShooterConstants.targetRPM = Math.min(targetRPM, ShooterConstants.maxRPM);
     }
 
     public double getTargetRPM() {
-        return targetRPM;
+        return ShooterConstants.targetRPM;
     }
 
     public double getRPM() {
@@ -110,7 +109,7 @@ public class Shooter implements Subsystem {
     }
 
     public boolean atRPM() {
-        return targetRPM > 0 && Math.abs(targetRPM - getRPM()) < ShooterConstants.rpmTolerance;
+        return ShooterConstants.targetRPM > 0 && Math.abs(ShooterConstants.targetRPM - getRPM()) < ShooterConstants.rpmTolerance;
     }
 
     public void setHoodPos(double pos) {

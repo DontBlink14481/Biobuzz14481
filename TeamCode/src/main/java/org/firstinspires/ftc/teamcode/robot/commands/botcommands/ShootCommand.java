@@ -35,6 +35,7 @@ public class ShootCommand extends SequentialCommandGroup {
                         new IntakeCommand(robot, Intake.IntakeState.OFF)
                 ),
                 new ParallelRaceGroup(
+//                        new InstantCommand(() -> robot.shooter.setTargetRPM())
                         new WaitUntilCommand(robot.shooter::atRPM),
                         new WaitCommand(Math.round(ShooterConstants.spinUpTimeoutS * 1000))
                 ),
