@@ -5,6 +5,6 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class BlockerConstants {
 
-    public static double blocked = 0.5, unblocked = 0.2;
+    public static double blocked = 0.47, unblocked = 0.57;
 
 }

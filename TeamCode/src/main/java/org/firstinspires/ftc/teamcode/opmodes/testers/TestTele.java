@@ -34,7 +34,8 @@ public class TestTele extends LinearOpMode {
         MyTelem.init(telemetry);
         Robot robot = new Robot(hardwareMap);
         RobotStates.shooterState = Shooter.ShooterState.MANUAL;
-        RobotStates.turretState = Turret.TurretState.SET;
+        robot.shooter.setTargetRPM(rpm);
+        RobotStates.turretState = Turret.TurretState.MANUAL;
         GamepadEx driver = new GamepadEx(gamepad1);
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -59,7 +60,7 @@ public class TestTele extends LinearOpMode {
                 robot.shooter.setHoodPos(hood);
             }
 
-            robot.turret.setManualPosition(turretPosition);
+//            robot.turret.setManualPower(turretPosition);
             robot.intake.setElementMode(element);
 
             robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
@@ -71,8 +72,8 @@ public class TestTele extends LinearOpMode {
             MyTelem.addData("pose heading deg", Math.toDegrees(Robot.pose.heading()));
             MyTelem.addData("turret state", RobotStates.turretState);
             MyTelem.addData("goal", Robot.goal);
-            MyTelem.addData("turret position", robot.turret.getPosition());
-            MyTelem.addData("turret servo 2 position", robot.turret.getServo2Position());
+//            MyTelem.addData("turret position", robot.turret.getPosition());
+//            MyTelem.addData("turret servo 2 position", robot.turret.getServo2Position());
             MyTelem.addData("turret error deg", AngleUnit.normalizeDegrees(
                     Math.toDegrees(robot.turret.getTargetAngle() - robot.turret.getAngle())));
             MyTelem.addData("distance in", ShooterCalculator.distance(Robot.pose, Robot.getGoalPose()));

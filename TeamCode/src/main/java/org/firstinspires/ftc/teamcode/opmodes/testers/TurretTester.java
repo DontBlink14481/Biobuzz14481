@@ -18,7 +18,7 @@ public class TurretTester extends LinearOpMode {
 
     public static double x = 0, y = 0, headingDeg = 0;
     public static boolean auto = true;
-    public static double position = 0.5;
+    public static double power = 0.5;
 
     @Override
     public void runOpMode() {
@@ -39,16 +39,16 @@ public class TurretTester extends LinearOpMode {
             Robot.updateGoal();
 
             RobotStates.turretState = auto
-                    ? Turret.TurretState.SET : Turret.TurretState.MANUAL;
+                    ? Turret.TurretState.TUNING : Turret.TurretState.MANUAL;
             if (!auto) {
-                turret.setManualPosition(position);
+                turret.setManualPower(power);
             }
             turret.periodic();
 
             MyTelem.addData("enabled", auto);
             MyTelem.addData("robot turret state", RobotStates.turretState);
-            MyTelem.addData("turret servo 1 position", turret.getPosition());
-            MyTelem.addData("turret servo 2 position", turret.getServo2Position());
+//            MyTelem.addData("turret servo 1 position", turret.getPosition());
+//            MyTelem.addData("turret servo 2 position", turret.getServo2Position());
             MyTelem.addData("pose x in", Robot.pose.x());
             MyTelem.addData("pose y in", Robot.pose.y());
             MyTelem.addData("pose heading deg", Math.toDegrees(Robot.pose.heading()));

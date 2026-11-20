@@ -69,6 +69,9 @@ public class Intake implements Subsystem {
                 transferMotor.setPower(IntakeConstants.transferInPower);
                 break;
             case OFF:
+                intakeMotor.setPower(0);
+                transferMotor.setPower(0);
+                break;
             case DISABLED:
                 intakeMotor.setPower(0);
                 transferMotor.setPower(0);

@@ -28,6 +28,8 @@ public class HardwareConstants {
     // Turret
     public static String turret1 = "turret1";
     public static String turret2 = "turret2";
+    public static String turret3 = "turret3";
+
     public static String turretEncoder1 = "turretencoder1";
     public static String turretEncoder2 = "turretencoder2";
 
