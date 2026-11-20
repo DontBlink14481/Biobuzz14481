@@ -13,4 +13,10 @@ public class TurretConstants {
     public static double encoderZeroVoltage = 0.9;
     public static double encoder2ZeroVoltage = 0;
 
+    // CONTINUOUS mode PID gains (tune on the dashboard)
+    public static double kP = 0;
+    public static double kI = 0;
+    public static double kD = 0;
+    public static double targetAngleTesting = 0;
+
 }
