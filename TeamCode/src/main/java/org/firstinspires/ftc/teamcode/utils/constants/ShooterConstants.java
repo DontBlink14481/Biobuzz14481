@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class ShooterConstants {
 
-    public static double maxRPM = 2300;
+    public static double maxRPM = 6000;
     public static double rpmTolerance = 50;
     public static double kF = 0;
     public static double spinUpTimeoutS = 1.5;
