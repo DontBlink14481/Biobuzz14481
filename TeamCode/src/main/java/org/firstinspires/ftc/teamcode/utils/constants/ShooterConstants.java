@@ -10,10 +10,10 @@ public class ShooterConstants {
     public static double kF = 0;
     public static double spinUpTimeoutS = 1.5;
 
-    public static double hoodMin = 0.4, hoodMax = 0.65;
+    public static double hoodMin = 0.6, hoodMax = 0.82;
     public static double hoodMinDeg = 70, hoodMaxDeg = 84;
 
-    public static double pollenPos = 0.31, nectarPos = 0.39;
+    public static double pollenPos = 0.25, nectarPos = 0.39;
 
     public static double goalHeightInches = 59.55;
     public static double shooterHeightInches = 9.5;

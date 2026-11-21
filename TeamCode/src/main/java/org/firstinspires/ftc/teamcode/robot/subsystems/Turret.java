@@ -127,8 +127,8 @@ public class Turret implements Subsystem {
     }
 
     public double getEncoderVoltage() {
-        if (turretEncoder1 == null) return Double.NaN;
-        return turretEncoder1.getVoltage();
+        if (turretEncoder2 == null) return Double.NaN;
+        return turretEncoder2.getVoltage();
     }
 
     public double getAngle() {
