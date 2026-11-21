@@ -9,6 +9,10 @@ public class TurretConstants {
     // Assumes 360 degrees of servo travel across positions 0 through 1.
     public static double posPerDeg = (20.0 / 80.0) * (103.0 / 28.0) / 360.0;
 
+    public static double turretRadiansPerServoRadian() {
+        return 1.0 / (360.0 * posPerDeg);
+    }
+
     // zero is FORWARD rajveer don't fuck it up
     public static double encoderZeroVoltage = 0.9;
     public static double encoder2ZeroVoltage = 0;

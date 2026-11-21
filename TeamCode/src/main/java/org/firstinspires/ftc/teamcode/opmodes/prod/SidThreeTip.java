@@ -5,6 +5,7 @@ import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
 import com.seattlesolvers.solverslib.command.Commands;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 
+@Autonomous
 public class SidThreeTip extends OpMode {
 
     TimerEx timer;

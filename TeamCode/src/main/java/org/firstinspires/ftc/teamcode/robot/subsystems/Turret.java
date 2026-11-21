@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.constants.TurretConstants;
 public class Turret implements Subsystem {
 
     private final CRServo turretServo1, turretServo2, turretServo3;
-    private final AnalogInput turretEncoder1, turretEncoder2;
+    private final AnalogInput turretEncoder2;
     private final PIDController pid = new PIDController(0, 0, 0);
 
     private double targetAngleRad = 0;
@@ -39,7 +39,6 @@ public class Turret implements Subsystem {
         turretServo3 = hardwareMap.get(CRServo.class, HardwareConstants.turret3);
         turretServo3.setDirection(CRServo.Direction.REVERSE);
 
-        turretEncoder1 = hardwareMap.get(AnalogInput.class, HardwareConstants.turretEncoder1);
         turretEncoder2 = hardwareMap.get(AnalogInput.class, HardwareConstants.turretEncoder2);
     }
 
@@ -62,13 +61,7 @@ public class Turret implements Subsystem {
                 setPower(manualPower);
                 break;
             case CONTINUOUS:
-                if (turretEncoder1 == null) {
-                    setPower(0);
-                } else {
-                    pid.setPID(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
-                    double angleError = MathUtils.normalizeRadians(targetAngleRad - getAngle(), false);
-                    setPower(Range.clip(pid.calculate(0, angleError), -1, 1));
-                }
+                trackAngle(targetAngleRad);
                 break;
             case SET:
                 setPosition(TurretConstants.forwardPos + Math.toDegrees(targetAngleRad) * TurretConstants.posPerDeg);
@@ -80,11 +73,21 @@ public class Turret implements Subsystem {
                 setPower(0);
                 break;
             case TUNING:
-                pid.setPID(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
-                double angleError = MathUtils.normalizeRadians(Math.toRadians(targetAngleTesting) - getAngle(), false);
-                setPower(Range.clip(pid.calculate(0, angleError), -1, 1));
-
+                trackAngle(Math.toRadians(targetAngleTesting));
+                break;
         }
+    }
+
+    private void trackAngle(double targetRadians) {
+        double currentRadians = getAngle();
+        if (!Double.isFinite(currentRadians)) {
+            pid.reset();
+            setPower(0);
+            return;
+        }
+        pid.setPID(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
+        double angleError = MathUtils.normalizeRadians(targetRadians - currentRadians, false);
+        setPower(Range.clip(pid.calculate(0, angleError), -1, 1));
     }
 
     private void calculateTurret() {
@@ -132,8 +135,9 @@ public class Turret implements Subsystem {
     }
 
     public double getAngle() {
-        if (turretEncoder1 == null) return Double.NaN;
-        return MathUtils.normalizeRadians((TurretConstants.encoderZeroVoltage - getEncoderVoltage()) / turretEncoder1.getMaxVoltage() * 2 * Math.PI, false);
+        if (turretEncoder2 == null) return Double.NaN;
+        double encoderRadians = MathUtils.normalizeRadians((TurretConstants.encoderZeroVoltage - getEncoderVoltage()) / turretEncoder2.getMaxVoltage() * 2 * Math.PI, false);
+        return MathUtils.normalizeRadians(encoderRadians * TurretConstants.turretRadiansPerServoRadian(), false);
     }
 
     public double getAngle(AngleUnit unit) {
