@@ -53,7 +53,9 @@ public class SidThreeTip extends OpMode {
                     new FollowPathCommand(robot.follower, PathContainer.path4()),
                     new FollowPathCommand(robot.follower, PathContainer.path5()),
                     new FollowPathCommand(robot.follower, PathContainer.path6()),
-                    new FollowPathCommand(robot.follower, PathContainer.path7())
+                    new FollowPathCommand(robot.follower, PathContainer.path7()),
+                    new FollowPathCommand(robot.follower, PathContainer.path8()),
+                    new FollowPathCommand(robot.follower, PathContainer.path9())
             );
 
             auto = new ParallelCommandGroup(
