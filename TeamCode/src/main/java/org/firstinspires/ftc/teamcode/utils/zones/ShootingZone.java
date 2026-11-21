@@ -12,7 +12,7 @@ public class ShootingZone {
     public static PolygonZone rightZone;
     public static PolygonZone leftZone;
 
-    public static double ballClearance = 1; // inches on both sides
+    public static double ballClearance = 4; // inches on both sides
     public static double distClearance = 10; // inches back from goal TODO: need to math this out
 
     public static double theta() {
