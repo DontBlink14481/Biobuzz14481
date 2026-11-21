@@ -21,6 +21,7 @@ public class TurretConstants {
     public static double kP = 0;
     public static double kI = 0;
     public static double kD = 0;
+    public static double kF = 0.2;
     public static double targetAngleTesting = 0;
 
 }

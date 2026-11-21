@@ -87,7 +87,7 @@ public class Turret implements Subsystem {
         }
         pid.setPID(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
         double angleError = MathUtils.normalizeRadians(targetRadians - currentRadians, false);
-        setPower(Range.clip(pid.calculate(0, angleError), -1, 1));
+        setPower(Range.clip(pid.calculate(0, angleError) + Math.copySign(TurretConstants.kF, angleError), -1, 1));
     }
 
     private void calculateTurret() {

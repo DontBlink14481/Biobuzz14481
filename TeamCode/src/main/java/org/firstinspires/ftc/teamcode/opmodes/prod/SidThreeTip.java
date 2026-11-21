@@ -43,6 +43,7 @@ public class SidThreeTip extends OpMode {
 
         timer = new TimerEx(30);
         robot = new Robot(hardwareMap);
+        robot.follower.setPose(PoseFactory.degrees().of(56, 8, 90));
 
         allianceSelection = new AllianceSelection(this);
 
@@ -99,7 +100,9 @@ public class SidThreeTip extends OpMode {
     @Override
     public void init_loop() {
         allianceSelection.update();
+        robot.update();
 
+        MyTelem.addData("Pose", Robot.pose);
         MyTelem.addData("Alliance", Robot.alliance);
         MyTelem.update();
     }
@@ -111,6 +114,7 @@ public class SidThreeTip extends OpMode {
 
     @Override
     public void loop() {
+        MyTelem.addData("Pose", Robot.pose);
         MyTelem.addData("Alliance", Robot.alliance);
         MyTelem.addData("TIME LEFT", timer.getRemaining());
 
@@ -126,7 +130,7 @@ public class SidThreeTip extends OpMode {
 
         private static final PoseFactory poseFactory = PoseFactory.degrees();
 
-        private static final Pose start = poseFactory.of(40, 6.75, 90);
+        private static final Pose start = Robot.pose;
         private static final Pose path1 = poseFactory.of(8.75, 6.75, 180);
         private static final Pose point2 = poseFactory.of(42, 132, 90);
         private static final Pose point2Control1 = poseFactory.of(24, 6.75, 0);
