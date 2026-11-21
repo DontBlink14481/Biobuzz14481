@@ -112,6 +112,10 @@ public class Robot {
         return goal == Goal.RIGHT ? RobotConstants.rightGoal : RobotConstants.leftGoal;
     }
 
+    public static boolean inShootingZone() {
+        return ShootingZone.get().contains(robotZone.getPosition());
+    }
+
     public static boolean parked() {
         return robotZone.isInside(ParkZone.get());
     }
