@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.calculations.ShooterCalculator;
 import org.firstinspires.ftc.teamcode.robot.calculations.CalculationResult;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Blocker;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
@@ -23,10 +24,10 @@ import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 @TeleOp(name = "TestTele")
 public class TestTele extends LinearOpMode {
 
-    public static double rpm = 0;
-    public static double hood = 0.6;
+    public static double rpm = 2500;
+    public static double hood = 0.4;
     public static double turretPosition = 0.5;
-    public static Intake.ElementMode element = Intake.ElementMode.DETECT;
+    public static Intake.ElementMode element = Intake.ElementMode.POLLEN;
     public static double x = 0, y = 0, headingDeg = 0;
 
     @Override
@@ -58,6 +59,8 @@ public class TestTele extends LinearOpMode {
             if (RobotStates.shooterState == Shooter.ShooterState.MANUAL) {
                 robot.shooter.setTargetRPM(rpm);
                 robot.shooter.setHoodPos(hood);
+                robot.intake.setState(Intake.IntakeState.IN);
+                robot.blocker.setState(Blocker.BlockerState.UNBLOCKED);
             }
 
 //            robot.turret.setManualPower(turretPosition);
