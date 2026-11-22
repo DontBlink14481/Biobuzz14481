@@ -86,9 +86,11 @@ public class Shooter implements Subsystem {
 
     private void aimShooter() {
         //pollen 71, 71+17.8, nectar 65, 65+17.8
-        setTargetRPM(ShooterConstants.targetRPM);
         lastResult = ShooterCalculator.calculate(Robot.pose, Robot.getGoalPose());
-        if (lastResult.valid) setHoodAngle(lastResult.hoodAngleRad);
+        if (lastResult.valid) {
+            setTargetRPM(lastResult.rpm);
+            setHoodAngle(lastResult.hoodAngleRad);
+        }
     }
 
     private void setHoodAngle(double angleRad) {
