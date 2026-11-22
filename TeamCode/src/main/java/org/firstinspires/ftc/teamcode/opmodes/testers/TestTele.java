@@ -36,7 +36,7 @@ public class TestTele extends LinearOpMode {
         Robot robot = new Robot(hardwareMap);
         RobotStates.shooterState = Shooter.ShooterState.MANUAL;
         robot.shooter.setTargetRPM(rpm);
-        RobotStates.turretState = Turret.TurretState.MANUAL;
+        RobotStates.turretState = Turret.TurretState.DISABLED;
         GamepadEx driver = new GamepadEx(gamepad1);
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -94,6 +94,7 @@ public class TestTele extends LinearOpMode {
                 MyTelem.addData("model hood deg", Math.toDegrees(shot.hoodAngleRad));
                 MyTelem.addData("shot valid", shot.valid);
             }
+            MyTelem.addData("hood pos", robot.shooter.getHoodPos());
             MyTelem.addData("target rpm", robot.shooter.getTargetRPM());
             MyTelem.addData("rpm", robot.shooter.getRPM());
             MyTelem.addData("at rpm", robot.shooter.atRPM());
