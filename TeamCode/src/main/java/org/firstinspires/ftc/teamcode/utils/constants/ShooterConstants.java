@@ -11,7 +11,7 @@ public class ShooterConstants {
     public static double spinUpTimeoutS = 1.5;
 
     public static double hoodMin = 0.6, hoodMax = 0.82;
-    public static double hoodMinDeg = 70, hoodMaxDeg = 84;
+    public static double hoodMinDeg = 71, hoodMaxDeg = 88.8;
 
     public static double pollenPos = 0.25, nectarPos = 0.39;
 
@@ -19,6 +19,10 @@ public class ShooterConstants {
     public static double shooterHeightInches = 9.5;
 
     public static double targetRPM = 0;
-    public static double launchSpeed = 0;
+
+    public static double baseRPM = 3250;
+    public static double speedPerRPM = 0.09665;
+    public static double hoodScalar = 0.72;
+    public static double distanceOffset = 0;
 
 }
