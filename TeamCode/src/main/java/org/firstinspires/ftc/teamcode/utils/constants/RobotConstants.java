@@ -13,8 +13,8 @@ public class RobotConstants {
     public static double pollenDiameter = 2.8;
     public static double nectarDiameter = 3.6;
 
-    public static Pose rightGoal = new Pose(57.5, 55);
-    public static Pose leftGoal = new Pose(57.5, 86.5);
+    public static Pose rightGoal = new Pose(58, 55);
+    public static Pose leftGoal = new Pose(58, 86.5);
 
     public static double goalWidth = 20; // inches
 }

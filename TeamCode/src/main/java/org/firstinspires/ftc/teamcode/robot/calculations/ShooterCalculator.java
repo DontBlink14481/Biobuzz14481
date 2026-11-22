@@ -21,7 +21,10 @@ public class ShooterCalculator {
 
         double d = Math.hypot(dx, dy) + ShooterConstants.distanceOffset;
         double h = ShooterConstants.goalHeightInches - ShooterConstants.shooterHeightInches;
-        double v = ShooterConstants.baseRPM * ShooterConstants.speedPerRPM;
+
+        // slowest speed that reaches the goal: v^2 = g*(h + sqrt(h^2 + d^2))
+        double vMin = Math.sqrt(GRAVITY * (h + Math.hypot(h, d)));
+        double v = Math.max(ShooterConstants.baseRPM * ShooterConstants.speedPerRPM, vMin);
 
         // h = d*tan(theta) - g*d^2 / (2*v^2*cos^2(theta)). Swapping 1/cos^2 for 1 + tan^2
         // turns that into a quadratic in tan(theta), and the quadratic formula gives the two angles that will work!
