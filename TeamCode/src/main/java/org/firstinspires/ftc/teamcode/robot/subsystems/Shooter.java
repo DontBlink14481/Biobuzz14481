@@ -119,6 +119,10 @@ public class Shooter implements Subsystem {
         hoodPos = pos;
     }
 
+    public double getHoodPos() {
+        return hoodServo.getPosition();
+    }
+
     public enum ShooterState {
         MANUAL, AUTO, OFF, DISABLED
     }
