@@ -32,10 +32,8 @@ import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 @TeleOp(name="MainTele")
 public class MainTele extends LinearOpMode {
     public static double parkTime=5;
-    public static double slowScale=0.35;
     private boolean manualHood=false;
     public static double driveExpo=2;
-    public static double shootRPM=2500;
     public static double hoodPos=(ShooterConstants.hoodMin+ShooterConstants.hoodMax)/2;
     public Intake.ElementMode elementMode=Intake.ElementMode.DETECT;
 
