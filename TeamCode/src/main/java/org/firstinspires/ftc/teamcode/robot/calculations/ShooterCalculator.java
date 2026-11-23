@@ -22,26 +22,21 @@ public class ShooterCalculator {
         double d = Math.hypot(dx, dy) + ShooterConstants.distanceOffset;
         double h = ShooterConstants.goalHeightInches - ShooterConstants.shooterHeightInches;
 
-        // slowest speed that reaches the goal: v^2 = g*(h + sqrt(h^2 + d^2))
-        double vMin = Math.sqrt(GRAVITY * (h + Math.hypot(h, d)));
-        double v = Math.max(ShooterConstants.baseRPM * ShooterConstants.speedPerRPM, vMin);
-
-        // h = d*tan(theta) - g*d^2 / (2*v^2*cos^2(theta)). Swapping 1/cos^2 for 1 + tan^2
-        // turns that into a quadratic in tan(theta), and the quadratic formula gives the two angles that will work!
-        double discriminant = v * v * v * v - GRAVITY * (GRAVITY * d * d + 2 * h * v * v);
-        double lob = Math.atan((v * v + Math.sqrt(Math.max(discriminant, 0))) / (GRAVITY * d));
-
         double min = Math.toRadians(ShooterConstants.hoodMinDeg);
         double max = Math.toRadians(ShooterConstants.hoodMaxDeg);
-        double theta = Range.clip(lob, min, max);
+
+        //tan(theta) = 2h/d + tan(arrival)
+        double flattest = Math.atan(2 * h / d + Math.tan(Math.toRadians(ShooterConstants.arrivalDeg)));
+        double theta = Range.clip(flattest, min, max);
         double hood = Range.scale(theta, min, max, ShooterConstants.hoodMin, ShooterConstants.hoodMax);
 
         // d*tan(theta) <= 2*h means the ball is still rising at the goal
-        if (d * Math.tan(theta) <= 2 * h) return CalculationResult.invalid(turretAngle);
+        double arrival = Math.toDegrees(Math.atan(Math.tan(theta) - 2 * h / d));
+        if (d * Math.tan(theta) <= h || arrival < ShooterConstants.minArrivalDeg) return CalculationResult.invalid(turretAngle);
 
         // v = d/cos(theta) * sqrt(g / (2*(d*tan(theta) - h)))
         // v = rpm * speedPerRPM * (1 + hoodScalar*(hood - 0.77))
-        v = d / Math.cos(theta) * Math.sqrt(GRAVITY / (2 * (d * Math.tan(theta) - h)));
+        double v = d / Math.cos(theta) * Math.sqrt(GRAVITY / (2 * (d * Math.tan(theta) - h)));
         double rpm = v / (ShooterConstants.speedPerRPM * (1 + ShooterConstants.hoodScalar * (hood - 0.77)));
 
         return new CalculationResult(theta, turretAngle, rpm, true);
