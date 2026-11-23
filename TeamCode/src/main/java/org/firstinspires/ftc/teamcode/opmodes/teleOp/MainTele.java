@@ -33,6 +33,7 @@ import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 public class MainTele extends LinearOpMode {
     public static double parkTime=5;
     private boolean manualHood=false;
+    private boolean holding=false;
     public static double driveExpo=2;
     public static double hoodPos=(ShooterConstants.hoodMin+ShooterConstants.hoodMax)/2;
     public Intake.ElementMode elementMode=Intake.ElementMode.DETECT;
@@ -81,6 +82,12 @@ public class MainTele extends LinearOpMode {
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)
                 .whenPressed(new InstantCommand(() -> manualHood=!manualHood));
 
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new InstantCommand(() -> {
+                    holding=!holding;
+                    if (holding) robot.follower.hold(robot.follower.pose());
+                }));
+
         AllianceSelection allianceSelection = new AllianceSelection(this);
         while(opModeInInit()) {
             allianceSelection.update();
@@ -92,16 +99,19 @@ public class MainTele extends LinearOpMode {
         timer.start();
 
         while(opModeIsActive()) {
-            DrivePowers drivePowers = new DrivePowers(
-                    curve(-driver.getLeftY()),
-                    curve(-driver.getLeftX()),
-                    curve(-driver.getRightX()));
+            if (!holding) {
+                DrivePowers drivePowers = new DrivePowers(
+                        curve(-driver.getLeftY()),
+                        curve(-driver.getLeftX()),
+                        curve(-driver.getRightX()));
 
-            if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers); //look up driveorhold and look into it
-            else {robot.follower.manual(drivePowers);}
+                if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers); //look up driveorhold and look into it
+                else {robot.follower.manual(drivePowers);}
+            }
 
             MyTelem.addData("Alliance", Robot.alliance);
             MyTelem.addData("Goal", Robot.goal);
+            MyTelem.addData("holding", holding);
             MyTelem.addData("turret state", RobotStates.turretState);
             MyTelem.addData("turret angle", robot.turret.getAngle(AngleUnit.DEGREES));
             MyTelem.addData("target rpm", robot.shooter.getTargetRPM());
