@@ -5,14 +5,13 @@ import static org.firstinspires.ftc.teamcode.utils.constants.TurretConstants.tar
 import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.util.MathUtils;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.Subsystem;
-import com.seattlesolvers.solverslib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.calculations.ShooterCalculator;
@@ -21,23 +20,22 @@ import org.firstinspires.ftc.teamcode.utils.constants.TurretConstants;
 
 public class Turret implements Subsystem {
 
-    private final CRServo turretServo1, turretServo2, turretServo3;
+    private final Servo turretServo1, turretServo2, turretServo3;
     private final AnalogInput turretEncoder2;
-    private final PIDController pid = new PIDController(0, 0, 0);
 
     private double targetAngleRad = 0;
-    public double manualPower = 0;
+    private double manualPosition = 0.5;
     private long aimUpdateCount = 0;
 
     public Turret(HardwareMap hardwareMap) {
-        turretServo1 = hardwareMap.get(CRServo.class, HardwareConstants.turret1);
-        turretServo1.setDirection(CRServo.Direction.REVERSE);
+        turretServo1 = hardwareMap.get(Servo.class, HardwareConstants.turret1);
+        turretServo1.setDirection(Servo.Direction.REVERSE);
 
-        turretServo2 = hardwareMap.get(CRServo.class, HardwareConstants.turret2);
-        turretServo2.setDirection(CRServo.Direction.REVERSE);
+        turretServo2 = hardwareMap.get(Servo.class, HardwareConstants.turret2);
+        turretServo2.setDirection(Servo.Direction.REVERSE);
 
-        turretServo3 = hardwareMap.get(CRServo.class, HardwareConstants.turret3);
-        turretServo3.setDirection(CRServo.Direction.REVERSE);
+        turretServo3 = hardwareMap.get(Servo.class, HardwareConstants.turret3);
+        turretServo3.setDirection(Servo.Direction.FORWARD);
 
         turretEncoder2 = hardwareMap.get(AnalogInput.class, HardwareConstants.turretEncoder2);
     }
@@ -50,44 +48,27 @@ public class Turret implements Subsystem {
     public void setState(TurretState state) {
         if (state == null) return;
         if (RobotStates.turretState == TurretState.DISABLED && state != TurretState.DISABLED) return;
-        if (RobotStates.turretState != state) {
-            pid.reset();
-        }
         RobotStates.turretState = state;
         calculateTurret();
 
         switch (state) {
             case MANUAL:
-                setPower(manualPower);
+                setPosition(manualPosition);
                 break;
             case CONTINUOUS:
-                trackAngle(targetAngleRad);
                 break;
             case SET:
-                setPosition(TurretConstants.forwardPos + Math.toDegrees(targetAngleRad) * TurretConstants.posPerDeg);
-                break;
-            case OFF:
-                setPower(0);
-                break;
-            case DISABLED:
-                setPower(0);
+                setAngle(targetAngleRad);
                 break;
             case TUNING:
-                trackAngle(Math.toRadians(targetAngleTesting));
+                setAngle(Math.toRadians(targetAngleTesting));
+                break;
+            case OFF:
+                break;
+            case DISABLED:
+                setPosition(0.5);
                 break;
         }
-    }
-
-    private void trackAngle(double targetRadians) {
-        double currentRadians = getAngle();
-        if (!Double.isFinite(currentRadians)) {
-            pid.reset();
-            setPower(0);
-            return;
-        }
-        pid.setPID(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
-        double angleError = MathUtils.normalizeRadians(targetRadians - currentRadians, false);
-        setPower(Range.clip(pid.calculate(0, angleError) + Math.copySign(TurretConstants.kF, angleError), -1, 1));
     }
 
     private void calculateTurret() {
@@ -95,18 +76,19 @@ public class Turret implements Subsystem {
         aimUpdateCount++;
     }
 
-    private void setPower(double power) {
-        turretServo1.setPower(power);
-        turretServo2.setPower(power);
-        turretServo3.setPower(power);
+    private void setAngle(double radians) {
+        setPosition(TurretConstants.forwardPos + Math.toDegrees(radians) * TurretConstants.posPerDeg);
     }
 
     private void setPosition(double position) {
-        setPower(2 * Range.clip(position, 0, 1) - 1);
+        double clippedPosition = Range.clip(position, 0, 1);
+        turretServo1.setPosition(clippedPosition);
+        turretServo2.setPosition(clippedPosition);
+        turretServo3.setPosition(clippedPosition);
     }
 
-    public void setManualPower(double power) {
-        manualPower = power;
+    public void setManualPosition(double position) {
+        manualPosition = Range.clip(position, 0, 1);
     }
 
     public double getTargetAngle() {
@@ -117,16 +99,16 @@ public class Turret implements Subsystem {
         return aimUpdateCount;
     }
 
-    public double getPower() {
-        return turretServo1.getPower();
+    public double getPosition() {
+        return turretServo1.getPosition();
     }
 
-    public double getServo2Power() {
-        return turretServo2.getPower();
+    public double getServo2Position() {
+        return turretServo2.getPosition();
     }
 
-    public double getServo3Power() {
-        return turretServo3.getPower();
+    public double getServo3Position() {
+        return turretServo3.getPosition();
     }
 
     public double getEncoderVoltage() {
