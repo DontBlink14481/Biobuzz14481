@@ -28,15 +28,16 @@ public class TestTele extends LinearOpMode {
     public static double hood = 0.4;
     public static double turretPosition = 0.5;
     public static Intake.ElementMode element = Intake.ElementMode.POLLEN;
-    public static double x = 0, y = 0, headingDeg = 0;
 
     @Override
     public void runOpMode() {
         MyTelem.init(telemetry);
         Robot robot = new Robot(hardwareMap);
-        RobotStates.shooterState = Shooter.ShooterState.MANUAL;
-        robot.shooter.setTargetRPM(rpm);
-        RobotStates.turretState = Turret.TurretState.DISABLED;
+
+        RobotStates.shooterState = Shooter.ShooterState.AUTO;
+        RobotStates.turretState = Turret.TurretState.SET;
+        robot.follower.setPose(new Pose(72, 72, 0));
+
         GamepadEx driver = new GamepadEx(gamepad1);
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -50,20 +51,18 @@ public class TestTele extends LinearOpMode {
         driver.getGamepadButton(GamepadKeys.Button.CROSS)
                 .whenHeld(new ShootCommand(robot));
 
-        driver.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(() -> robot.follower.setPose(new Pose(x, y, Math.toRadians(headingDeg))));
-
         waitForStart();
 
         while (opModeIsActive()) {
             if (RobotStates.shooterState == Shooter.ShooterState.MANUAL) {
                 robot.shooter.setTargetRPM(rpm);
                 robot.shooter.setHoodPos(hood);
-                robot.intake.setState(Intake.IntakeState.IN);
-                robot.blocker.setState(Blocker.BlockerState.UNBLOCKED);
             }
 
-//            robot.turret.setManualPower(turretPosition);
+            robot.intake.setState(Intake.IntakeState.IN);
+            robot.blocker.setState(Blocker.BlockerState.UNBLOCKED);
+
+//            robot.turret.setManualPosition(turretPosition);
             robot.intake.setElementMode(element);
 
             robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
@@ -75,8 +74,8 @@ public class TestTele extends LinearOpMode {
             MyTelem.addData("pose heading deg", Math.toDegrees(Robot.pose.heading()));
             MyTelem.addData("turret state", RobotStates.turretState);
             MyTelem.addData("goal", Robot.goal);
-//            MyTelem.addData("turret position", robot.turret.getPosition());
-//            MyTelem.addData("turret servo 2 position", robot.turret.getServo2Position());
+            MyTelem.addData("turret position", robot.turret.getPosition());
+            MyTelem.addData("turret servo 2 position", robot.turret.getServo2Position());
             MyTelem.addData("turret error deg", AngleUnit.normalizeDegrees(
                     Math.toDegrees(robot.turret.getTargetAngle() - robot.turret.getAngle())));
             MyTelem.addData("distance in", ShooterCalculator.distance(Robot.pose, Robot.getGoalPose()));
