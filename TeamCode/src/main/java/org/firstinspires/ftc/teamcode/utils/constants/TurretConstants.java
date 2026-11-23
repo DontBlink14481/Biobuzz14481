@@ -5,9 +5,9 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class TurretConstants {
     public static double forwardPos = 0.5;
-    // Turret/servo rotation = (80 / 20) * (28 / 103) = 112 / 103.
+    // Turret/servo rotation = (80 / 20) * (26 / 103) = 96 / 103.
     // Assumes 360 degrees of servo travel across positions 0 through 1.
-    public static double posPerDeg = (20.0 / 80.0) * (103.0 / 28.0) / 360.0;
+    public static double posPerDeg = (20.0 / 80.0) * (103.0 / 26.0) / 360.0;
 
     public static double turretRadiansPerServoRadian() {
         return 1.0 / (360.0 * posPerDeg);
