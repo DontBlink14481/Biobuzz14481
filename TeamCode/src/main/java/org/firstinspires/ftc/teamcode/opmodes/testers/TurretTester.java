@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.ShooterCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
@@ -25,6 +27,8 @@ public class TurretTester extends LinearOpMode {
         RobotStates.turretState = Turret.TurretState.OFF;
         robot.turret.periodic();
         robot.follower.setPose(new Pose(72, 72, 0));
+        new ShooterCommand(robot, Shooter.ShooterState.OFF).schedule();
+
         waitForStart();
 
         while (opModeIsActive()) {
