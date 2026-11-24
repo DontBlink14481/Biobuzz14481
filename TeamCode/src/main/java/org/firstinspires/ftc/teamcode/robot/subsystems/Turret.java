@@ -72,7 +72,7 @@ public class Turret implements Subsystem {
     }
 
     private void calculateTurret() {
-        targetAngleRad = ShooterCalculator.calculate(Robot.pose, Robot.getGoalPose()).turretAngleRad;
+        targetAngleRad = ShooterCalculator.calculate(Robot.pose, Robot.getTurretGoalPose()).turretAngleRad;
         aimUpdateCount++;
     }
 

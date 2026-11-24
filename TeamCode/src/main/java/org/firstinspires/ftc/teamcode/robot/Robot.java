@@ -7,6 +7,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.skeletonarmy.marrow.zones.PolygonZone;
 
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
+import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 import org.firstinspires.ftc.teamcode.utils.zones.ParkZone;
 import org.firstinspires.ftc.teamcode.utils.zones.ShootingZone;
 
@@ -110,6 +112,14 @@ public class Robot {
 
     public static Pose getGoalPose() {
         return goal == Goal.RIGHT ? RobotConstants.rightGoal : RobotConstants.leftGoal;
+    }
+
+    public static Pose getTurretGoalPose() {
+        Pose goal = getGoalPose();
+//        double side = (pose.x() - goal.x()) / Math.hypot(goal.x() - pose.x(), goal.y() - pose.y()); //sin theta
+        double tan = (pose.x() - goal.x()) / Math.abs(goal.y() - pose.y());
+        double shift = Range.clip(ShooterConstants.sideAim * tan, -8, 8);
+        return new Pose(goal.x() + shift, goal.y());
     }
 
     public static boolean inShootingZone() {
