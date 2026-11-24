@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 @TeleOp(name="MainTele")
 public class MainTele extends LinearOpMode {
     public static double parkTime=5;
-    private boolean manualHood=false;
+    private boolean manualHood = false;
     public static double driveExpo=2;
     public static double hoodPos=(ShooterConstants.hoodMin+ShooterConstants.hoodMax)/2;
     public Intake.ElementMode elementMode=Intake.ElementMode.DETECT;
@@ -62,7 +62,7 @@ public class MainTele extends LinearOpMode {
 
         operator.getGamepadButton(GamepadKeys.Button.CROSS)
                 .whenPressed(new ParallelCommandGroup(
-                        new TurretCommand(robot, Turret.TurretState.CONTINUOUS),
+                        new TurretCommand(robot, Turret.TurretState.SET),
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
                                         new InstantCommand(() -> robot.shooter.setHoodPos(hoodPos)),
@@ -72,14 +72,14 @@ public class MainTele extends LinearOpMode {
                                 () -> manualHood
                         )
                 ))
-                .whenHeld(new ShootCommand(robot))
-                .whenReleased(new ParallelCommandGroup(
-                        new TurretCommand(robot, Turret.TurretState.OFF),
-                        new ShooterCommand(robot, Shooter.ShooterState.OFF)
-                ));
+                .whenHeld(new ShootCommand(robot));
+//                .whenReleased(new ParallelCommandGroup(
+//                        new TurretCommand(robot, Turret.TurretState.OFF),
+//                        new ShooterCommand(robot, Shooter.ShooterState.OFF)
+//                ));
 
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)
-                .whenPressed(new InstantCommand(() -> manualHood=!manualHood));
+                .whenPressed(new InstantCommand(() -> manualHood = !manualHood));
 
         AllianceSelection allianceSelection = new AllianceSelection(this);
         while(opModeInInit()) {

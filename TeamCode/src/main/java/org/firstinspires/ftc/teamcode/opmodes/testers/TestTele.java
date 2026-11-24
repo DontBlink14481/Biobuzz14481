@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.calculations.ShooterCalculator;
 import org.firstinspires.ftc.teamcode.robot.calculations.CalculationResult;
+import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.BlockerCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Blocker;
@@ -27,15 +28,16 @@ public class TestTele extends LinearOpMode {
     public static double rpm = 2500;
     public static double hood = 0.4;
     public static double turretPosition = 0.5;
-    public static Intake.ElementMode element = Intake.ElementMode.POLLEN;
+    public static Intake.ElementMode element = Intake.ElementMode.DETECT;
 
     @Override
     public void runOpMode() {
         MyTelem.init(telemetry);
         Robot robot = new Robot(hardwareMap);
 
-        RobotStates.shooterState = Shooter.ShooterState.AUTO;
+        RobotStates.shooterState = Shooter.ShooterState.MANUAL;
         RobotStates.turretState = Turret.TurretState.SET;
+
         robot.follower.setPose(new Pose(72, 72, 0));
 
         GamepadEx driver = new GamepadEx(gamepad1);
@@ -57,12 +59,14 @@ public class TestTele extends LinearOpMode {
             if (RobotStates.shooterState == Shooter.ShooterState.MANUAL) {
                 robot.shooter.setTargetRPM(rpm);
                 robot.shooter.setHoodPos(hood);
+//                robot.blocker.setState(Blocker.BlockerState.UNBLOCKED);
             }
 
-            robot.intake.setState(Intake.IntakeState.IN);
-            robot.blocker.setState(Blocker.BlockerState.UNBLOCKED);
+//            robot.intake.setState(Intake.IntakeState.IN);
 
 //            robot.turret.setManualPosition(turretPosition);
+            if (!gamepad1.cross) RobotStates.blockerState = Blocker.BlockerState.BLOCKED;
+
             robot.intake.setElementMode(element);
 
             robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
@@ -81,7 +85,7 @@ public class TestTele extends LinearOpMode {
             MyTelem.addData("distance in", ShooterCalculator.distance(Robot.pose, Robot.getGoalPose()));
             MyTelem.addData("turret target deg", Math.toDegrees(robot.turret.getTargetAngle()));
             MyTelem.addData("calculated target deg", Math.toDegrees(
-                    ShooterCalculator.calculate(Robot.pose, Robot.getGoalPose()).turretAngleRad));
+                    ShooterCalculator.calculate(Robot.pose, Robot.getTurretGoalPose()).turretAngleRad));
             MyTelem.addData("turret aim updates", robot.turret.getAimUpdateCount());
             MyTelem.addData("goal dx in", Robot.getGoalPose().x() - Robot.pose.x());
             MyTelem.addData("goal dy in", Robot.getGoalPose().y() - Robot.pose.y());
