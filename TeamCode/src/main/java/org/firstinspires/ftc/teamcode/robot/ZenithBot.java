@@ -62,7 +62,7 @@ public class ZenithBot implements ZenithRobot {
 
     @Override
     public Pose2d mirror(Pose2d pose) {
-        return new Pose2d(-pose.getX(), -pose.getY(), new Rotation2d(pose.getHeading() + Math.PI));
+        return pose;
     }
 
     @Override

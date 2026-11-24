@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.Subsystem;
 
 import org.firstinspires.ftc.teamcode.utils.constants.IntakeConstants;
+import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 
 public class Intake implements Subsystem {
@@ -66,7 +67,7 @@ public class Intake implements Subsystem {
                 break;
             case TRANSFER_ONLY:
                 intakeMotor.setPower(0);
-                transferMotor.setPower(IntakeConstants.transferInPower);
+                transferMotor.setPower(IntakeConstants.transferInPower * RobotConstants.nominalVoltage / RobotConstants.voltage);
                 break;
             case OFF:
                 intakeMotor.setPower(0);
