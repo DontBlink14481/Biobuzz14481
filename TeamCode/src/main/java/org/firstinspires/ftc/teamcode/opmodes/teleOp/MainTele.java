@@ -32,6 +32,7 @@ import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 @TeleOp(name="MainTele")
 public class MainTele extends LinearOpMode {
     public static double parkTime=5;
+    public static double startX = 72, startY = 72, startHeadingDeg = 0;
     private boolean manualHood = false;
     public static double driveExpo=2;
     public static double hoodPos=(ShooterConstants.hoodMin+ShooterConstants.hoodMax)/2;
@@ -47,6 +48,7 @@ public class MainTele extends LinearOpMode {
         TimerEx timer = new TimerEx(120);
         Pose startPose = Robot.pose;
         Robot robot = new Robot(hardwareMap);
+        if (startPose.x() == 0 && startPose.y() == 0) startPose = new Pose(startX, startY, Math.toRadians(startHeadingDeg));
         robot.follower.setPose(startPose);
 
         GamepadEx driver = new GamepadEx(gamepad1);

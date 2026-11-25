@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.testers;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.follower.ManualDrive;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -35,7 +36,7 @@ public class TestTele extends LinearOpMode {
         MyTelem.init(telemetry);
         Robot robot = new Robot(hardwareMap);
 
-        RobotStates.shooterState = Shooter.ShooterState.MANUAL;
+        RobotStates.shooterState = Shooter.ShooterState.AUTO;
         RobotStates.turretState = Turret.TurretState.SET;
 
         robot.follower.setPose(new Pose(72, 72, 0));
@@ -65,7 +66,7 @@ public class TestTele extends LinearOpMode {
 //            robot.intake.setState(Intake.IntakeState.IN);
 
 //            robot.turret.setManualPosition(turretPosition);
-            if (!gamepad1.cross) RobotStates.blockerState = Blocker.BlockerState.BLOCKED;
+            if (!gamepad1.cross) RobotStates.blockerState = Blocker.BlockerState.BLOCKED; //double check the real reason we need this cuz i have no idea its not working without it hough
 
             robot.intake.setElementMode(element);
 
