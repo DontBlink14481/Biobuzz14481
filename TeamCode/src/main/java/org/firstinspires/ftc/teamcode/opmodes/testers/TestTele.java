@@ -73,6 +73,8 @@ public class TestTele extends LinearOpMode {
             robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
 
             CalculationResult shot = robot.shooter.lastResult;
+            Pose turretPose = Turret.pose;
+            Pose goalPose = Robot.getGoalPose();
             MyTelem.addData("pose", Robot.pose);
             MyTelem.addData("pose x in", Robot.pose.x());
             MyTelem.addData("pose y in", Robot.pose.y());
@@ -83,13 +85,12 @@ public class TestTele extends LinearOpMode {
             MyTelem.addData("turret servo 2 position", robot.turret.getServo2Position());
             MyTelem.addData("turret error deg", AngleUnit.normalizeDegrees(
                     Math.toDegrees(robot.turret.getTargetAngle() - robot.turret.getAngle())));
-            MyTelem.addData("distance in", ShooterCalculator.distance(Robot.pose, Robot.getGoalPose()));
+            MyTelem.addData("distance in", ShooterCalculator.distance(turretPose, goalPose));
             MyTelem.addData("turret target deg", Math.toDegrees(robot.turret.getTargetAngle()));
-            MyTelem.addData("calculated target deg", Math.toDegrees(
-                    ShooterCalculator.calculate(Robot.pose, Robot.getTurretGoalPose()).turretAngleRad));
             MyTelem.addData("turret aim updates", robot.turret.getAimUpdateCount());
-            MyTelem.addData("goal dx in", Robot.getGoalPose().x() - Robot.pose.x());
-            MyTelem.addData("goal dy in", Robot.getGoalPose().y() - Robot.pose.y());
+            MyTelem.addData("goal dx in", goalPose.x() - turretPose.x());
+            MyTelem.addData("goal dy in", goalPose.y() - turretPose.y());
+            MyTelem.addData("turret field heading deg", Math.toDegrees(turretPose.heading()));
             MyTelem.addData("turret angle deg", Math.toDegrees(robot.turret.getAngle()));
             MyTelem.addData("turret encoder voltage", robot.turret.getEncoderVoltage());
             MyTelem.addData("turret encoder 2 voltage", robot.turret.getEncoder2Voltage());

@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.utils.constants.TurretConstants.tar
 import org.firstinspires.ftc.teamcode.utils.constants.HardwareConstants;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.util.MathUtils;
 
@@ -22,6 +23,8 @@ public class Turret implements Subsystem {
 
     private final Servo turretServo1, turretServo2, turretServo3;
     private final AnalogInput turretEncoder2;
+
+    public static Pose pose = new Pose(0, 0, 0);
 
     private double targetAngleRad = 0;
     private double manualPosition = 0.5;
@@ -42,6 +45,14 @@ public class Turret implements Subsystem {
 
     @Override
     public void periodic() {
+        Pose robotPose = Robot.pose;
+        double heading = robotPose.heading();
+        pose = new Pose(
+                robotPose.x() - TurretConstants.distFromCenter * Math.cos(heading),
+                robotPose.y() - TurretConstants.distFromCenter * Math.sin(heading),
+                heading + getAngle()
+        );
+
         setState(RobotStates.turretState);
     }
 
@@ -72,7 +83,8 @@ public class Turret implements Subsystem {
     }
 
     private void calculateTurret() {
-        targetAngleRad = ShooterCalculator.calculate(Robot.pose, Robot.getTurretGoalPose()).turretAngleRad;
+        double targetFieldHeading = ShooterCalculator.calculate(pose, Robot.getGoalPose()).turretAngleRad;
+        targetAngleRad = MathUtils.normalizeRadians(targetFieldHeading - Robot.pose.heading(), false);
         aimUpdateCount++;
     }
 

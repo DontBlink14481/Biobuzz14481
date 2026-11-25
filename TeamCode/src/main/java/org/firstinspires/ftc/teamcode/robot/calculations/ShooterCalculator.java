@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.util.Range;
 
-import com.seattlesolvers.solverslib.util.MathUtils;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 
 @Config
@@ -26,15 +25,14 @@ public class ShooterCalculator {
     private static final double[] DISTANCE = {30, 40, 50, 60};
     private static final double[] HOOD = {0.68, 0.63, 0.60, 0.62};
 
-    public static double distance(Pose robotPose, Pose goalPose) {
-        return Math.hypot(goalPose.x() - robotPose.x(), goalPose.y() - robotPose.y());
+    public static double distance(Pose turretPose, Pose goalPose) {
+        return Math.hypot(goalPose.x() - turretPose.x(), goalPose.y() - turretPose.y());
     }
 
-    public static CalculationResult calculate(Pose robotPose, Pose goalPose) {
-        double dx = goalPose.x() - robotPose.x();
-        double dy = goalPose.y() - robotPose.y();
-        double turretAngle = MathUtils.normalizeRadians(Math.atan2(dy, dx) - robotPose.heading(), false);
-
+    public static CalculationResult calculate(Pose turretPose, Pose goalPose) {
+        double dx = goalPose.x() - turretPose.x();
+        double dy = goalPose.y() - turretPose.y();
+        double turretAngleRad = Math.atan2(dy, dx);
         double d = Math.hypot(dx, dy) + ShooterConstants.distanceOffset;
         double h = ShooterConstants.goalHeightInches - launchHeight;
         double hood = lookup(HOOD, d);
@@ -42,7 +40,7 @@ public class ShooterCalculator {
 
         // the ball's height at the goal goes up with launch speed, so bisect on rpm
         double low = 0, high = ShooterConstants.maxRPM;
-        if (heightAt(high * speedPerRPM, theta, d) < h) return CalculationResult.invalid(turretAngle);
+        if (heightAt(high * speedPerRPM, theta, d) < h) return CalculationResult.invalid(turretAngleRad);
         for (int i = 0; i < 16; i++) {
             double mid = (low + high) / 2;
             if (heightAt(mid * speedPerRPM, theta, d) < h) low = mid;
@@ -54,7 +52,7 @@ public class ShooterCalculator {
         double max = Math.toRadians(ShooterConstants.hoodMaxDeg);
         double hoodAngle = Range.scale(hood, ShooterConstants.hoodMin, ShooterConstants.hoodMax, min, max);
 
-        return new CalculationResult(hoodAngle, turretAngle, high, true);
+        return new CalculationResult(hoodAngle, turretAngleRad, high, true);
     }
 
     private static double launchAngle(double hood) {

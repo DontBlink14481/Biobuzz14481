@@ -20,6 +20,5 @@ public class ShooterConstants {
     public static double speedPerRPM = 0.076;
     public static double hoodScalar = 0.72;
     public static double distanceOffset = 0;
-    public static double sideAim = 6;
 
 }
