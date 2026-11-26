@@ -87,10 +87,7 @@ public class Robot {
         }
 
         if (RobotStates.pedroState == PedroState.ENABLED) {
-            follower.update();
-            pose = follower.pose();
-            robotZone.setPosition(pose.x(), pose.y());
-            robotZone.setRotation(pose.heading());
+            updatePose();
             driveStopped = false;
         } else if (!driveStopped) {
             follower.drivetrain.stop();
@@ -101,6 +98,14 @@ public class Robot {
 
         CommandScheduler.getInstance().run();
         if (MyTelem.telemetry != null) MyTelem.update();
+    }
+
+    public void updatePose() {
+        follower.update();
+        pose = follower.pose();
+
+        robotZone.setPosition(pose.x(), pose.y());
+        robotZone.setRotation(pose.heading());
     }
 
     public static void updateGoal() {

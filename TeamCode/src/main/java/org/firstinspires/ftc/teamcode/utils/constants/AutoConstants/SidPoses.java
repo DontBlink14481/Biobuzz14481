@@ -6,10 +6,11 @@ import org.firstinspires.ftc.teamcode.utils.DashPose;
 
 @Config
 public class SidPoses {
-    public static DashPose start = new DashPose(56, 8, 90);
-    public static DashPose point1 = new DashPose(8.75, 6.75, 180);
 
-    public static DashPose point2 = new DashPose(42, 132, 90);
+    public static DashPose start = new DashPose(40, 16, 180);
+    public static DashPose point1 = new DashPose(9.25, 6.75, 180);
+
+    public static DashPose point2 = new DashPose(42, 128, 90);
     public static DashPose point2Control1 = new DashPose(24, 6.75);
     public static DashPose point2Control2 = new DashPose(42, 120);
     public static double point2TurnFrom = 180, point2TurnTo = 90;
@@ -31,7 +32,7 @@ public class SidPoses {
     public static DashPose point7Control1 = new DashPose(50, 40);
     public static DashPose point7Control2 = new DashPose(38, 40);
 
-    public static DashPose point8 = new DashPose(9, 42, 180);
+    public static DashPose point8 = new DashPose(12, 42, 180);
     public static DashPose point8Control1 = new DashPose(38, 28);
     public static DashPose point8Control2 = new DashPose(24, 42);
     public static double point8TurnFrom = 270, point8TurnMid = 150, point8TurnTo = 180;

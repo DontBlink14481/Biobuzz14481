@@ -8,8 +8,6 @@ import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
-import com.seattlesolvers.solverslib.command.Commands;
-import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
@@ -35,7 +33,7 @@ public class SidThreeTip extends OpMode {
     CommandGroupBase auto;
 
     public static long flowerIntakeMs = 2000;
-    public static boolean sotm = false;
+    public static boolean sotm = true;
 
     @Override
     public void init() {
@@ -62,12 +60,12 @@ public class SidThreeTip extends OpMode {
             );
 
             auto = new ParallelCommandGroup(
-                    paths,
+                    paths/*,
                     new ConditionalCommand(
                             new ShootCommand(robot),
                             Commands.none(),
                             Robot::inShootingZone
-                    ).perpetually()
+                    ).perpetually()*/
             );
 
             return;
@@ -101,7 +99,7 @@ public class SidThreeTip extends OpMode {
     @Override
     public void init_loop() {
         allianceSelection.update();
-        robot.update();
+        robot.updatePose();
 
         MyTelem.addData("Pose", Robot.pose);
         MyTelem.addData("Alliance", Robot.alliance);
@@ -110,6 +108,7 @@ public class SidThreeTip extends OpMode {
 
     @Override
     public void start() {
+        auto.schedule();
         timer.start();
     }
 
@@ -129,7 +128,7 @@ public class SidThreeTip extends OpMode {
 
     public static class ThreeSweep {
         public static Path path1() {
-            return Paths.line(start.pose(), point1.pose()).constant(point1.pose());
+            return Paths.line(Robot.pose, point1.pose()).constant(point1.pose());
         }
 
         public static Path path2() {

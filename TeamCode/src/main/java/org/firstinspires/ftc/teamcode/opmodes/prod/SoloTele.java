@@ -65,22 +65,25 @@ public class SoloTele extends LinearOpMode {
                 .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
 
         operator.getGamepadButton(GamepadKeys.Button.CROSS)
-                .whenPressed(new ParallelCommandGroup(
-                        new TurretCommand(robot, Turret.TurretState.SET),
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(() -> robot.shooter.setHoodPos(hoodPos)),
-                                        new ShooterCommand(robot, Shooter.ShooterState.MANUAL)
-                                ),
-                                new ShooterCommand(robot, Shooter.ShooterState.AUTO),
-                                () -> manualHood
-                        )
-                ))
-                .whenHeld(new ShootCommand(robot))
-                .whenReleased(new ParallelCommandGroup(
-                        new TurretCommand(robot, Turret.TurretState.OFF),
-                        new ShooterCommand(robot, Shooter.ShooterState.OFF)
-                ));
+                .whenHeld(new ShootCommand(robot));
+
+//        operator.getGamepadButton(GamepadKeys.Button.CROSS)
+//                .whenPressed(new ParallelCommandGroup(
+//                        new TurretCommand(robot, Turret.TurretState.SET),
+//                        new ConditionalCommand(
+//                                new SequentialCommandGroup(
+//                                        new InstantCommand(() -> robot.shooter.setHoodPos(hoodPos)),
+//                                        new ShooterCommand(robot, Shooter.ShooterState.MANUAL)
+//                                ),
+//                                new ShooterCommand(robot, Shooter.ShooterState.AUTO),
+//                                () -> manualHood
+//                        )
+//                ))
+//                .whenHeld(new ShootCommand(robot))
+//                .whenReleased(new ParallelCommandGroup(
+//                        new TurretCommand(robot, Turret.TurretState.OFF),
+//                        new ShooterCommand(robot, Shooter.ShooterState.OFF)
+//                ));
 
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)
                 .whenPressed(new InstantCommand(() -> manualHood=!manualHood));
