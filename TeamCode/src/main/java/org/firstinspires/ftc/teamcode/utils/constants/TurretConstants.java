@@ -24,6 +24,5 @@ public class TurretConstants {
     public static double kF = 0.2;
     public static double targetAngleTesting = 0;
 
-    public static double distFromCenter = 3; // TODO: check cad
-
+    public static double distFromCenter = 0;
 }
