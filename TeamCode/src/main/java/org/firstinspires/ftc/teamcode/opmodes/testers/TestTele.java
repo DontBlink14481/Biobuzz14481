@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
+import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 
 @Config
@@ -42,6 +43,9 @@ public class TestTele extends LinearOpMode {
         robot.follower.setPose(new Pose(72, 72, 0));
 
         GamepadEx driver = new GamepadEx(gamepad1);
+
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(() -> robot.follower.setPose(RobotConstants.resetPose));
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
@@ -70,8 +74,13 @@ public class TestTele extends LinearOpMode {
 
             robot.intake.setElementMode(element);
 
-            robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
-
+//            robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            ManualDrive.driveOrHold(
+                    robot.follower,
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x,
+                    -gamepad1.right_stick_x
+            );
             CalculationResult shot = robot.shooter.lastResult;
             Pose turretPose = Turret.pose;
             Pose goalPose = Robot.getGoalPose();

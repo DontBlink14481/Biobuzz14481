@@ -38,7 +38,7 @@ public class ShooterCalculator {
         double hood = lookup(HOOD, d);
         double theta = Math.toRadians(launchAngle(hood));
 
-        // the ball's height at the goal goes up with launch speed, so bisect on rpm
+        // (monotomic function so we can binary search) the ball's height at the goal goes up with launch speed, so bisect on rpm
         double low = 0, high = ShooterConstants.maxRPM;
         if (heightAt(high * speedPerRPM, theta, d) < h) return CalculationResult.invalid(turretAngleRad);
         for (int i = 0; i < 16; i++) {
@@ -60,7 +60,7 @@ public class ShooterCalculator {
         return Range.scale(hood, 0.66, 0.71, angle66, angle71);
     }
 
-    // straight line between the two nearest distances, held flat past the ends
+    // lienar regression for distance
     private static double lookup(double[] values, double d) {
         if (d <= DISTANCE[0]) return values[0];
         for (int i = 1; i < DISTANCE.length; i++) {
