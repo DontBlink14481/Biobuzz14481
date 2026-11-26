@@ -136,7 +136,7 @@ public class SidThreeTip extends OpMode {
 
     public static class ThreeSweep {
         public static Path path1() {
-            return Paths.line(Robot.pose, point1.pose()).constant(point1.pose());
+            return Paths.curve(start.pose(), point1Control1.pose(), point1Control2.pose(), point1.pose()).heading(Interpolator.piecewise().until(0.5691, Interpolator.linear(point1.pose(point1TurnFrom), point1.pose(point1TurnMid))).until(1, Interpolator.linear(point1.pose(point1TurnMid), point1.pose(point1TurnTo))));
         }
 
         public static Path path2() {
