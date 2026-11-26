@@ -40,7 +40,7 @@ public class TestTele extends LinearOpMode {
         RobotStates.shooterState = Shooter.ShooterState.AUTO;
         RobotStates.turretState = Turret.TurretState.SET;
 
-        robot.follower.setPose(new Pose(72, 72, 0));
+//        robot.follower.setPose(new Pose(72, 72, 0));
 
         GamepadEx driver = new GamepadEx(gamepad1);
 
@@ -74,13 +74,13 @@ public class TestTele extends LinearOpMode {
 
             robot.intake.setElementMode(element);
 
-//            robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
-            ManualDrive.driveOrHold(
-                    robot.follower,
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x
-            );
+            robot.follower.manual(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+//            ManualDrive.driveOrHold(
+//                    robot.follower,
+//                    -gamepad1.left_stick_y,
+//                    -gamepad1.left_stick_x,
+//                    -gamepad1.right_stick_x
+//            );
             CalculationResult shot = robot.shooter.lastResult;
             Pose turretPose = Turret.pose;
             Pose goalPose = Robot.getGoalPose();

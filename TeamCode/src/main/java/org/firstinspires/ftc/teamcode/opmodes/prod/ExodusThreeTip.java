@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes.prod;
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.ExodusPoses.*;
 
 import com.pedropathing.api.Paths;
-import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -23,7 +21,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 
-@Config
 @Autonomous
 public class ExodusThreeTip extends OpMode {
 
@@ -37,7 +34,6 @@ public class ExodusThreeTip extends OpMode {
 
     public static long flowerIntakeMs = 2000;
     public static boolean sotm = true;
-    public static long pathTimeoutMs = 3000;
 
     @Override
     public void init() {
@@ -52,14 +48,14 @@ public class ExodusThreeTip extends OpMode {
         if (sotm) {
 
             SequentialCommandGroup paths = new SequentialCommandGroup(
-                    follow(Exodus.path1()),
-                    follow(Exodus.path2()),
-                    follow(Exodus.path3()),
-                    follow(Exodus.path4()),
-                    follow(Exodus.path5()),
-                    follow(Exodus.path6()),
-                    follow(Exodus.path7()),
-                    follow(Exodus.path8())
+                    new FollowPathCommand(robot.follower, Exodus.path1()),
+                    new FollowPathCommand(robot.follower, Exodus.path2()),
+                    new FollowPathCommand(robot.follower, Exodus.path3()),
+                    new FollowPathCommand(robot.follower, Exodus.path4()),
+                    new FollowPathCommand(robot.follower, Exodus.path5()),
+                    new FollowPathCommand(robot.follower, Exodus.path6()),
+                    new FollowPathCommand(robot.follower, Exodus.path7()),
+                    new FollowPathCommand(robot.follower, Exodus.path8())
             );
 
             auto = new ParallelCommandGroup(
@@ -75,28 +71,24 @@ public class ExodusThreeTip extends OpMode {
         }
 
         auto = new SequentialCommandGroup(
-                new ShootCommand(robot),
+                new ShootCommand(robot, 4),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                follow(Exodus.path1()),
-                follow(Exodus.path2()),
-                new ShootCommand(robot),
+                new FollowPathCommand(robot.follower, Exodus.path1()),
+                new FollowPathCommand(robot.follower, Exodus.path2()),
+                new ShootCommand(robot, 4),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new ShootCommand(robot),
-                follow(Exodus.path3()),
+                new ShootCommand(robot, 4),
+                new FollowPathCommand(robot.follower, Exodus.path3()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                follow(Exodus.path4()),
-                follow(Exodus.path5()),
-                follow(Exodus.path6()),
-                new ShootCommand(robot),
+                new FollowPathCommand(robot.follower, Exodus.path4()),
+                new FollowPathCommand(robot.follower, Exodus.path5()),
+                new FollowPathCommand(robot.follower, Exodus.path6()),
+                new ShootCommand(robot, 4),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
-                follow(Exodus.path7()),
-                new ShootCommand(robot),
-                follow(Exodus.path8())
+                new FollowPathCommand(robot.follower, Exodus.path7()),
+                new ShootCommand(robot, 4),
+                new FollowPathCommand(robot.follower, Exodus.path8())
         );
-    }
-
-    private Command follow(Path path) {
-        return new FollowPathCommand(robot.follower, path).withTimeout(pathTimeoutMs);
     }
 
     @Override

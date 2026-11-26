@@ -35,7 +35,7 @@ public class SidPoses {
     public static DashPose point7Control1 = new DashPose(50, 40);
     public static DashPose point7Control2 = new DashPose(38, 40);
 
-    public static DashPose point8 = new DashPose(12, 42, 180);
+    public static DashPose point8 = new DashPose(14, 42, 180);
     public static DashPose point8Control1 = new DashPose(38, 28);
     public static DashPose point8Control2 = new DashPose(24, 42);
     public static double point8TurnFrom = 270, point8TurnMid = 150, point8TurnTo = 180;

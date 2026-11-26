@@ -23,7 +23,7 @@ public class ExodusPoses {
     public static DashPose point5 = new DashPose(28, 14, 90);
     public static double point5TurnFrom = 180;
 
-    public static DashPose point6 = new DashPose(12, 42, 180);
+    public static DashPose point6 = new DashPose(14, 42, 180);
     public static DashPose point6Control1 = new DashPose(28, 42);
 
     public static DashPose point7 = new DashPose(30, 14, 90);

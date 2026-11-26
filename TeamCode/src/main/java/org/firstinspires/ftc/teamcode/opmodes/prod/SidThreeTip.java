@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
+import com.seattlesolvers.solverslib.command.Commands;
+import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
@@ -20,8 +22,11 @@ import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCo
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
+import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 
 @Config
 @Autonomous
@@ -36,8 +41,8 @@ public class SidThreeTip extends OpMode {
     CommandGroupBase auto;
 
     public static long flowerIntakeMs = 2000;
-    public static boolean sotm = true;
     public static long pathTimeoutMs = 3000;
+    public static boolean sotm = false;
 
     @Override
     public void init() {
@@ -46,6 +51,9 @@ public class SidThreeTip extends OpMode {
         timer = new TimerEx(30);
         robot = new Robot(hardwareMap);
         robot.follower.setPose(start.pose());
+
+        RobotStates.shooterState = Shooter.ShooterState.AUTO;
+        RobotStates.turretState = Turret.TurretState.SET;
 
         allianceSelection = new AllianceSelection(this);
 
@@ -64,25 +72,25 @@ public class SidThreeTip extends OpMode {
             );
 
             auto = new ParallelCommandGroup(
-                    paths/*,
+                    paths,
                     new ConditionalCommand(
                             new ShootCommand(robot),
                             Commands.none(),
                             Robot::inShootingZone
-                    ).perpetually()*/
+                    ).perpetually()
             );
 
             return;
         }
 
         auto = new SequentialCommandGroup(
-                new ShootCommand(robot),
+                new ShootCommand(robot, 4),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 follow(ThreeSweep.path1()),
                 follow(ThreeSweep.path2()),
-                new ShootCommand(robot),
+                new ShootCommand(robot, 4),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new ShootCommand(robot),
+                new ShootCommand(robot, 4),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 follow(ThreeSweep.path3()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
@@ -91,11 +99,11 @@ public class SidThreeTip extends OpMode {
                 follow(ThreeSweep.path5()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 follow(ThreeSweep.path6()),
-                new ShootCommand(robot),
+                new ShootCommand(robot, 4),
                 follow(ThreeSweep.path7()),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
                 follow(ThreeSweep.path8()),
-                new ShootCommand(robot),
+                new ShootCommand(robot, 4),
                 follow(ThreeSweep.path9())
         );
     }
@@ -131,6 +139,7 @@ public class SidThreeTip extends OpMode {
 
     @Override
     public void stop() {
+        robot.updatePose();
         robot.stop();
     }
 
