@@ -31,6 +31,8 @@ public class TwoTipAuto extends OpMode {
 
     private AllianceSelection allianceSelection;
 
+    public static long pathTimeoutMs = 3000;
+
     @Override
     public void init() {
         timer = new ElapsedTime();
@@ -41,13 +43,13 @@ public class TwoTipAuto extends OpMode {
 
         auto = new ParallelCommandGroup(
                 new SequentialCommandGroup(
-                        new FollowPathCommand(robot.follower, paths.Path1),
-                        new FollowPathCommand(robot.follower, paths.Path2),
-                        new FollowPathCommand(robot.follower, paths.Path3),
-                        new FollowPathCommand(robot.follower, paths.Path4),
-                        new FollowPathCommand(robot.follower, paths.Path5),
-                        new FollowPathCommand(robot.follower, paths.Path6),
-                        new FollowPathCommand(robot.follower, paths.Path7)
+                        follow(paths.Path1),
+                        follow(paths.Path2),
+                        follow(paths.Path3),
+                        follow(paths.Path4),
+                        follow(paths.Path5),
+                        follow(paths.Path6),
+                        follow(paths.Path7)
                 ),
                 new ConditionalCommand(
                         new ShootCommand(robot),
@@ -55,6 +57,10 @@ public class TwoTipAuto extends OpMode {
                         Robot::inShootingZone
                 ).perpetually()
         ); // lowk this will only work if sotm is good
+    }
+
+    private Command follow(Path path) {
+        return new FollowPathCommand(robot.follower, path).withTimeout(pathTimeoutMs);
     }
 
     @Override

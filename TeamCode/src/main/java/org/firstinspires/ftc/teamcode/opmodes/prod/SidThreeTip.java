@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.opmodes.prod;
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.SidPoses.*;
 
 import com.pedropathing.api.Paths;
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -21,6 +23,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 
+@Config
 @Autonomous
 public class SidThreeTip extends OpMode {
 
@@ -34,6 +37,7 @@ public class SidThreeTip extends OpMode {
 
     public static long flowerIntakeMs = 2000;
     public static boolean sotm = true;
+    public static long pathTimeoutMs = 3000;
 
     @Override
     public void init() {
@@ -48,15 +52,15 @@ public class SidThreeTip extends OpMode {
         if (sotm) {
 
             SequentialCommandGroup paths = new SequentialCommandGroup(
-                    new FollowPathCommand(robot.follower, ThreeSweep.path1()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path2()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path3()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path4()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path5()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path6()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path7()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path8()),
-                    new FollowPathCommand(robot.follower, ThreeSweep.path9())
+                    follow(ThreeSweep.path1()),
+                    follow(ThreeSweep.path2()),
+                    follow(ThreeSweep.path3()),
+                    follow(ThreeSweep.path4()),
+                    follow(ThreeSweep.path5()),
+                    follow(ThreeSweep.path6()),
+                    follow(ThreeSweep.path7()),
+                    follow(ThreeSweep.path8()),
+                    follow(ThreeSweep.path9())
             );
 
             auto = new ParallelCommandGroup(
@@ -74,26 +78,30 @@ public class SidThreeTip extends OpMode {
         auto = new SequentialCommandGroup(
                 new ShootCommand(robot),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, ThreeSweep.path1()),
-                new FollowPathCommand(robot.follower, ThreeSweep.path2()),
+                follow(ThreeSweep.path1()),
+                follow(ThreeSweep.path2()),
                 new ShootCommand(robot),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
                 new ShootCommand(robot),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, ThreeSweep.path3()),
+                follow(ThreeSweep.path3()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, ThreeSweep.path4()),
+                follow(ThreeSweep.path4()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, ThreeSweep.path5()),
+                follow(ThreeSweep.path5()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, ThreeSweep.path6()),
+                follow(ThreeSweep.path6()),
                 new ShootCommand(robot),
-                new FollowPathCommand(robot.follower, ThreeSweep.path7()),
+                follow(ThreeSweep.path7()),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new FollowPathCommand(robot.follower, ThreeSweep.path8()),
+                follow(ThreeSweep.path8()),
                 new ShootCommand(robot),
-                new FollowPathCommand(robot.follower, ThreeSweep.path9())
+                follow(ThreeSweep.path9())
         );
+    }
+
+    private Command follow(Path path) {
+        return new FollowPathCommand(robot.follower, path).withTimeout(pathTimeoutMs);
     }
 
     @Override
