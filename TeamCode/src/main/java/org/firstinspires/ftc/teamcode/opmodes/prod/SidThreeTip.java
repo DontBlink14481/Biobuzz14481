@@ -50,15 +50,15 @@ public class SidThreeTip extends OpMode {
         if (sotm) {
 
             SequentialCommandGroup paths = new SequentialCommandGroup(
-                    new FollowPathCommand(robot.follower, PathContainer.path1()),
-                    new FollowPathCommand(robot.follower, PathContainer.path2()),
-                    new FollowPathCommand(robot.follower, PathContainer.path3()),
-                    new FollowPathCommand(robot.follower, PathContainer.path4()),
-                    new FollowPathCommand(robot.follower, PathContainer.path5()),
-                    new FollowPathCommand(robot.follower, PathContainer.path6()),
-                    new FollowPathCommand(robot.follower, PathContainer.path7()),
-                    new FollowPathCommand(robot.follower, PathContainer.path8()),
-                    new FollowPathCommand(robot.follower, PathContainer.path9())
+                    new FollowPathCommand(robot.follower, ThreeSweep.path1()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path2()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path3()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path4()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path5()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path6()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path7()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path8()),
+                    new FollowPathCommand(robot.follower, ThreeSweep.path9())
             );
 
             auto = new ParallelCommandGroup(
@@ -74,26 +74,27 @@ public class SidThreeTip extends OpMode {
         }
 
         auto = new SequentialCommandGroup(
-                new FollowPathCommand(robot.follower, PathContainer.path1()),
                 new ShootCommand(robot),
-                new FollowPathCommand(robot.follower, PathContainer.path2()),
+                new IntakeCommand(robot, Intake.IntakeState.IN),
+                new FollowPathCommand(robot.follower, ThreeSweep.path1()),
+                new FollowPathCommand(robot.follower, ThreeSweep.path2()),
                 new ShootCommand(robot),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
                 new ShootCommand(robot),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, PathContainer.path3()),
+                new FollowPathCommand(robot.follower, ThreeSweep.path3()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, PathContainer.path4()),
+                new FollowPathCommand(robot.follower, ThreeSweep.path4()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, PathContainer.path5()),
+                new FollowPathCommand(robot.follower, ThreeSweep.path5()),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, PathContainer.path6()),
-                new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, PathContainer.path7()),
-                new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new FollowPathCommand(robot.follower, PathContainer.path8()),
+                new FollowPathCommand(robot.follower, ThreeSweep.path6()),
                 new ShootCommand(robot),
-                new FollowPathCommand(robot.follower, PathContainer.path9())
+                new FollowPathCommand(robot.follower, ThreeSweep.path7()),
+                new IntakeForTimeCommand(robot, flowerIntakeMs),
+                new FollowPathCommand(robot.follower, ThreeSweep.path8()),
+                new ShootCommand(robot),
+                new FollowPathCommand(robot.follower, ThreeSweep.path9())
         );
     }
 
@@ -126,7 +127,7 @@ public class SidThreeTip extends OpMode {
         robot.stop();
     }
 
-    public static class PathContainer {
+    public static class ThreeSweep {
 
         private static final PoseFactory poseFactory = PoseFactory.degrees();
 
