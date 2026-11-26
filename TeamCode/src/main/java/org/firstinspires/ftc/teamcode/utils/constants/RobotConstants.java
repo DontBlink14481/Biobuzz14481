@@ -15,6 +15,8 @@ public class RobotConstants {
     public static double pollenDiameter = 2.8;
     public static double nectarDiameter = 3.6;
 
+    public static Pose resetPose = new Pose(6.75, 6.75, Math.toRadians(0));
+
     public static Pose rightGoal = new Pose(58, 55);
     public static Pose rightAim = new Pose(58, 60.2);
     public static Pose leftAim = new Pose(58, 81.3);
