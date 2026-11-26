@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
+import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 
@@ -50,7 +51,10 @@ public class SoloTele extends LinearOpMode {
         robot.follower.setPose(startPose);
 
         GamepadEx driver = new GamepadEx(gamepad1);
-        GamepadEx operator=new GamepadEx(gamepad2);
+        GamepadEx operator = new GamepadEx(gamepad2);
+
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                        .whenPressed(() -> robot.follower.setPose(RobotConstants.resetPose));
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
@@ -62,7 +66,7 @@ public class SoloTele extends LinearOpMode {
 
         operator.getGamepadButton(GamepadKeys.Button.CROSS)
                 .whenPressed(new ParallelCommandGroup(
-                        new TurretCommand(robot, Turret.TurretState.CONTINUOUS),
+                        new TurretCommand(robot, Turret.TurretState.SET),
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
                                         new InstantCommand(() -> robot.shooter.setHoodPos(hoodPos)),
@@ -92,12 +96,16 @@ public class SoloTele extends LinearOpMode {
         timer.start();
         while(opModeIsActive()) {
             DrivePowers drivePowers = new DrivePowers(
-                    curve(-driver.getLeftY()),
-                    curve(-driver.getLeftX()),
-                    curve(-driver.getRightX()));
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x,
+                    -gamepad1.right_stick_x
+            );
 
-            if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers);
-            else {robot.follower.manual(drivePowers);}
+            ManualDrive.driveOrHold(robot.follower, drivePowers);
+
+
+//            if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers);
+//            else {robot.follower.manual(drivePowers);}
 
             MyTelem.addData("Alliance", Robot.alliance);
             MyTelem.addData("Goal", Robot.goal);
