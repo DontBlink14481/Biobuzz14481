@@ -88,20 +88,20 @@ public class TwoTipAuto extends OpMode {
         public Path Path1, Path2, Path3, Path4, Path5, Path6, Path7;
 
         public Paths(Follower follower) {
-            Pose startPose = TwoTip.START_POSE;
-            Pose point1 = TwoTip.POINT_1;
-            Pose point2 = TwoTip.POINT_2;
-            Pose point3 = TwoTip.POINT_3;
-            Pose point4 = TwoTip.POINT_4;
-            Pose point5 = TwoTip.POINT_5;
-            Pose point6 = TwoTip.POINT_6;
-            Pose point7 = TwoTip.POINT_7;
-            Pose path3Control = TwoTip.PATH3_CONTROL;
-            Pose path4Control1 = TwoTip.PATH4_CONTROL_1;
-            Pose path4Control2 = TwoTip.PATH4_CONTROL_2;
-            Pose path5Control1 = TwoTip.PATH5_CONTROL_1;
-            Pose path5Control2 = TwoTip.PATH5_CONTROL_2;
-            Pose path6Control = TwoTip.PATH6_CONTROL;
+            Pose startPose = TwoTip.start.pose();
+            Pose point1 = TwoTip.point1.pose();
+            Pose point2 = TwoTip.point2.pose();
+            Pose point3 = TwoTip.point3.pose();
+            Pose point4 = TwoTip.point4.pose();
+            Pose point5 = TwoTip.point5.pose();
+            Pose point6 = TwoTip.point6.pose();
+            Pose point7 = TwoTip.point7.pose();
+            Pose path3Control = TwoTip.path3Control.pose();
+            Pose path4Control1 = TwoTip.path4Control1.pose();
+            Pose path4Control2 = TwoTip.path4Control2.pose();
+            Pose path5Control1 = TwoTip.path5Control1.pose();
+            Pose path5Control2 = TwoTip.path5Control2.pose();
+            Pose path6Control = TwoTip.path6Control.pose();
 
             follower.setPose(startPose);
 
