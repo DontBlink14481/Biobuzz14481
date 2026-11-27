@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.teamcode.utils.DashPose;
 
 @Config
-public class ExodusPoses {
+public class PartnerStealPoses {
 
     public static DashPose start = new DashPose(40, 16, 180);
     public static DashPose point1 = new DashPose(0, 4.5, 180);
