@@ -16,6 +16,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import com.skeletonarmy.marrow.TimerEx;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ResetPoseCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.ShooterCommand;
@@ -54,7 +55,7 @@ public class SoloTele extends LinearOpMode {
         GamepadEx operator = new GamepadEx(gamepad2);
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                        .whenPressed(() -> robot.follower.setPose(RobotConstants.resetPose));
+                        .whenPressed(new ResetPoseCommand(robot));
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))

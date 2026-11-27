@@ -5,6 +5,7 @@ import com.pedropathing.follower.ManualDrive;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.calculations.ShooterCalculator;
 import org.firstinspires.ftc.teamcode.robot.calculations.CalculationResult;
+import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ResetPoseCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.BlockerCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
@@ -37,15 +39,15 @@ public class TestTele extends LinearOpMode {
         MyTelem.init(telemetry);
         Robot robot = new Robot(hardwareMap);
 
-        RobotStates.shooterState = Shooter.ShooterState.AUTO;
+        RobotStates.shooterState = Shooter.ShooterState.MANUAL;
         RobotStates.turretState = Turret.TurretState.SET;
 
-//        robot.follower.setPose(new Pose(72, 72, 0));
+        robot.follower.setPose(new Pose(72, 72, 0));
 
         GamepadEx driver = new GamepadEx(gamepad1);
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(() -> robot.follower.setPose(RobotConstants.resetPose));
+                .whenPressed(new ResetPoseCommand(robot));
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
@@ -108,6 +110,8 @@ public class TestTele extends LinearOpMode {
                 MyTelem.addData("model hood deg", Math.toDegrees(shot.hoodAngleRad));
                 MyTelem.addData("shot valid", shot.valid);
             }
+            MyTelem.addData("pinch servo position", robot.intake.pinchServo.getPosition());
+
             MyTelem.addData("hood pos", robot.shooter.getHoodPos());
             MyTelem.addData("target rpm", robot.shooter.getTargetRPM());
             MyTelem.addData("rpm", robot.shooter.getRPM());

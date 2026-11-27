@@ -16,7 +16,7 @@ public class Intake implements Subsystem {
 
     private final DcMotorEx intakeMotor, transferMotor;
 
-    private final Servo pinchServo;
+    public Servo pinchServo;
     private final DigitalChannel leftBeamBreak, rightBeamBreak;
 
     private ElementMode elementMode = ElementMode.DETECT;
