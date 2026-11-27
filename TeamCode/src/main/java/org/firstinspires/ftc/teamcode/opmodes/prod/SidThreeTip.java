@@ -18,7 +18,6 @@ import com.skeletonarmy.marrow.TimerEx;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.FollowCommand;
-import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.FlowerIntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
@@ -42,8 +41,7 @@ public class SidThreeTip extends OpMode {
 
     CommandGroupBase auto;
 
-    public static long flowerIntakeMs = 2000;
-    public static long pathTimeoutMs = 3000, longPathTimeoutMs = 4500;
+    public static long pathTimeoutMs = 3000, longPathTimeoutMs = 4500, cornerTimeoutMs = 1000;
     public static long shotWaitMs = 0, firstShotWaitMs = 1500;
     public static int shotCount = 4;
     public static double wallShotToleranceInches = 3;
@@ -68,7 +66,7 @@ public class SidThreeTip extends OpMode {
         auto = new SequentialCommandGroup(
                 new ShootCommand(robot, shotCount).afterDelay(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, ThreeSweep.path1(), pathTimeoutMs),
+                new FollowCommand(robot, ThreeSweep.path1(), cornerTimeoutMs),
                 new IntakeCommand(robot, Intake.IntakeState.OFF),
                 new FollowCommand(robot, ThreeSweep.path2(), longPathTimeoutMs).withFlowerOn(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
@@ -79,8 +77,8 @@ public class SidThreeTip extends OpMode {
                 new FollowCommand(robot, ThreeSweep.path4(), pathTimeoutMs).withFlowerOff(),
                 new FollowCommand(robot, ThreeSweep.path5(), longPathTimeoutMs),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new IntakeCommand(robot, Intake.IntakeState.IN),
                 new FollowCommand(robot, ThreeSweep.path8(), pathTimeoutMs).withFlowerOn(),
-                new IntakeForTimeCommand(robot, flowerIntakeMs),
                 new FollowCommand(robot, ThreeSweep.path9(), pathTimeoutMs).withFlowerOff(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, ThreeSweep.path10(), pathTimeoutMs)

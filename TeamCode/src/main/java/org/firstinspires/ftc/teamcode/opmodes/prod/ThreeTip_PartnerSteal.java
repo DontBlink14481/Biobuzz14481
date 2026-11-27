@@ -12,7 +12,6 @@ import com.skeletonarmy.marrow.TimerEx;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.FollowCommand;
-import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
@@ -33,8 +32,7 @@ public class ThreeTip_PartnerSteal extends OpMode {
 
     CommandGroupBase auto;
 
-    public static long flowerIntakeMs = 1000;
-    public static long pathTimeoutMs = 3000, longPathTimeoutMs = 4500;
+    public static long pathTimeoutMs = 3000, longPathTimeoutMs = 4500, cornerTimeoutMs = 1500;
     public static long shotWaitMs = 500, firstShotWaitMs = 1500;
     public static int shotCount = 4;
 
@@ -56,7 +54,7 @@ public class ThreeTip_PartnerSteal extends OpMode {
         auto = new SequentialCommandGroup(
                 new ShootCommand(robot, shotCount).afterDelay(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, PartnerSteal.path1(), pathTimeoutMs),
+                new FollowCommand(robot, PartnerSteal.path1(), cornerTimeoutMs),
                 new IntakeCommand(robot, Intake.IntakeState.OFF),
                 new FollowCommand(robot, PartnerSteal.path2(), longPathTimeoutMs).withFlowerOn(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
@@ -69,6 +67,7 @@ public class ThreeTip_PartnerSteal extends OpMode {
                 new IntakeCommand(robot, Intake.IntakeState.OFF),
                 new FollowCommand(robot, PartnerSteal.path6(), longPathTimeoutMs),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new IntakeCommand(robot, Intake.IntakeState.IN),
                 new FollowCommand(robot, PartnerSteal.path7(), pathTimeoutMs).withFlowerOn(),
                 new FollowCommand(robot, PartnerSteal.path8(), pathTimeoutMs).withFlowerOff(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
@@ -112,11 +111,11 @@ public class ThreeTip_PartnerSteal extends OpMode {
         }
 
         public static Path path2() {
-            return Paths.curve(routePose(point1), routePose(point2Control1), routePose(point2Control2), routePose(point2)).heading(Interpolator.piecewise().until(0.25, Interpolator.linear(routePose(point2, point2TurnFrom), routePose(point2, point2TurnTo))).until(1, Interpolator.tangent));
+            return Paths.curve(routePose(point1), routePose(point2Control1), routePose(point2Control2), routePose(point2)).heading(Interpolator.piecewise().until(0.2, Interpolator.linear(routePose(point2, point2TurnFrom), routePose(point2, point2TurnTo))).until(1, Interpolator.tangent));
         }
 
         public static Path path3() {
-            return Paths.line(routePose(point2), routePose(point4)).constant(routePose(point3));
+            return Paths.line(routePose(point2), routePose(point3)).constant(routePose(point3));
         }
 
         public static Path path4() {
