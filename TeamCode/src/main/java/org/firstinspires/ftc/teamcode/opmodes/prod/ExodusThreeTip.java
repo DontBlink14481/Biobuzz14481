@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.prod;
 
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.ExodusPoses.*;
-
+import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.FlowerIntakeCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import com.pedropathing.api.Paths;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
@@ -88,18 +89,15 @@ public class ExodusThreeTip extends OpMode {
                 shoot(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 follow(Exodus.path1(), pathTimeoutMs),
-                follow(Exodus.path2(), longPathTimeoutMs),
+                followAndPickupFlowers(Exodus.path2(), longPathTimeoutMs),
                 shoot(),
-                new IntakeForTimeCommand(robot, flowerIntakeMs),
-                shoot(),
-                follow(Exodus.path3(), pathTimeoutMs),
+                followAndRetract(Exodus.path3(), pathTimeoutMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 follow(Exodus.path4(), pathTimeoutMs),
                 follow(Exodus.path5(), longPathTimeoutMs),
                 shoot(),
-                follow(Exodus.path6(), pathTimeoutMs),
-                new IntakeForTimeCommand(robot, flowerIntakeMs),
-                follow(Exodus.path7(), pathTimeoutMs),
+                followAndPickupFlowers(Exodus.path6(), pathTimeoutMs),
+                followAndRetract(Exodus.path7(), pathTimeoutMs),
                 shoot(),
                 follow(Exodus.path8(), pathTimeoutMs)
         );
@@ -113,6 +111,23 @@ public class ExodusThreeTip extends OpMode {
         return new SequentialCommandGroup(
                 new WaitCommand(waitMs),
                 new ShootCommand(robot, shotCount)
+        );
+    }
+
+    private Command followAndPickupFlowers(Path path, long timeoutMs) {
+        return new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                        follow(path, timeoutMs),
+                        new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.ON)
+                ),
+                new IntakeForTimeCommand(robot, flowerIntakeMs)
+        );
+    }
+
+    private Command followAndRetract(Path path, long TimeoutMs){
+        return new ParallelCommandGroup(
+                follow(path, TimeoutMs),
+                new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.OFF)
         );
     }
 
