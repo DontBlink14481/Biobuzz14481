@@ -8,9 +8,12 @@ import org.firstinspires.ftc.teamcode.utils.DashPose;
 public class ExodusPoses {
 
     public static DashPose start = new DashPose(40, 16, 180);
-    public static DashPose point1 = new DashPose(9.25, 6.75, 180);
+    public static DashPose point1 = new DashPose(0, 4.5, 180);
+    public static DashPose point1Control1 = new DashPose(40, 20);
+    public static DashPose point1Control2 = new DashPose(15.5, 2.16);
+    public static double point1TurnFrom = 180, point1TurnMid = 205, point1TurnTo = 180;
 
-    public static DashPose point2 = new DashPose(42, 128, 90);
+    public static DashPose point2 = new DashPose(42, 123, 90);
     public static DashPose point2Control1 = new DashPose(24, 6.75);
     public static DashPose point2Control2 = new DashPose(42, 120);
     public static double point2TurnFrom = 180, point2TurnTo = 90;

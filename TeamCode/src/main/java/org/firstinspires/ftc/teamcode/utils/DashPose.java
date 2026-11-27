@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.utils;
 
 import com.pedropathing.math.Pose;
 
-// Pedro's Pose can't be edited on the dashboard, so autos keep their points in these
 public class DashPose {
     public double x, y, headingDeg;
 

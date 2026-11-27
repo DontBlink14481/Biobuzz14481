@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Blocker;
+import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
@@ -15,6 +16,7 @@ public class RobotStates {
     public static Shooter.ShooterState shooterState;
     public static Intake.IntakeState intakeState;
     public static Blocker.BlockerState blockerState;
+    public static FlowerIntake.FlowerIntakeState flowerIntakeState;
 
     static {
         reset();
@@ -26,5 +28,6 @@ public class RobotStates {
         shooterState = Shooter.ShooterState.MANUAL;
         intakeState = Intake.IntakeState.OFF;
         blockerState = Blocker.BlockerState.BLOCKED;
+        flowerIntakeState = FlowerIntake.FlowerIntakeState.OFF;
     }
 }

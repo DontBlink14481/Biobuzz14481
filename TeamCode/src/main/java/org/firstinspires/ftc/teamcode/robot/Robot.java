@@ -12,6 +12,7 @@ import com.skeletonarmy.marrow.zones.PolygonZone;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Blocker;
+import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
@@ -56,6 +57,7 @@ public class Robot {
     public Turret turret;
     public Shooter shooter;
     public Blocker blocker;
+    public FlowerIntake flowerIntake;
 
     public Robot(HardwareMap hardwareMap) {
         CommandScheduler.getInstance().reset();
@@ -68,6 +70,7 @@ public class Robot {
         shooter = new Shooter(hardwareMap);
         shooter.setNectarModeSupplier(intake::inNectarMode);
         blocker = new Blocker(hardwareMap);
+        flowerIntake = new FlowerIntake(hardwareMap);
 
         hubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : hubs) hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -75,7 +78,7 @@ public class Robot {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         RobotConstants.voltage = voltageSensor.getVoltage();
 
-        CommandScheduler.getInstance().registerSubsystem(intake, turret, shooter, blocker);
+        CommandScheduler.getInstance().registerSubsystem(intake, turret, shooter, blocker, flowerIntake);
     }
 
     public void update() {

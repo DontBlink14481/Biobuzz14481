@@ -35,4 +35,7 @@ public class HardwareConstants {
 
     // Blocker
     public static String blocker = "blocker";
+
+    // Flower intake
+    public static String flowerIntake = "flower";
 }

@@ -7,9 +7,13 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
+import com.seattlesolvers.solverslib.command.Commands;
+import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import com.skeletonarmy.marrow.TimerEx;
 
@@ -18,8 +22,11 @@ import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCo
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
+import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 
 @Autonomous
 public class ExodusThreeTip extends OpMode {
@@ -32,8 +39,11 @@ public class ExodusThreeTip extends OpMode {
 
     CommandGroupBase auto;
 
-    public static long flowerIntakeMs = 2000;
-    public static boolean sotm = true;
+    public static long flowerIntakeMs = 1000;
+    public static long pathTimeoutMs = 3000, longPathTimeoutMs = 4500;
+    public static boolean sotm = false;
+    public static long shotWaitMs = 500, firstShotWaitMs = 1500;
+    public static int shotCount = 4;
 
     @Override
     public void init() {
@@ -43,52 +53,71 @@ public class ExodusThreeTip extends OpMode {
         robot = new Robot(hardwareMap);
         robot.follower.setPose(start.pose());
 
+        RobotStates.shooterState = Shooter.ShooterState.AUTO;
+        RobotStates.turretState = Turret.TurretState.SET;
+
+        robot.intake.setElementMode(Intake.ElementMode.DETECT);
+
         allianceSelection = new AllianceSelection(this);
 
         if (sotm) {
-
             SequentialCommandGroup paths = new SequentialCommandGroup(
-                    new FollowPathCommand(robot.follower, Exodus.path1()),
-                    new FollowPathCommand(robot.follower, Exodus.path2()),
-                    new FollowPathCommand(robot.follower, Exodus.path3()),
-                    new FollowPathCommand(robot.follower, Exodus.path4()),
-                    new FollowPathCommand(robot.follower, Exodus.path5()),
-                    new FollowPathCommand(robot.follower, Exodus.path6()),
-                    new FollowPathCommand(robot.follower, Exodus.path7()),
-                    new FollowPathCommand(robot.follower, Exodus.path8())
+                    follow(Exodus.path1(), pathTimeoutMs),
+                    follow(Exodus.path2(), longPathTimeoutMs),
+                    follow(Exodus.path3(), pathTimeoutMs),
+                    follow(Exodus.path4(), pathTimeoutMs),
+                    follow(Exodus.path5(), longPathTimeoutMs),
+                    follow(Exodus.path6(), pathTimeoutMs),
+                    follow(Exodus.path7(), pathTimeoutMs),
+                    follow(Exodus.path8(), pathTimeoutMs)
             );
 
             auto = new ParallelCommandGroup(
-                    paths/*,
+                    paths,
                     new ConditionalCommand(
                             new ShootCommand(robot),
                             Commands.none(),
                             Robot::inShootingZone
-                    ).perpetually()*/
+                    ).perpetually()
             );
 
             return;
         }
 
         auto = new SequentialCommandGroup(
-                new ShootCommand(robot, 4),
+                shoot(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, Exodus.path1()),
-                new FollowPathCommand(robot.follower, Exodus.path2()),
-                new ShootCommand(robot, 4),
+                follow(Exodus.path1(), pathTimeoutMs),
+                follow(Exodus.path2(), longPathTimeoutMs),
+                shoot(),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new ShootCommand(robot, 4),
-                new FollowPathCommand(robot.follower, Exodus.path3()),
+                shoot(),
+                follow(Exodus.path3(), pathTimeoutMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowPathCommand(robot.follower, Exodus.path4()),
-                new FollowPathCommand(robot.follower, Exodus.path5()),
-                new FollowPathCommand(robot.follower, Exodus.path6()),
-                new ShootCommand(robot, 4),
+                follow(Exodus.path4(), pathTimeoutMs),
+                follow(Exodus.path5(), longPathTimeoutMs),
+                shoot(),
+                follow(Exodus.path6(), pathTimeoutMs),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new FollowPathCommand(robot.follower, Exodus.path7()),
-                new ShootCommand(robot, 4),
-                new FollowPathCommand(robot.follower, Exodus.path8())
+                follow(Exodus.path7(), pathTimeoutMs),
+                shoot(),
+                follow(Exodus.path8(), pathTimeoutMs)
         );
+    }
+
+    private Command shoot() {
+        return shoot(shotWaitMs);
+    }
+
+    private Command shoot(long waitMs) {
+        return new SequentialCommandGroup(
+                new WaitCommand(waitMs),
+                new ShootCommand(robot, shotCount)
+        );
+    }
+
+    private Command follow(Path path, long timeoutMs) {
+        return new FollowPathCommand(robot.follower, path).withTimeout(timeoutMs);
     }
 
     @Override
@@ -123,7 +152,7 @@ public class ExodusThreeTip extends OpMode {
 
     public static class Exodus {
         public static Path path1() {
-            return Paths.line(Robot.pose, point1.pose()).constant(point1.pose());
+            return Paths.curve(start.pose(), point1Control1.pose(), point1Control2.pose(), point1.pose()).heading(Interpolator.piecewise().until(0.5, Interpolator.linear(point1.pose(point1TurnFrom), point1.pose(point1TurnMid))).until(1, Interpolator.linear(point1.pose(point1TurnMid), point1.pose(point1TurnTo))));
         }
 
         public static Path path2() {
