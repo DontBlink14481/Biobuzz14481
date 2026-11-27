@@ -24,7 +24,7 @@ public class ShootCommand extends SequentialCommandGroup {
     }
 
     public ShootCommand(Robot robot, int count) {
-        this(robot, new WaitCommand(Math.round(count * IntakeConstants.feedSecondsPerPiece * 1000)));
+        this(robot, new WaitCommand((long) (count * IntakeConstants.feedPerPiece)));
     }
 
     public Command afterDelay(long waitMs) {
@@ -38,13 +38,11 @@ public class ShootCommand extends SequentialCommandGroup {
         this.robot = robot;
         addCommands(
                 new ParallelCommandGroup(
-                        new BlockerCommand(robot, Blocker.BlockerState.BLOCKED),
-                        new IntakeCommand(robot, Intake.IntakeState.OFF)
+                        new BlockerCommand(robot, Blocker.BlockerState.BLOCKED)
                 ),
                 new ParallelRaceGroup(
-//                        new InstantCommand(() -> robot.shooter.setTargetRPM())
                         new WaitUntilCommand(robot.shooter::atRPM),
-                        new WaitCommand(Math.round(ShooterConstants.spinUpTimeoutS * 1000))
+                        new WaitCommand(Math.round(ShooterConstants.spinUpTimeout))
                 ),
                 new ParallelCommandGroup(
                         new BlockerCommand(robot, Blocker.BlockerState.UNBLOCKED),

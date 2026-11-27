@@ -44,7 +44,7 @@ public class SidThreeTip extends OpMode {
 
     public static long flowerIntakeMs = 2000;
     public static long pathTimeoutMs = 3000, longPathTimeoutMs = 4500;
-    public static long shotWaitMs = 500, firstShotWaitMs = 1500;
+    public static long shotWaitMs = 0, firstShotWaitMs = 1500;
     public static int shotCount = 4;
     public static double wallShotToleranceInches = 3;
 
@@ -72,12 +72,11 @@ public class SidThreeTip extends OpMode {
                 new IntakeCommand(robot, Intake.IntakeState.OFF),
                 new FollowCommand(robot, ThreeSweep.path2(), longPathTimeoutMs).withFlowerOn(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
-                new FollowCommand(robot, ThreeSweep.path3(), pathTimeoutMs),
-                new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs)
-                        .alongWith(new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.OFF)),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, ThreeSweep.path4(), pathTimeoutMs),
+                new FollowCommand(robot, ThreeSweep.path3(), pathTimeoutMs),
+                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new IntakeCommand(robot, Intake.IntakeState.IN),
+                new FollowCommand(robot, ThreeSweep.path4(), pathTimeoutMs).withFlowerOff(),
                 new FollowCommand(robot, ThreeSweep.path5(), longPathTimeoutMs),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, ThreeSweep.path8(), pathTimeoutMs).withFlowerOn(),
@@ -126,7 +125,7 @@ public class SidThreeTip extends OpMode {
         }
 
         public static Path path2() {
-            return Paths.curve(routePose(point1), routePose(point2Control1), routePose(point2Control2), routePose(point2)).heading(Interpolator.piecewise().until(0.25, Interpolator.linear(routePose(point2, point2TurnFrom), routePose(point2, point2TurnTo))).until(1, Interpolator.tangent));
+            return Paths.curve(routePose(point1), routePose(point2Control1), routePose(point2Control2), routePose(point2)).heading(Interpolator.piecewise().until(0.2, Interpolator.linear(routePose(point2, point2TurnFrom), routePose(point2, point2TurnTo))).until(1, Interpolator.tangent));
         }
 
         public static Path path3() {
@@ -134,7 +133,7 @@ public class SidThreeTip extends OpMode {
         }
 
         public static Path path4() {
-            return Paths.curve(routePose(point3), routePose(point4Control1), routePose(point4)).heading(Interpolator.piecewise().until(0.4, Interpolator.linear(routePose(point4, point4TurnFrom), routePose(point4, point4TurnTo))).until(1, Interpolator.tangent));
+            return Paths.curve(routePose(point3), routePose(point4Control1), routePose(point4)).heading(Interpolator.piecewise().until(0.3, Interpolator.linear(routePose(point4, point4TurnFrom), routePose(point4, point4TurnTo))).until(1, Interpolator.tangent));
         }
 
         public static Path path5a() {
