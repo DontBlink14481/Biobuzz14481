@@ -11,7 +11,7 @@ public class SidPoses {
     public static DashPose start = new DashPose(40, 16, 180);
     public static DashPose measuredStart = new DashPose(41.25, 18.15, 180);
 
-    public static DashPose point1 = new DashPose(0, 4.5, 180);
+    public static DashPose point1 = new DashPose(9, 4.5, 180);
     public static DashPose point1Control1 = new DashPose(40, 20);
     public static DashPose point1Control2 = new DashPose(15.5, 2.16);
     public static double point1TurnFrom = 180, point1TurnMid = 205, point1TurnTo = 180;
@@ -21,9 +21,9 @@ public class SidPoses {
     public static DashPose point2Control2 = new DashPose(40, 108);
     public static double point2TurnFrom = 180, point2TurnTo = 90;
 
-    public static DashPose point3 = new DashPose(44, 125, 90);
+    public static DashPose point3 = new DashPose(46, 128, 90);
 
-    public static DashPose point4 = new DashPose(12, 106.5, 179.0452);
+    public static DashPose point4 = new DashPose(13, 106.5, 180);
     public static DashPose point4Control1 = new DashPose(42, 106);
     public static double point4TurnFrom = 90, point4TurnTo = 225;
 

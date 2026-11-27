@@ -46,7 +46,7 @@ public class Turret implements Subsystem {
     public void periodic() {
         Pose robotPose = Robot.pose;
         double heading = robotPose.heading();
-        this.pose = new Pose(
+        pose = new Pose(
                 robotPose.x() - TurretConstants.distFromCenter * Math.cos(heading),
                 robotPose.y() - TurretConstants.distFromCenter * Math.sin(heading),
                 heading + getAngle()

@@ -20,7 +20,9 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.FollowCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.FlowerIntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
@@ -56,6 +58,7 @@ public class SidThreeTip extends OpMode {
 
         RobotStates.shooterState = Shooter.ShooterState.AUTO;
         RobotStates.turretState = Turret.TurretState.SET;
+        RobotStates.flowerIntakeState = FlowerIntake.FlowerIntakeState.OFF;
 
         robot.intake.setElementMode(Intake.ElementMode.DETECT);
 
@@ -66,22 +69,17 @@ public class SidThreeTip extends OpMode {
                 new ShootCommand(robot, shotCount).afterDelay(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 new FollowCommand(robot, ThreeSweep.path1(), pathTimeoutMs),
+                new IntakeCommand(robot, Intake.IntakeState.OFF),
                 new FollowCommand(robot, ThreeSweep.path2(), longPathTimeoutMs).withFlowerOn(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, ThreeSweep.path3(), pathTimeoutMs),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
-                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
-                new FollowCommand(robot, ThreeSweep.path4(), pathTimeoutMs).withFlowerOff()
-                        .alongWith(new IntakeCommand(robot, Intake.IntakeState.IN)),
-                new FollowCommand(robot, ThreeSweep.path5Approach(), pathTimeoutMs),
+                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs)
+                        .alongWith(new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.OFF)),
+                new IntakeCommand(robot, Intake.IntakeState.IN),
+                new FollowCommand(robot, ThreeSweep.path4(), pathTimeoutMs),
                 new FollowCommand(robot, ThreeSweep.path5(), longPathTimeoutMs),
-                new WaitCommand(shotWaitMs),
-                new ConditionalCommand(
-                        new ShootCommand(robot, shotCount),
-                        Commands.none(),
-                        () -> Math.hypot(Robot.pose.x() - wallShotPose.x(),
-                                Robot.pose.y() - wallShotPose.y()) <= wallShotToleranceInches
-                ),
+                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, ThreeSweep.path8(), pathTimeoutMs).withFlowerOn(),
                 new IntakeForTimeCommand(robot, flowerIntakeMs),
                 new FollowCommand(robot, ThreeSweep.path9(), pathTimeoutMs).withFlowerOff(),
@@ -94,6 +92,8 @@ public class SidThreeTip extends OpMode {
     public void init_loop() {
         allianceSelection.update();
         robot.updatePose();
+        robot.turret.periodic();
+        robot.flowerIntake.periodic();
 
         MyTelem.addData("Pose", Robot.pose);
         MyTelem.addData("Alliance", Robot.alliance);
@@ -137,12 +137,16 @@ public class SidThreeTip extends OpMode {
             return Paths.curve(routePose(point3), routePose(point4Control1), routePose(point4)).heading(Interpolator.piecewise().until(0.4, Interpolator.linear(routePose(point4, point4TurnFrom), routePose(point4, point4TurnTo))).until(1, Interpolator.tangent));
         }
 
-        public static Path path5Approach() {
+        public static Path path5a() {
             return Paths.curve(routePose(point4), routePose(point5Control1), routePose(point5)).tangent();
         }
 
-        public static Path path5() {
+        public static Path path5b() {
             return Paths.line(routePose(point5), routePose(point6)).tangent();
+        }
+
+        public static Path path5() {
+            return Paths.path(path5a(), path5b());
         }
 
         public static Path path8() {

@@ -11,6 +11,6 @@ public class IntakeConstants {
     public static double pollenPos = 0.65, nectarPos = 0.53;
     public static int nectarDelayMs = 50;
     public static double nectarPauseS = 0.25;
-    public static double feedSecondsPerPiece = 0.3;
+    public static double feedSecondsPerPiece = 0.4;
 
 }
