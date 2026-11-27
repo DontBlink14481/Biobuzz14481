@@ -121,7 +121,7 @@ public class ThreeTip_PartnerSteal extends OpMode {
         }
 
         public static Path path3() {
-            return Paths.line(routePose(point2), routePose(point4)).constant(routePose(point3));
+            return Paths.line(routePose(point2), routePose(point3)).constant(routePose(point3));
         }
 
         public static Path path4() {
