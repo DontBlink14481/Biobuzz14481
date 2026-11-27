@@ -27,6 +27,13 @@ public class ShootCommand extends SequentialCommandGroup {
         this(robot, new WaitCommand(Math.round(count * IntakeConstants.feedSecondsPerPiece * 1000)));
     }
 
+    public Command afterDelay(long waitMs) {
+        return new SequentialCommandGroup(
+                new WaitCommand(waitMs),
+                this
+        );
+    }
+
     private ShootCommand(Robot robot, Command feedDuration) {
         this.robot = robot;
         addCommands(

@@ -1,24 +1,20 @@
 package org.firstinspires.ftc.teamcode.opmodes.prod;
 
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.ExodusPoses.*;
-import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.FlowerIntakeCommand;
-import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import com.pedropathing.api.Paths;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
 import com.seattlesolvers.solverslib.command.Commands;
 import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.WaitCommand;
-import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import com.skeletonarmy.marrow.TimerEx;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.robot.commands.botcommands.FollowCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
@@ -63,14 +59,15 @@ public class ExodusThreeTip extends OpMode {
 
         if (sotm) {
             SequentialCommandGroup paths = new SequentialCommandGroup(
-                    follow(Exodus.path1(), pathTimeoutMs),
-                    follow(Exodus.path2(), longPathTimeoutMs),
-                    follow(Exodus.path3(), pathTimeoutMs),
-                    follow(Exodus.path4(), pathTimeoutMs),
-                    follow(Exodus.path5(), longPathTimeoutMs),
-                    follow(Exodus.path6(), pathTimeoutMs),
-                    follow(Exodus.path7(), pathTimeoutMs),
-                    follow(Exodus.path8(), pathTimeoutMs)
+                    new FollowCommand(robot, Exodus.path1(), pathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path2(), longPathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path3(), pathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path4(), pathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path5(), pathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path6(), longPathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path7(), pathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path8(), pathTimeoutMs),
+                    new FollowCommand(robot, Exodus.path9(), pathTimeoutMs)
             );
 
             auto = new ParallelCommandGroup(
@@ -86,53 +83,25 @@ public class ExodusThreeTip extends OpMode {
         }
 
         auto = new SequentialCommandGroup(
-                shoot(firstShotWaitMs),
+                new ShootCommand(robot, shotCount).afterDelay(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                follow(Exodus.path1(), pathTimeoutMs),
-                followAndPickupFlowers(Exodus.path2(), longPathTimeoutMs),
-                shoot(),
-                followAndRetract(Exodus.path3(), pathTimeoutMs),
+                new FollowCommand(robot, Exodus.path1(), pathTimeoutMs),
+                new FollowCommand(robot, Exodus.path2(), longPathTimeoutMs).withFlowerOn(),
+                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new FollowCommand(robot, Exodus.path3(), pathTimeoutMs),
+                new IntakeForTimeCommand(robot, flowerIntakeMs),
+                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new FollowCommand(robot, Exodus.path4(), pathTimeoutMs).withFlowerOff(),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                follow(Exodus.path4(), pathTimeoutMs),
-                follow(Exodus.path5(), longPathTimeoutMs),
-                shoot(),
-                followAndPickupFlowers(Exodus.path6(), pathTimeoutMs),
-                followAndRetract(Exodus.path7(), pathTimeoutMs),
-                shoot(),
-                follow(Exodus.path8(), pathTimeoutMs)
+                new FollowCommand(robot, Exodus.path5(), pathTimeoutMs),
+                new IntakeCommand(robot, Intake.IntakeState.OFF),
+                new FollowCommand(robot, Exodus.path6(), longPathTimeoutMs),
+                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new FollowCommand(robot, Exodus.path7(), pathTimeoutMs).withFlowerOn(),
+                new FollowCommand(robot, Exodus.path8(), pathTimeoutMs).withFlowerOff(),
+                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new FollowCommand(robot, Exodus.path9(), pathTimeoutMs)
         );
-    }
-
-    private Command shoot() {
-        return shoot(shotWaitMs);
-    }
-
-    private Command shoot(long waitMs) {
-        return new SequentialCommandGroup(
-                new WaitCommand(waitMs),
-                new ShootCommand(robot, shotCount)
-        );
-    }
-
-    private Command followAndPickupFlowers(Path path, long timeoutMs) {
-        return new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                        follow(path, timeoutMs),
-                        new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.ON)
-                ),
-                new IntakeForTimeCommand(robot, flowerIntakeMs)
-        );
-    }
-
-    private Command followAndRetract(Path path, long TimeoutMs){
-        return new ParallelCommandGroup(
-                follow(path, TimeoutMs),
-                new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.OFF)
-        );
-    }
-
-    private Command follow(Path path, long timeoutMs) {
-        return new FollowPathCommand(robot.follower, path).withTimeout(timeoutMs);
     }
 
     @Override
@@ -175,27 +144,31 @@ public class ExodusThreeTip extends OpMode {
         }
 
         public static Path path3() {
-            return Paths.line(point2.pose(), point3.pose()).reverseTangent();
+            return Paths.line(point2.pose(), point4.pose()).constant(point3.pose());
         }
 
         public static Path path4() {
-            return Paths.curve(point3.pose(), point4Control1.pose(), point4.pose()).tangent();
+            return Paths.line(point3.pose(), point4.pose()).reverseTangent();
         }
 
         public static Path path5() {
-            return Paths.line(point4.pose(), point5.pose()).heading(Interpolator.piecewise().until(0.1, Interpolator.linear(point5.pose(point5TurnFrom), point5.pose())).until(1, Interpolator.constant(point5.pose())));
+            return Paths.curve(point4.pose(), point5Control1.pose(), point5.pose()).tangent();
         }
 
         public static Path path6() {
-            return Paths.curve(point5.pose(), point6Control1.pose(), point6.pose()).tangent();
+            return Paths.line(point5.pose(), point6.pose()).heading(Interpolator.piecewise().until(0.1, Interpolator.linear(point6.pose(point6TurnFrom), point6.pose())).until(1, Interpolator.constant(point6.pose())));
         }
 
         public static Path path7() {
-            return Paths.curve(point6.pose(), point7Control1.pose(), point7.pose()).reverseTangent();
+            return Paths.curve(point6.pose(), point7Control1.pose(), point7.pose()).tangent();
         }
 
         public static Path path8() {
-            return Paths.curve(point7.pose(), point8Control1.pose(), point8.pose()).tangent();
+            return Paths.curve(point7.pose(), point8Control1.pose(), point8.pose()).reverseTangent();
+        }
+
+        public static Path path9() {
+            return Paths.curve(point8.pose(), point9Control1.pose(), point9.pose()).tangent();
         }
     }
 }
