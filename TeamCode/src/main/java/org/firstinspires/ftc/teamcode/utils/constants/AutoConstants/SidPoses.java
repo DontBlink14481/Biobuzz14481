@@ -34,11 +34,11 @@ public class SidPoses {
 
     public static DashPose point9 = new DashPose(14, 46, 180);
     public static DashPose point9Control1 = new DashPose(38, 28);
-    public static DashPose point9Control2 = new DashPose(24, 42);
+    public static DashPose point9Control2 = new DashPose(24, 46);
     public static double point9TurnFrom = 270, point9TurnMid = 150, point9TurnTo = 180;
 
     public static DashPose point10 = new DashPose(30, 14, 90);
-    public static DashPose point10Control1 = new DashPose(30, 42);
+    public static DashPose point10Control1 = new DashPose(30, 46);
 
     public static DashPose point11 = new DashPose(15, 92, 104.9951);
     public static DashPose point11Control1 = new DashPose(30, 36);

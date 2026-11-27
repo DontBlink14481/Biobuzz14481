@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.FollowCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
@@ -46,6 +47,7 @@ public class ThreeTip_PartnerSteal extends OpMode {
 
         RobotStates.shooterState = Shooter.ShooterState.AUTO;
         RobotStates.turretState = Turret.TurretState.SET;
+        RobotStates.flowerIntakeState = FlowerIntake.FlowerIntakeState.OFF;
 
         robot.intake.setElementMode(Intake.ElementMode.DETECT);
 
@@ -69,6 +71,7 @@ public class ThreeTip_PartnerSteal extends OpMode {
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 new FollowCommand(robot, PartnerSteal.path7(), pathTimeoutMs).withFlowerOn(),
+                new IntakeForTimeCommand(robot, flowerIntakeMs),
                 new FollowCommand(robot, PartnerSteal.path8(), pathTimeoutMs).withFlowerOff(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, PartnerSteal.path9(), pathTimeoutMs)
@@ -79,6 +82,8 @@ public class ThreeTip_PartnerSteal extends OpMode {
     public void init_loop() {
         allianceSelection.update();
         robot.updatePose();
+        robot.turret.periodic();
+        robot.flowerIntake.periodic();
 
         MyTelem.addData("Pose", Robot.pose);
         MyTelem.addData("Alliance", Robot.alliance);
