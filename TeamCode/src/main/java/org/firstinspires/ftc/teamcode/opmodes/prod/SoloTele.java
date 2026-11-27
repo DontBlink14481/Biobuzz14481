@@ -77,7 +77,8 @@ public class SoloTele extends LinearOpMode {
                 .whenHeld(new ShootCommand(robot))
                 .whenReleased(new ParallelCommandGroup(
                         new TurretCommand(robot, Turret.TurretState.OFF),
-                        new ShooterCommand(robot, Shooter.ShooterState.OFF)
+                        new ShooterCommand(robot, Shooter.ShooterState.OFF),
+                        new IntakeCommand(robot, Intake.IntakeState.OFF)
                 ));
 
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)
