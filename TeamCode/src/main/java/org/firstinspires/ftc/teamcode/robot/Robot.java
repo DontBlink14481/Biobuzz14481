@@ -120,6 +120,10 @@ public class Robot {
         return goal == Goal.RIGHT ? RobotConstants.rightGoal : RobotConstants.leftGoal;
     }
 
+    public static Pose getAimPose() {
+        return goal == Goal.RIGHT ? RobotConstants.rightOpening.pose() : RobotConstants.leftOpening.pose();
+    }
+
     public static boolean inShootingZone() {
         return ShootingZone.get().contains(robotZone.getPosition());
     }

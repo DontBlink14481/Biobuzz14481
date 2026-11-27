@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.Subsystem;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
-import org.firstinspires.ftc.teamcode.robot.calculations.ShooterCalculator;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 import org.firstinspires.ftc.teamcode.utils.constants.TurretConstants;
 
@@ -83,7 +82,8 @@ public class Turret implements Subsystem {
     }
 
     private void calculateTurret() {
-        double targetFieldHeading = ShooterCalculator.calculate(pose, Robot.getGoalPose()).turretAngleRad;
+        Pose aim = Robot.getAimPose();
+        double targetFieldHeading = Math.atan2(aim.y() - pose.y(), aim.x() - pose.x());
         targetAngleRad = MathUtils.normalizeRadians(targetFieldHeading - Robot.pose.heading(), false);
         aimUpdateCount++;
     }

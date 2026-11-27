@@ -12,30 +12,42 @@ public class ShooterCalculator {
     private static final double GRAVITY = 386.09;
     private static final double DT = 0.002;
 
-    // pollen fit to the 30, 40, 50 and 60 in hive shots
-    public static double speedPerRPM = 0.07246;
+    public static double speedPerRPM = 0.0759;
     public static double lift = -0.000307;
     public static double drag = 0.001077;
     public static double launchHeight = 10.9;
 
-    // launch angle (deg) at hood 0.60, 0.66, 0.71
     public static double angle60 = 69.35, angle66 = 71.79, angle71 = 73.55;
+    private static final double[] POLLEN_DISTANCE = {30, 40, 50, 60, 70};
+    private static final double[] POLLEN_HOOD = {0.66, 0.63, 0.60, 0.60, 0.60};
 
-    // hood position to use at each distance, from the shots that scored
-    private static final double[] DISTANCE = {30, 40, 50, 60};
-    private static final double[] HOOD = {0.68, 0.63, 0.60, 0.62};
+
+    private static final double[] NECTAR_DISTANCE = {30, 40, 50, 60};
+    private static final double[] NECTAR_HOOD = {0.75, 0.71, 0.71, 0.60};
+    private static final double[] NECTAR_RPM = {3000, 3200, 3240, 3200};
 
     public static double distance(Pose turretPose, Pose goalPose) {
         return Math.hypot(goalPose.x() - turretPose.x(), goalPose.y() - turretPose.y());
     }
 
     public static CalculationResult calculate(Pose turretPose, Pose goalPose) {
+        return calculate(turretPose, goalPose, false);
+    }
+
+    public static CalculationResult calculate(Pose turretPose, Pose goalPose, boolean nectar) {
         double dx = goalPose.x() - turretPose.x();
         double dy = goalPose.y() - turretPose.y();
         double turretAngleRad = Math.atan2(dy, dx);
         double d = Math.hypot(dx, dy) + ShooterConstants.distanceOffset;
+
+        if (nectar) {
+            double hood = lookup(NECTAR_DISTANCE, NECTAR_HOOD, d);
+            double rpm = lookup(NECTAR_DISTANCE, NECTAR_RPM, d);
+            return new CalculationResult(hoodToAngle(hood), turretAngleRad, rpm, true);
+        }
+
         double h = ShooterConstants.goalHeightInches - launchHeight;
-        double hood = lookup(HOOD, d);
+        double hood = lookup(POLLEN_DISTANCE, POLLEN_HOOD, d);
         double theta = Math.toRadians(launchAngle(hood));
 
         // (monotomic function so we can binary search) the ball's height at the goal goes up with launch speed, so bisect on rpm
@@ -47,12 +59,14 @@ public class ShooterCalculator {
             else high = mid;
         }
 
-        // Shooter turns this angle back into the hood position
+        return new CalculationResult(hoodToAngle(hood), turretAngleRad, high, true);
+    }
+
+    // Shooter turns this angle back into the hood position
+    private static double hoodToAngle(double hood) {
         double min = Math.toRadians(ShooterConstants.hoodMinDeg);
         double max = Math.toRadians(ShooterConstants.hoodMaxDeg);
-        double hoodAngle = Range.scale(hood, ShooterConstants.hoodMin, ShooterConstants.hoodMax, min, max);
-
-        return new CalculationResult(hoodAngle, turretAngleRad, high, true);
+        return Range.scale(hood, ShooterConstants.hoodMin, ShooterConstants.hoodMax, min, max);
     }
 
     private static double launchAngle(double hood) {
@@ -61,10 +75,10 @@ public class ShooterCalculator {
     }
 
     // lienar regression for distance
-    private static double lookup(double[] values, double d) {
-        if (d <= DISTANCE[0]) return values[0];
-        for (int i = 1; i < DISTANCE.length; i++) {
-            if (d <= DISTANCE[i]) return Range.scale(d, DISTANCE[i - 1], DISTANCE[i], values[i - 1], values[i]);
+    private static double lookup(double[] distances, double[] values, double d) {
+        if (d <= distances[0]) return values[0];
+        for (int i = 1; i < distances.length; i++) {
+            if (d <= distances[i]) return Range.scale(d, distances[i - 1], distances[i], values[i - 1], values[i]);
         }
         return values[values.length - 1];
     }
