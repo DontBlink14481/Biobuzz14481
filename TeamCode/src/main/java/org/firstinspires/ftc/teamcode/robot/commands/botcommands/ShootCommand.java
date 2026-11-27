@@ -20,11 +20,11 @@ public class ShootCommand extends SequentialCommandGroup {
     private final Robot robot;
 
     public ShootCommand(Robot robot) {
-        this(robot, new WaitUntilCommand(() -> false));
+        this(robot, Double.POSITIVE_INFINITY);
     }
 
     public ShootCommand(Robot robot, int count) {
-        this(robot, new WaitCommand((long) (count * IntakeConstants.feedPerPiece)));
+        this(robot, count * IntakeConstants.feedPerPiece);
     }
 
     public Command afterDelay(long waitMs) {
@@ -34,7 +34,7 @@ public class ShootCommand extends SequentialCommandGroup {
         );
     }
 
-    private ShootCommand(Robot robot, Command feedDuration) {
+    private ShootCommand(Robot robot, double feedMs) {
         this.robot = robot;
         addCommands(
                 new ParallelCommandGroup(
@@ -48,10 +48,7 @@ public class ShootCommand extends SequentialCommandGroup {
                         new BlockerCommand(robot, Blocker.BlockerState.UNBLOCKED),
                         new IntakeCommand(robot, Intake.IntakeState.IN)
                 ),
-                new ParallelRaceGroup(
-                        feedDuration,
-                        new NectarPauseCommand(robot)
-                )
+                new NectarPauseCommand(robot, feedMs)
         );
         addRequirements(robot.intake, robot.blocker);
     }
@@ -59,7 +56,6 @@ public class ShootCommand extends SequentialCommandGroup {
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
-        robot.intake.setState(Intake.IntakeState.OFF);
         robot.blocker.setState(Blocker.BlockerState.BLOCKED);
     }
 }
