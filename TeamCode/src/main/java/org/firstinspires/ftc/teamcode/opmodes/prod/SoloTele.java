@@ -16,17 +16,17 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import com.skeletonarmy.marrow.TimerEx;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
-import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ResetPoseCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.FlowerIntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.ShooterCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.TurretCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
-import org.firstinspires.ftc.teamcode.utils.constants.RobotConstants;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 
@@ -52,10 +52,7 @@ public class SoloTele extends LinearOpMode {
         robot.follower.setPose(startPose);
 
         GamepadEx driver = new GamepadEx(gamepad1);
-        GamepadEx operator = new GamepadEx(gamepad2);
-
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                        .whenPressed(new ResetPoseCommand(robot));
+        GamepadEx operator=new GamepadEx(gamepad2);
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
@@ -66,28 +63,43 @@ public class SoloTele extends LinearOpMode {
                 .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
 
         operator.getGamepadButton(GamepadKeys.Button.CROSS)
-                .whenHeld(new ShootCommand(robot));
-
-//        operator.getGamepadButton(GamepadKeys.Button.CROSS)
-//                .whenPressed(new ParallelCommandGroup(
-//                        new TurretCommand(robot, Turret.TurretState.SET),
-//                        new ConditionalCommand(
-//                                new SequentialCommandGroup(
-//                                        new InstantCommand(() -> robot.shooter.setHoodPos(hoodPos)),
-//                                        new ShooterCommand(robot, Shooter.ShooterState.MANUAL)
-//                                ),
-//                                new ShooterCommand(robot, Shooter.ShooterState.AUTO),
-//                                () -> manualHood
-//                        )
-//                ))
-//                .whenHeld(new ShootCommand(robot))
-//                .whenReleased(new ParallelCommandGroup(
-//                        new TurretCommand(robot, Turret.TurretState.OFF),
-//                        new ShooterCommand(robot, Shooter.ShooterState.OFF)
-//                ));
+                .whenPressed(new ParallelCommandGroup(
+                        new TurretCommand(robot, Turret.TurretState.CONTINUOUS),
+                        new ConditionalCommand(
+                                new SequentialCommandGroup(
+                                        new InstantCommand(() -> robot.shooter.setHoodPos(hoodPos)),
+                                        new ShooterCommand(robot, Shooter.ShooterState.MANUAL)
+                                ),
+                                new ShooterCommand(robot, Shooter.ShooterState.AUTO),
+                                () -> manualHood
+                        )
+                ))
+                .whenHeld(new ShootCommand(robot))
+                .whenReleased(new ParallelCommandGroup(
+                        new TurretCommand(robot, Turret.TurretState.OFF),
+                        new ShooterCommand(robot, Shooter.ShooterState.OFF)
+                ));
 
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)
                 .whenPressed(new InstantCommand(() -> manualHood=!manualHood));
+
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
+                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
+
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.OUT))
+                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
+
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
+                .whenPressed(new ParallelCommandGroup(
+                        new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.ON),
+                        new IntakeCommand(robot, Intake.IntakeState.IN)
+                ))
+                .whenReleased(new ParallelCommandGroup(
+                        new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.OFF),
+                        new IntakeCommand(robot, Intake.IntakeState.OFF)
+                ));
 
         AllianceSelection allianceSelection = new AllianceSelection(this);
         while(opModeInInit()) {
@@ -100,16 +112,12 @@ public class SoloTele extends LinearOpMode {
         timer.start();
         while(opModeIsActive()) {
             DrivePowers drivePowers = new DrivePowers(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x
-            );
+                    curve(-driver.getLeftY()),
+                    curve(-driver.getLeftX()),
+                    curve(-driver.getRightX()));
 
-            ManualDrive.driveOrHold(robot.follower, drivePowers);
-
-
-//            if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers);
-//            else {robot.follower.manual(drivePowers);}
+            if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers);
+            else {robot.follower.manual(drivePowers);}
 
             MyTelem.addData("Alliance", Robot.alliance);
             MyTelem.addData("Goal", Robot.goal);
