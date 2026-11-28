@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.prod;
 
+import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.AutoFollowConstants.*;
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.SidPoses.*;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -40,9 +41,6 @@ public class SidThreeTip extends OpMode {
     AllianceSelection allianceSelection;
 
     CommandGroupBase auto;
-
-    public static long pathTimeoutMs = 3000, longPathTimeoutMs = 4500, cornerTimeoutMs = 1000;
-    public static long shotWaitMs = 0, firstShotWaitMs = 1500;
     public static int shotCount = 4;
     public static double wallShotToleranceInches = 3;
 

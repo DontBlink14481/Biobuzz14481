@@ -62,9 +62,13 @@ public class SoloTele extends LinearOpMode {
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.OUT))
                 .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
 
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenPressed(new TurretCommand(robot, Turret.TurretState.SET))
+                .whenReleased(new TurretCommand(robot, Turret.TurretState.OFF));
+
         operator.getGamepadButton(GamepadKeys.Button.CROSS)
                 .whenPressed(new ParallelCommandGroup(
-                        new TurretCommand(robot, Turret.TurretState.CONTINUOUS),
+//                        new TurretCommand(robot, Turret.TurretState.SET),
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
                                         new InstantCommand(() -> robot.shooter.setHoodPos(hoodPos)),
@@ -76,7 +80,7 @@ public class SoloTele extends LinearOpMode {
                 ))
                 .whenHeld(new ShootCommand(robot))
                 .whenReleased(new ParallelCommandGroup(
-                        new TurretCommand(robot, Turret.TurretState.OFF),
+//                        new TurretCommand(robot, Turret.TurretState.OFF),
                         new ShooterCommand(robot, Shooter.ShooterState.OFF),
                         new IntakeCommand(robot, Intake.IntakeState.OFF)
                 ));
@@ -113,7 +117,7 @@ public class SoloTele extends LinearOpMode {
         timer.start();
         while(opModeIsActive()) {
             DrivePowers drivePowers = new DrivePowers(
-                    curve(-driver.getLeftY()),
+                    curve(driver.getLeftY()),
                     curve(-driver.getLeftX()),
                     curve(-driver.getRightX()));
 
@@ -121,6 +125,7 @@ public class SoloTele extends LinearOpMode {
             else {robot.follower.manual(drivePowers);}
 
             MyTelem.addData("Alliance", Robot.alliance);
+            MyTelem.addData("pose", Robot.pose);
             MyTelem.addData("Goal", Robot.goal);
             MyTelem.addData("turret state", RobotStates.turretState);
             MyTelem.addData("turret angle", robot.turret.getAngle(AngleUnit.DEGREES));

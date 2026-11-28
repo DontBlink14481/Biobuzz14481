@@ -36,6 +36,7 @@ public class Constants {
         c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
         c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
         c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
+//        c.voltageCompensation.set(true);
     });
 
     public static OctoQuadConfig localizerConfig = new OctoQuadConfig(c -> {
