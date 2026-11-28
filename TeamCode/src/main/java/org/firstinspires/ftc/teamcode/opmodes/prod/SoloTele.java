@@ -122,7 +122,6 @@ public class SoloTele extends LinearOpMode {
 
             if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers);
             else {robot.follower.manual(drivePowers);}
-
             MyTelem.addData("Alliance", Robot.alliance);
             MyTelem.addData("pose", Robot.pose);
             MyTelem.addData("Goal", Robot.goal);
