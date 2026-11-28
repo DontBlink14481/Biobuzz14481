@@ -161,8 +161,11 @@ public class SidThreeTip extends OpMode {
                 new FollowCommand(robot, Sid.path2(), longPathTimeoutMs).withFlowerOn(),
                 new ShootCommand(robot, shotCount),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, Sid.path3(), pathTimeoutMs)
-                        .alongWith(new ShootCommand(robot, shotCount+1)),
+                new SequentialCommandGroup(
+                    new FollowCommand(robot, Sid.path3(), pathTimeoutMs),
+                    new FollowCommand(robot, Sid.path4(), pathTimeoutMs),
+                    new FollowCommand(robot, Sid.path3(), pathTimeoutMs)
+                ).alongWith(new ShootCommand(robot, shotCount+1)),
                 new FollowCommand(robot, Sid.path4(), pathTimeoutMs).withFlowerOff(),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 new FollowCommand(robot, Sid.path5(adjustedPoint5), pathTimeoutMs),

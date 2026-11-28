@@ -16,7 +16,7 @@ public class SidPoses {
 //    public static DashPose point1Control2 = new DashPose(15.5, 2.16);
     public static double point1TurnFrom = 180, point1TurnMid = 205, point1TurnTo = 180;
 
-    public static DashPose point2 = new DashPose(44, 118, 90);
+    public static DashPose point2 = new DashPose(46, 118, 90);
     public static DashPose point2Control1 = new DashPose(24, 6.75);
     public static DashPose point2Control2 = new DashPose(44, 110);
     public static double point2TurnFrom = 180, point2TurnTo = 90;
