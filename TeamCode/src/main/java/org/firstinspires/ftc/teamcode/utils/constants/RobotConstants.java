@@ -24,5 +24,9 @@ public class RobotConstants {
     public static Pose leftAim = new Pose(58, 81.3);
     public static Pose leftGoal = new Pose(58, 86.5);
 
+    // center of each goal's front opening, where the turret aims
+    public static DashPose rightOpening = new DashPose(58, 50);
+    public static DashPose leftOpening = new DashPose(58, 91.4);
+
     public static double goalWidth = 20; // inches
 }

@@ -20,11 +20,11 @@ public class ShootCommand extends SequentialCommandGroup {
     private final Robot robot;
 
     public ShootCommand(Robot robot) {
-        this(robot, new WaitUntilCommand(() -> false));
+        this(robot, Double.POSITIVE_INFINITY);
     }
 
     public ShootCommand(Robot robot, int count) {
-        this(robot, new WaitCommand(Math.round(count * IntakeConstants.feedSecondsPerPiece * 1000)));
+        this(robot, count * IntakeConstants.feedPerPiece);
     }
 
     public Command afterDelay(long waitMs) {
@@ -34,26 +34,21 @@ public class ShootCommand extends SequentialCommandGroup {
         );
     }
 
-    private ShootCommand(Robot robot, Command feedDuration) {
+    private ShootCommand(Robot robot, double feedMs) {
         this.robot = robot;
         addCommands(
                 new ParallelCommandGroup(
-                        new BlockerCommand(robot, Blocker.BlockerState.BLOCKED),
-                        new IntakeCommand(robot, Intake.IntakeState.OFF)
+                        new BlockerCommand(robot, Blocker.BlockerState.BLOCKED)
                 ),
                 new ParallelRaceGroup(
-//                        new InstantCommand(() -> robot.shooter.setTargetRPM())
                         new WaitUntilCommand(robot.shooter::atRPM),
-                        new WaitCommand(Math.round(ShooterConstants.spinUpTimeoutS * 1000))
+                        new WaitCommand(Math.round(ShooterConstants.spinUpTimeout))
                 ),
                 new ParallelCommandGroup(
                         new BlockerCommand(robot, Blocker.BlockerState.UNBLOCKED),
                         new IntakeCommand(robot, Intake.IntakeState.IN)
                 ),
-                new ParallelRaceGroup(
-                        feedDuration,
-                        new NectarPauseCommand(robot)
-                )
+                new NectarPauseCommand(robot, feedMs)
         );
         addRequirements(robot.intake, robot.blocker);
     }
@@ -61,7 +56,6 @@ public class ShootCommand extends SequentialCommandGroup {
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
-        robot.intake.setState(Intake.IntakeState.OFF);
         robot.blocker.setState(Blocker.BlockerState.BLOCKED);
     }
 }

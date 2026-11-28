@@ -8,7 +8,7 @@ public class ShooterConstants {
     public static double maxRPM = 6000;
     public static double rpmTolerance = 50;
     public static double kF = 0;
-    public static double spinUpTimeoutS = 1.5;
+    public static double spinUpTimeout = 2000;
 
     public static double hoodMin = 0.6, hoodMax = 0.71;
     public static double hoodMinDeg = 63, hoodMaxDeg = 70;

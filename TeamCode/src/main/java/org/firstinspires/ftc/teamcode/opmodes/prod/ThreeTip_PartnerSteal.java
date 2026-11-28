@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.commands.botcommands.FollowCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
@@ -44,10 +45,11 @@ public class ThreeTip_PartnerSteal extends OpMode {
 
         timer = new TimerEx(30);
         robot = new Robot(hardwareMap);
-        robot.follower.setPose(start.pose());
+        robot.follower.setPose(routePose(start));
 
         RobotStates.shooterState = Shooter.ShooterState.AUTO;
         RobotStates.turretState = Turret.TurretState.SET;
+        RobotStates.flowerIntakeState = FlowerIntake.FlowerIntakeState.OFF;
 
         robot.intake.setElementMode(Intake.ElementMode.DETECT);
 
@@ -57,10 +59,11 @@ public class ThreeTip_PartnerSteal extends OpMode {
                 new ShootCommand(robot, shotCount).afterDelay(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
                 new FollowCommand(robot, PartnerSteal.path1(), pathTimeoutMs),
+                new IntakeCommand(robot, Intake.IntakeState.OFF),
                 new FollowCommand(robot, PartnerSteal.path2(), longPathTimeoutMs).withFlowerOn(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new IntakeCommand(robot, Intake.IntakeState.IN),
                 new FollowCommand(robot, PartnerSteal.path3(), pathTimeoutMs),
-                new IntakeForTimeCommand(robot, flowerIntakeMs),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, PartnerSteal.path4(), pathTimeoutMs).withFlowerOff(),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
@@ -69,6 +72,7 @@ public class ThreeTip_PartnerSteal extends OpMode {
                 new FollowCommand(robot, PartnerSteal.path6(), longPathTimeoutMs),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, PartnerSteal.path7(), pathTimeoutMs).withFlowerOn(),
+                new IntakeForTimeCommand(robot, flowerIntakeMs),
                 new FollowCommand(robot, PartnerSteal.path8(), pathTimeoutMs).withFlowerOff(),
                 new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
                 new FollowCommand(robot, PartnerSteal.path9(), pathTimeoutMs)
@@ -79,6 +83,8 @@ public class ThreeTip_PartnerSteal extends OpMode {
     public void init_loop() {
         allianceSelection.update();
         robot.updatePose();
+        robot.turret.periodic();
+        robot.flowerIntake.periodic();
 
         MyTelem.addData("Pose", Robot.pose);
         MyTelem.addData("Alliance", Robot.alliance);
@@ -107,39 +113,39 @@ public class ThreeTip_PartnerSteal extends OpMode {
 
     public static class PartnerSteal {
         public static Path path1() {
-            return Paths.curve(start.pose(), point1Control1.pose(), point1Control2.pose(), point1.pose()).heading(Interpolator.piecewise().until(0.5, Interpolator.linear(point1.pose(point1TurnFrom), point1.pose(point1TurnMid))).until(1, Interpolator.linear(point1.pose(point1TurnMid), point1.pose(point1TurnTo))));
+            return Paths.curve(routePose(start), routePose(point1Control1), routePose(point1Control2), routePose(point1)).heading(Interpolator.piecewise().until(0.5, Interpolator.linear(routePose(point1, point1TurnFrom), routePose(point1, point1TurnMid))).until(1, Interpolator.linear(routePose(point1, point1TurnMid), routePose(point1, point1TurnTo))));
         }
 
         public static Path path2() {
-            return Paths.curve(point1.pose(), point2Control1.pose(), point2Control2.pose(), point2.pose()).heading(Interpolator.piecewise().until(0.25, Interpolator.linear(point2.pose(point2TurnFrom), point2.pose(point2TurnTo))).until(1, Interpolator.tangent));
+            return Paths.curve(routePose(point1), routePose(point2Control1), routePose(point2Control2), routePose(point2)).heading(Interpolator.piecewise().until(0.25, Interpolator.linear(routePose(point2, point2TurnFrom), routePose(point2, point2TurnTo))).until(1, Interpolator.tangent));
         }
 
         public static Path path3() {
-            return Paths.line(point2.pose(), point4.pose()).constant(point3.pose());
+            return Paths.line(routePose(point2), routePose(point3)).constant(routePose(point3));
         }
 
         public static Path path4() {
-            return Paths.line(point3.pose(), point4.pose()).reverseTangent();
+            return Paths.line(routePose(point3), routePose(point4)).reverseTangent();
         }
 
         public static Path path5() {
-            return Paths.curve(point4.pose(), point5Control1.pose(), point5.pose()).tangent();
+            return Paths.curve(routePose(point4), routePose(point5Control1), routePose(point5)).tangent();
         }
 
         public static Path path6() {
-            return Paths.line(point5.pose(), point6.pose()).heading(Interpolator.piecewise().until(0.1, Interpolator.linear(point6.pose(point6TurnFrom), point6.pose())).until(1, Interpolator.constant(point6.pose())));
+            return Paths.line(routePose(point5), routePose(point6)).heading(Interpolator.piecewise().until(0.1, Interpolator.linear(routePose(point6, point6TurnFrom), routePose(point6))).until(1, Interpolator.constant(routePose(point6))));
         }
 
         public static Path path7() {
-            return Paths.curve(point6.pose(), point7Control1.pose(), point7.pose()).tangent();
+            return Paths.curve(routePose(point6), routePose(point7Control1), routePose(point7)).tangent();
         }
 
         public static Path path8() {
-            return Paths.curve(point7.pose(), point8Control1.pose(), point8.pose()).reverseTangent();
+            return Paths.curve(routePose(point7), routePose(point8Control1), routePose(point8)).reverseTangent();
         }
 
         public static Path path9() {
-            return Paths.curve(point8.pose(), point9Control1.pose(), point9.pose()).tangent();
+            return Paths.curve(routePose(point8), routePose(point9Control1), routePose(point9)).tangent();
         }
     }
 }

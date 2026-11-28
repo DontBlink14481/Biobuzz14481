@@ -86,7 +86,7 @@ public class Shooter implements Subsystem {
 
     private void aimShooter() {
         //pollen 71, 71+17.8, nectar 65, 65+17.8
-        lastResult = ShooterCalculator.calculate(Turret.pose, Robot.getGoalPose());
+        lastResult = ShooterCalculator.calculate(Turret.pose, Robot.getGoalPose(), nectarModeSupplier.getAsBoolean());
         if (lastResult.valid) {
             setTargetRPM(lastResult.rpm);
             setHoodAngle(lastResult.hoodAngleRad);

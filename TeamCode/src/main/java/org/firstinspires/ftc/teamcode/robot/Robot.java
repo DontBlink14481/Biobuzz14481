@@ -52,6 +52,8 @@ public class Robot {
 
     private boolean driveStopped = false;
     private final ElapsedTime voltageTimer = new ElapsedTime();
+    private final ElapsedTime loopTimer = new ElapsedTime();
+    public static double loopMs = 0;
 
     public Intake intake;
     public Turret turret;
@@ -82,6 +84,8 @@ public class Robot {
     }
 
     public void update() {
+        loopMs = loopTimer.milliseconds();
+        loopTimer.reset();
         clearBulkCache();
 
         if (voltageTimer.milliseconds() > 1000) {
@@ -118,6 +122,10 @@ public class Robot {
 
     public static Pose getGoalPose() {
         return goal == Goal.RIGHT ? RobotConstants.rightGoal : RobotConstants.leftGoal;
+    }
+
+    public static Pose getAimPose() {
+        return goal == Goal.RIGHT ? RobotConstants.rightOpening.pose() : RobotConstants.leftOpening.pose();
     }
 
     public static boolean inShootingZone() {
