@@ -36,6 +36,7 @@ public class SoloTele extends LinearOpMode {
     public static double parkTime = 5;
     private boolean manualHood = false;
     public static double driveExpo = 2;
+    public static double turnScale = 1.5;
     public static double hoodPos = (ShooterConstants.hoodMin + ShooterConstants.hoodMax) / 2;
     public Intake.ElementMode elementMode = Intake.ElementMode.DETECT;
 
@@ -57,7 +58,6 @@ public class SoloTele extends LinearOpMode {
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
                 .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
-
         operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.OUT))
                 .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
@@ -114,7 +114,7 @@ public class SoloTele extends LinearOpMode {
             DrivePowers drivePowers = new DrivePowers(
                     curve(-driver.getLeftY()),
                     curve(-driver.getLeftX()),
-                    curve(-driver.getRightX()));
+                    Range.clip(curve(-driver.getRightX()) * turnScale, -1, 1));
 
             if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers);
             else {robot.follower.manual(drivePowers);}
