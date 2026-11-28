@@ -3,24 +3,19 @@ package org.firstinspires.ftc.teamcode.opmodes.prod;
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.AutoFollowConstants.*;
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.SidPoses.*;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.api.Paths;
-import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandGroupBase;
-import com.seattlesolvers.solverslib.command.Commands;
-import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.skeletonarmy.marrow.TimerEx;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.FollowCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.botcommands.IntakeForTimeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.botcommands.ShootCommand;
-import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.FlowerIntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.subsystemcommands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.robot.subsystems.FlowerIntake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
@@ -30,7 +25,6 @@ import org.firstinspires.ftc.teamcode.utils.AllianceSelection;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 
-@Config
 @Autonomous
 public class SidThreeTip extends OpMode {
 
@@ -42,7 +36,6 @@ public class SidThreeTip extends OpMode {
 
     CommandGroupBase auto;
     public static int shotCount = 4;
-    public static double wallShotToleranceInches = 3;
 
     @Override
     public void init() {
@@ -60,26 +53,28 @@ public class SidThreeTip extends OpMode {
 
         allianceSelection = new AllianceSelection(this);
 
-        Pose wallShotPose = routePose(point6);
         auto = new SequentialCommandGroup(
                 new ShootCommand(robot, shotCount).afterDelay(firstShotWaitMs),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, ThreeSweep.path1(), cornerTimeoutMs),
+                new FollowCommand(robot, Sid.path1(), cornerTimeoutMs),
                 new IntakeCommand(robot, Intake.IntakeState.OFF),
-                new FollowCommand(robot, ThreeSweep.path2(), longPathTimeoutMs).withFlowerOn(),
-                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new FollowCommand(robot, Sid.path2(), longPathTimeoutMs).withFlowerOn(),
+                new ShootCommand(robot, shotCount),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, ThreeSweep.path3(), pathTimeoutMs),
-                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new FollowCommand(robot, Sid.path3(), pathTimeoutMs)
+                        .alongWith(new ShootCommand(robot, shotCount+1)),
+                new FollowCommand(robot, Sid.path4(), pathTimeoutMs).withFlowerOff(),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, ThreeSweep.path4(), pathTimeoutMs).withFlowerOff(),
-                new FollowCommand(robot, ThreeSweep.path5(), longPathTimeoutMs),
-                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
+                new FollowCommand(robot, Sid.path5(), pathTimeoutMs),
+                new IntakeCommand(robot, Intake.IntakeState.OFF),
+                new FollowCommand(robot, Sid.path6(), longPathTimeoutMs),
+                new ShootCommand(robot, shotCount+1),
                 new IntakeCommand(robot, Intake.IntakeState.IN),
-                new FollowCommand(robot, ThreeSweep.path8(), pathTimeoutMs).withFlowerOn(),
-                new FollowCommand(robot, ThreeSweep.path9(), pathTimeoutMs).withFlowerOff(),
-                new ShootCommand(robot, shotCount).afterDelay(shotWaitMs),
-                new FollowCommand(robot, ThreeSweep.path10(), pathTimeoutMs)
+                new FollowCommand(robot, Sid.path7(), pathTimeoutMs).withFlowerOn(),
+                new IntakeForTimeCommand(robot, flowerIntakeMs),
+                new FollowCommand(robot, Sid.path8(), pathTimeoutMs),
+                new ShootCommand(robot, shotCount),
+                new FollowCommand(robot, Sid.path9(), pathTimeoutMs).withFlowerOff()
         );
     }
 
@@ -115,9 +110,9 @@ public class SidThreeTip extends OpMode {
         robot.stop();
     }
 
-    public static class ThreeSweep {
+    public static class Sid {
         public static Path path1() {
-            return Paths.curve(routePose(start), routePose(point1Control1), routePose(point1Control2), routePose(point1)).heading(Interpolator.piecewise().until(0.5, Interpolator.linear(routePose(point1, point1TurnFrom), routePose(point1, point1TurnMid))).until(1, Interpolator.linear(routePose(point1, point1TurnMid), routePose(point1, point1TurnTo))));
+            return Paths.line(routePose(start), /*routePose(point1Control1), routePose(point1Control2),*/ routePose(point1)).heading(Interpolator.piecewise().until(0.5, Interpolator.linear(routePose(point1, point1TurnFrom), routePose(point1, point1TurnMid))).until(1, Interpolator.linear(routePose(point1, point1TurnMid), routePose(point1, point1TurnTo))));
         }
 
         public static Path path2() {
@@ -129,31 +124,27 @@ public class SidThreeTip extends OpMode {
         }
 
         public static Path path4() {
-            return Paths.curve(routePose(point3), routePose(point4Control1), routePose(point4)).heading(Interpolator.piecewise().until(0.3, Interpolator.linear(routePose(point4, point4TurnFrom), routePose(point4, point4TurnTo))).until(1, Interpolator.tangent));
-        }
-
-        public static Path path5a() {
-            return Paths.curve(routePose(point4), routePose(point5Control1), routePose(point5)).tangent();
-        }
-
-        public static Path path5b() {
-            return Paths.line(routePose(point5), routePose(point6)).tangent();
+            return Paths.line(routePose(point3), routePose(point4)).reverseTangent();
         }
 
         public static Path path5() {
-            return Paths.path(path5a(), path5b());
+            return Paths.curve(routePose(point4), routePose(point5Control1), routePose(point5)).tangent();
+        }
+
+        public static Path path6() {
+            return Paths.curve(routePose(point5), routePose(point6Control1), routePose(point6)).heading(Interpolator.piecewise().until(0.1, Interpolator.linear(routePose(point6, point6TurnFrom), routePose(point6))).until(1, Interpolator.constant(routePose(point6))));
+        }
+
+        public static Path path7() {
+            return Paths.curve(routePose(point6), routePose(point7Control1), routePose(point7)).tangent();
         }
 
         public static Path path8() {
-            return Paths.curve(routePose(point6), routePose(point9Control1), routePose(point9Control2), routePose(point9)).heading(Interpolator.piecewise().until(0.5, Interpolator.linear(routePose(point9, point9TurnFrom), routePose(point9, point9TurnMid))).until(1, Interpolator.linear(routePose(point9, point9TurnMid), routePose(point9, point9TurnTo))));
+            return Paths.curve(routePose(point7), routePose(point8Control1), routePose(point8)).reverseTangent();
         }
 
         public static Path path9() {
-            return Paths.curve(routePose(point9), routePose(point10Control1), routePose(point10)).reverseTangent();
-        }
-
-        public static Path path10() {
-            return Paths.curve(routePose(point10), routePose(point11Control1), routePose(point11)).tangent();
+            return Paths.curve(routePose(point8), routePose(point9Control1), routePose(point9)).tangent();
         }
     }
 }
