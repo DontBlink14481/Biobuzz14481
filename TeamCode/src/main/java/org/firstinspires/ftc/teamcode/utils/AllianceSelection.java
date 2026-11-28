@@ -13,8 +13,12 @@ public class AllianceSelection {
     private final Prompter prompter;
 
     public AllianceSelection(OpMode opMode) {
+        this(opMode, new Prompter(opMode));
+    }
+
+    public AllianceSelection(OpMode opMode, Prompter prompter) {
         this.opMode = opMode;
-        prompter = new Prompter(opMode);
+        this.prompter = prompter;
         prompter.prompt("alliance", new AlliancePrompt());
     }
 
