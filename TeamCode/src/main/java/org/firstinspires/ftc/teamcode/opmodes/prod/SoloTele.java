@@ -91,14 +91,6 @@ public class SoloTele extends LinearOpMode {
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)
                 .whenPressed(new InstantCommand(() -> manualHood=!manualHood));
 
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
-                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
-
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.OUT))
-                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
-
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                 .whenPressed(new ParallelCommandGroup(
                         new FlowerIntakeCommand(robot, FlowerIntake.FlowerIntakeState.ON),
