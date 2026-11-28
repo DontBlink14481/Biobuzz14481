@@ -33,8 +33,8 @@ import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 import org.firstinspires.ftc.teamcode.utils.constants.ShooterConstants;
 
 @Config
-@TeleOp(name="SoloTele")
-public class SoloTele extends LinearOpMode {
+@TeleOp
+public class Zero2 extends LinearOpMode {
     public static double parkTime = 5;
     private boolean manualHood = false;
     public static double driveExpo = 2;
@@ -89,7 +89,8 @@ public class SoloTele extends LinearOpMode {
                 .whenReleased(new ParallelCommandGroup(
 //                        new TurretCommand(robot, Turret.TurretState.OFF),
                         new ShooterCommand(robot, Shooter.ShooterState.OFF),
-                        new IntakeCommand(robot, Intake.IntakeState.OFF)
+                        new IntakeCommand(robot, Intake.IntakeState.OFF),
+                        new InstantCommand(() -> robot.shooter.setTargetRPM(0))
                 ));
 
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)

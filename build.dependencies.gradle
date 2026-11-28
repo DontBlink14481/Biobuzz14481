@@ -24,7 +24,6 @@ dependencies {
     implementation 'com.pedropathing:tuning:1.0.3'
     implementation "org.solverslib:core:0.3.6"
     implementation "org.solverslib:pedroPathing:0.3.6" // pedroPathing
-    implementation 'com.github.Horizon-36596:zenith:v0.1.2' // Zenith autos; keep in step with the Zenith editor version
     implementation 'com.skeletonarmyftc.marrow:core:1.2.3'
 
 }

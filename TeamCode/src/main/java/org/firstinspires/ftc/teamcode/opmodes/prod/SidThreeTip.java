@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.prod;
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.AutoFollowConstants.*;
 import static org.firstinspires.ftc.teamcode.utils.constants.AutoConstants.SidPoses.*;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.api.Paths;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
@@ -29,6 +30,7 @@ import org.firstinspires.ftc.teamcode.utils.DashPose;
 import org.firstinspires.ftc.teamcode.utils.MyTelem;
 import org.firstinspires.ftc.teamcode.utils.constants.RobotStates;
 
+@Config
 @Autonomous
 public class SidThreeTip extends OpMode {
 
