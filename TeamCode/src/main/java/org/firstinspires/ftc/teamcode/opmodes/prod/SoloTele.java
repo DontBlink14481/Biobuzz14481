@@ -11,8 +11,10 @@ import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitUntilCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+import com.seattlesolvers.solverslib.util.MathUtils;
 import com.skeletonarmy.marrow.TimerEx;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
@@ -36,6 +38,8 @@ public class SoloTele extends LinearOpMode {
     public static double parkTime = 5;
     private boolean manualHood = false;
     public static double driveExpo = 2;
+    public static double turnScale = 1.5;
+    public static double aimTol = 2;
     public static double hoodPos = (ShooterConstants.hoodMin + ShooterConstants.hoodMax) / 2;
     public Intake.ElementMode elementMode = Intake.ElementMode.DETECT;
 
@@ -57,7 +61,6 @@ public class SoloTele extends LinearOpMode {
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
                 .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
-
         operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new IntakeCommand(robot, Intake.IntakeState.OUT))
                 .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
@@ -78,7 +81,11 @@ public class SoloTele extends LinearOpMode {
                                 () -> manualHood
                         )
                 ))
-                .whenHeld(new ShootCommand(robot))
+                .whenHeld(new SequentialCommandGroup(
+                        new WaitUntilCommand(() -> Math.abs(MathUtils.normalizeRadians(
+                                robot.turret.getTargetAngle() - robot.turret.getAngle(), false)) < Math.toRadians(aimTol)),
+                        new ShootCommand(robot)
+                ))
                 .whenReleased(new ParallelCommandGroup(
 //                        new TurretCommand(robot, Turret.TurretState.OFF),
                         new ShooterCommand(robot, Shooter.ShooterState.OFF),
@@ -87,14 +94,6 @@ public class SoloTele extends LinearOpMode {
 
         operator.getGamepadButton(GamepadKeys.Button.TRIANGLE)
                 .whenPressed(new InstantCommand(() -> manualHood=!manualHood));
-
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.IN))
-                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
-
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new IntakeCommand(robot, Intake.IntakeState.OUT))
-                .whenReleased(new IntakeCommand(robot, Intake.IntakeState.OFF));
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                 .whenPressed(new ParallelCommandGroup(
@@ -119,7 +118,7 @@ public class SoloTele extends LinearOpMode {
             DrivePowers drivePowers = new DrivePowers(
                     curve(driver.getLeftY()),
                     curve(-driver.getLeftX()),
-                    curve(-driver.getRightX()));
+                    Range.clip(curve(-driver.getRightX()) * turnScale, -1, 1));
 
             if (timer.isMoreThan(parkTime)) ManualDrive.driveOrHold(robot.follower, drivePowers);
             else {robot.follower.manual(drivePowers);}
